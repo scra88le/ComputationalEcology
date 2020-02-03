@@ -1,1 +1,1 @@
-# ComputationalEcology
+# Computational Ecology

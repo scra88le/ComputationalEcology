@@ -1,30 +1,225 @@
 ---
-title: "R Notebook - Data exploration"
+title: "A Protocol for Data Exploration"
+author: "Anthony Waite"
+date: "20/01/2020"
 output:
   html_document:
     df_print: paged
+    toc: yes
+    number_sections: true
+  html_notebook:
+    toc: yes
 ---
+
+<!-- Let's rejig the style sheet as the default isnt very good -->
+<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 14px;
+  }
+td {  /* Table  */
+  font-size: 10px;
+}
+h1.title {
+  font-size: 28px;
+  color: DarkRed;
+}
+h1 { /* Header 1 */
+  font-size: 28px;
+  color: DarkBlue;
+}
+h2 { /* Header 2 */
+    font-size: 22px;
+  color: DarkBlue;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkBlue;
+}
+code.r{ /* Code block */
+    font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 14px;
+}
+</style>
+
 # Introduction
-Ensuring that the scientist does not discover a false covariate effect (type I error), wrongly dismiss a model with a particular covariate (type II error) or produce results determined by only a few influential observations, requires that detailed data exploration be applied before any statistical analysis. The aim of this vignette is to provide a protocol for data exploration that identifies potential problems.
+Undertaking a systematic data exploration prior to applying statistical analysis techniques to experimental data can help improve the statistical validity of results and associated conclusons. Key to this is a protocol for ensuring the scientist does not discover a false covariate effect (*type I error*) or wrongly dismiss a model was valid covariate (*type II error*).
 
-# Are there outliers in Y and X?
-In some statistical techniques the results are dominated by outliers; other techniques treat them like any other value. For example, outliers may cause overdispersion in a Poisson GLM. We define an outlier as an observation that has a relatively large or small value compared to the majority of observations.
-```{r, echo=F,warning=F, message=F }
-library(ggplot2)
+The aim of this vignette is to provide a protocol for data exploration that identifies potential problems before any statistical analysis is undertaken. The approach outlined makes extensive use of the material discussed in [^1]. Datasets are sourced from the Internet or academics at Oxford Brookes University.
+
+The data exploration protocol outline is as follows:
+
+1. **Outliers** - observations that are relatively large or small when compared to the majority of observations, can significantly affect a statisical result.
+2. **Homogeneity of variance** - a number of statistical techniques assume homogeneity of variance of data. If this is violated the null hypothesis maybe falsely rejected or the power of the test maybe decrease.
+3. **Normality** - if data are not normally distributed, a number of statistical tests may not be valid, and alternative approaches will be required
+4. **Zero-inflation** - when modelling species counts, a large proportion of the data maybe zeros. In such cases alternative statistical models should be used to avoid biased estimates.
+5. **Collinearity** - avoiding correlation between covariates is important otherwise statistical outcomes may not be directly associated with specific covariates.
+6. **Associations** - 
+
+
+# Are there outliers?
+
+In some statistical techniques the results are dominated by outliers; other techniques treat them like any other value. For example, outliers may cause overdispersion in a Poisson GLM. Outliers are defined as an observation that has a relatively large or small value compared to the majority of observations.
+
+In order to demonstrate the data exploration step we will use data from species group sizes in the Naboisho Conservancy within Kenya. Here researchers recorded the size of species groups as they drove along a number of 2km transects.
+
+```{r, load_naboisho_data, echo=F, warning=F, message=F}
 rm(list = ls())  
-setwd("/Users/anthony/Documents/Conservation/NumericalEcology/Vignettes/")
-sparrows <- read.delim("Sparrows.txt", header = TRUE, sep = "\t", dec = ".")
+setwd("/Users/anthony/Documents/GitHub/ComputationalEcology/")
+naboisho <- read.csv("data_analysis_files/Naboisho_target_format.csv")
 ```
 
-**Boxplot** visualizes the median and the spread of the data. The median is typically presented as a horizontal line with the 25% and 75% quartiles forming a box around the median that contains half of the observations.
+## Boxplots
 
-```{r, echo=T,warning=F, message=F, fig.align="center"}
- boxplot(sparrows$Wingcrd, 
-         ylab = "Wing length (mm)")
+The boxplot visualizes the median of the data and the spread of the data about it. In the chart below the:
+
+* Median is presented as a vertical line within the white box
+* 25% and 75% percentiles form a box around the median that contains half of the observations
+* Ends of the thin line either side of the white box are the upper and lower whiskers
+* Upper whisker covers values no larger (or smaller) than the inter-quartile range (the distance between the first and third quartiles)
+* Data beyond the whiskers are the outliers, and are shown as red dots.
+
+```{r, naboisho_box_plot, warning=F, message=F, fig.align='center'}
+library(ggplot2)
+library(dplyr)
+naboisho %>% 
+  filter(species != "None") %>%
+  ggplot(aes(x=species, y=log10(size))) +
+  geom_boxplot(outlier.colour="red", 
+               outlier.shape=16,
+               outlier.size=0.75, 
+               notch=F) +
+  coord_flip() +
+  ggtitle("Species group sizes in Naboisho Conservancy. 2016 to 2019") +
+  xlab("Species") +
+  ylab("Species group size - log10") +
+  theme_bw()
 ```
+
+Note the x axis is scaled to log base 10, in order to compare species with small group sizes, such as Black Backed Jackal, against species with large group sizes such as Zebra or Wildebeest.
+
+## Cleveland dot plot
+
+**Cleveland dotplot** is a chart in which the row number of an observation is plotted vs. the observation value, thereby providing a more detailed view of individual observations than a boxplot allows. Points that stick out on the right-hand side, or on the left-hand side, are observed values that are considerable larger, or smaller, than the majority of the observations, and require further investigation. Below we have taken all observations for Giraffe group size from the Naboisho dataset, and plotted them within a Cleveland dot plot.
+
+```{r cleveland_dot_giraffe, echo=T,warning=F, message=F, fig.align="center"}
+naboisho %>%
+  filter(species == "Giraffe") %>%
+  ggplot(aes(x=size, y=seq(1, length(size)))) +
+  geom_point(alpha=0.3) +
+  ggtitle("Cleveland dot plot of Giraffe Naboisho 2016 to 2019") +
+  labs(x = "Observed group size of Giraffe", 
+       y = "Order of data") +
+  theme_bw()
+```
+
+We can see that there is a single outlier; a group size of 350 Giraffe. This is quite clearly a data entry error. If we remove this outlier and replot the dot plot, we see the following:
+
+```{r cleveland_dot_giraffe_clean, echo=T,warning=F, message=F, fig.align="center"}
+naboisho %>%
+  filter(species == "Giraffe") %>%
+  filter(size <= 300) %>%
+  ggplot(aes(x=size, y=seq(1, length(size)))) +
+  geom_point(alpha=0.3) +
+  ggtitle("Cleveland dot plot of Giraffe Naboisho 2016 to 2019 - outliers removed") +
+  labs(x = "Observed group size of Giraffe", 
+       y = "Order of data") +
+  theme_bw()
+```
+
+Note we also have a number of observations with group sizing of zero. This is clearly not possible and is probably due to a misunderstanding on behalf of the data recroder, and should be corrected to equal 1.
+
+## Implications
+
+Having determined that there are outliers in observations, we can take a number of steps to validate their inclusion or not:
+
+* check the data to ensure that there has not been a data entry error
+* check the scientific literature to provide an expected value.
+* generate a number of observations randomly from an appropriate distribution, and determine how the proportion of extremem points compares to the field data
+
+If the outliers are deemed valid then it maybe necessary to only use statistical methods that can handle such *over-dispersed* data. For example, Poisson or negative-binomial distributions for count data.
+
+# Homogeneity of variance
+
+Homogeneity of variance is an important assumption in analysis of variance (ANOVA). The plot below shows a boxplot for Wildebesst group size observations within the Naboisho dataset. In the plots below we have assumed that the long rains are from April to May, the short rains are in Novemeber and all other months are the dry season.
+
+To apply ANOVA to these data to determine if mean Wildebeest group size varies by year, season or a combination of year and season, we must assume that variation:
+
+1. In the years are similar
+2. In observations for each season are similar
+3. Between seasons within years are similar.
+
+```{r widebeest_by_season, message=FALSE, warning=F, fig.align= 'center'}
+library(lubridate)
+# Add a column to the data set to determine month of year
+
+wildebeest_seasons <- naboisho %>% 
+  mutate(Month = month(Date, label= T, abbr = T)) %>%
+  # Add a season column to data
+  mutate(season = case_when(
+    Month == "Apr" ~ "long rains",
+    Month == "May" ~ "long rains",
+    Month == "Nov" ~ "short rains",
+    TRUE           ~ "dry")) %>% # Else it's the dry season
+  # Take Widebeest only
+  filter(species == "Wildebeest") %>%
+  # Filter out 2016 as insufficient data to determine month
+  filter(year != 2016)
+
+wildebeest_seasons %>%
+  # Plot boxplots by season, don't display outliers
+  ggplot(aes(x=season, y=size)) +
+    geom_boxplot(outlier.shape=NA) +
+    # Facet by year
+    facet_wrap(. ~ year) +
+    coord_cartesian(ylim=c(0, 90)) +
+    theme_bw() +
+    ggtitle("Boxplot of Wildebeest group size by season, across years (no outliers)") +
+    labs(x = "Season and year", 
+         y = "Observed group size of Wildebeest")
+```
+
+We can see that the variance between 2017 and 2018 short rains season is significantly different. Clearly the variance for all seasons within all years is significantly different too. We therefore should not undertake the classic ANOVA test if we want to analyse differences in group means. We can directly test for homogeneity of variances by using * Levenne's test*:
+
+```{r wildebeest_levenne}
+library(car)
+
+# Generate a two-way test to incorporate interaction between seasons and years
+leveneTest(size ~ as.factor(season) * as.factor(year), data = wildebeest_seasons)
+
+```
+
+From the output above we can see that the p-value is much less than the significance level of 0.05. This means that we can not assume equal variances betweens years and seasons. The Levene test is significant. 
+
+We might try welch's ANAOVA instead, as this does not assume homogenous variance, but instead assumes the data are heteroscedastic. 
+
+```{r wildebeest_welch}
+wildebeest_seasons %>% 
+  mutate_all(funs(replace(.,.==0,1))) %>%
+  aov(log(size) ~ as.factor(season) * as.factor(year), data = .) -> test.aov
+
+aov_residuals <- residuals(object = test.aov) %>%
+  hist(breaks=200)
+
+
+```
+
+## Implications
+
+Statistical modelling using regression will assume homogenous variance. This can be checked by plotting the model residuals against the fitted values. A good fit will have have similar residual variation across all values. In order to address heterogeneity of variance in the response variable, it can be transformed. For example a log transformation. 
+
+
+```{r, echo=F, warning=F, message=F }
+sparrows <- read.delim("/Users/anthony/Documents/GitHub/ComputationalEcology/data_analysis_files/Sparrows.txt")
+```
+
+
 We can create a multi-panel boxplot to explore all variables in a data set. To do this when the data are in a matrix format (a row for each observation, a column for each variable) we first need to reshape or `melt` the data into long format (one column for the variable name, one column for the variable value) - we specify ID variables; variables that identify individual rows of data:
 
-```{r,echo=T, warning=F, message=F, fig.align="center"}
+```{r,echo=F, warning=F, message=F, fig.align="center"}
 library(reshape2)
 library(dplyr)
 slf <- melt(sparrows, 
@@ -35,38 +230,6 @@ slf <- slf %>% filter(!var %in% unwanted.vars)
 head(slf)
 ```
 
-Now the data is in a suitable structure, the plot is generated as follows:
-
-```{r, echo=T, warning=F, message=F, fig.align="center"}
-ggplot(slf, aes( y = value)) +
-  geom_boxplot() +
-  facet_wrap(.~ var, scales = "free") +
-  labs(y = "Order of the data") +
-  theme_bw()
-```
-
-**Cleveland dotplot** a graph in which the row number of an observation is plotted vs. the observation value, thereby providing much more detailed information than a boxplot. Points that stick out on the right-hand side, or on the left-hand side, are observed values that are considerable larger, or smaller, than the majority of the observations, and require further investigation.
-
-```{r, echo=T,warning=F, message=F, fig.align="center"}
-ggplot() +
-  geom_point(aes(x=sparrows$Wingcrd, 
-                 y=as.numeric(row.names(sparrows)))) +
-  labs(x = "Wing length (mm)", 
-       y = "Order of data")
-```
-We can also geneate a panel view of Cleveland dotplots for each of the variables in the dataset:
-
-```{r, echo=T,warning=F, message=F, fig.align="center"}
-ggplot(slf, aes( x = value, y = as.numeric(row.names(slf)))) +
-  geom_point(alpha=0.3) +
-  facet_wrap( "var", scales = "free" ) +
-  labs(x = "Value of variable", 
-       y = "Order of the data") +
-  scale_y_continuous(breaks = NULL) +
-  theme_bw()
-```
-# Do we have homogeneity of variance?
-Homogeneity of variance is an important assumption in analysis of variance (ANOVA). The following data is a record of components of the visual system
 
 ## Implications
 In regression-type models, verification of homogeneity should be done using the residuals of the model; i.e. by plotting residuals vs. fitted values, and making a similar set of conditional boxplots for the residuals. In all these graphs the residual variation should be similar. The solution to heterogeneity of variance is either a transformation of the response variable to stabilize the variance, or applying statistical techniques that do not require homogeneity (e.g. generalized least squares)
@@ -74,8 +237,7 @@ In regression-type models, verification of homogeneity should be done using the 
 # Are the data normally distributed?
 A significant number of statistical modelling tools assuming the data are normally distributed. For example, linear regression does assume normality. The following plot shows a histogram for the weight of 1,193 sparrows. It can be seen that the distribution is significantly skewed:
 ```{r, echo=F ,warning=F, message=F}
-setwd("/Users/anthony/Documents/Conservation/NumericalEcology/Vignettes/")
-waders <-read.csv("2018_waders.csv", 
+waders <-read.csv("data_analysis_files/2018_waders.csv", 
                   header = T, 
                   strip.white = T, 
                   na.strings = "", 
@@ -113,5 +275,6 @@ waders %>%
   corrgram(order=T, upper.panel=panel.pie)
 ```
 
-
+# References
+[^1]: Zuur AF, Leno EN, Elphick CS (2010) A protocol for data exploration to avoid common statistical problems. *Methods in Ecology and Evolution*
 
