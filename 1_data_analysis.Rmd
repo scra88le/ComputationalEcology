@@ -1,49 +1,8 @@
 ---
 title: "A Protocol for Data Exploration"
-author: "Anthony Waite"
-date: "20/01/2020"
-output:
-  html_document:
-    df_print: paged
-    toc: yes
-    number_sections: true
-  html_notebook:
-    toc: yes
+
 ---
 
-<!-- Let's rejig the style sheet as the default isnt very good -->
-<style type="text/css">
-
-body{ /* Normal  */
-      font-size: 14px;
-  }
-td {  /* Table  */
-  font-size: 10px;
-}
-h1.title {
-  font-size: 28px;
-  color: DarkRed;
-}
-h1 { /* Header 1 */
-  font-size: 28px;
-  color: DarkBlue;
-}
-h2 { /* Header 2 */
-    font-size: 22px;
-  color: DarkBlue;
-}
-h3 { /* Header 3 */
-  font-size: 18px;
-  font-family: "Times New Roman", Times, serif;
-  color: DarkBlue;
-}
-code.r{ /* Code block */
-    font-size: 12px;
-}
-pre { /* Code block - determines code spacing between lines */
-    font-size: 14px;
-}
-</style>
 
 # Introduction
 Undertaking a systematic data exploration prior to applying statistical analysis techniques to experimental data can help improve the statistical validity of results and associated conclusons. Key to this is a protocol for ensuring the scientist does not discover a false covariate effect (*type I error*) or wrongly dismiss a model was valid covariate (*type II error*).

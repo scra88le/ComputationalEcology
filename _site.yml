@@ -1,4 +1,4 @@
-name: "computation ecology"
+name: "computational ecology"
 output_dir: "docs"
 navbar:
   title: "Computational Ecology"
