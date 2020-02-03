@@ -290,7 +290,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="1_data_analysis">Data Analysis</a>
+      <a href="1_data_analysis.html">Data Analysis</a>
     </li>
   </ul>
 </li>
@@ -366,8 +366,8 @@ $(document).ready(function () {
   labs(x = &quot;Observed group size of Giraffe&quot;, 
        y = &quot;Order of data&quot;) +
   theme_bw() +
-  facet_wrap(~species, ncol = 2, scales = &quot;free_x&quot;)</code></pre>
-<p><img src="1_data_analysis_files/figure-html/cleveland_dot_all_species-1.png" width="672" style="display: block; margin: auto;" /></p>
+  facet_wrap(~species, ncol = 3, scales = &quot;free_x&quot;)</code></pre>
+<p><img src="1_data_analysis_files/figure-html/cleveland_dot_all_species-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>For Giraffe we can see that there is a single outlier; a group size of 350 Giraffe. This is quite clearly a data entry error. If we remove this outlier and replot the dot plot, we see the following:</p>
 <pre class="r"><code>naboisho %&gt;%
   filter(species == &quot;Giraffe&quot;) %&gt;%

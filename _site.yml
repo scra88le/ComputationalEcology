@@ -10,5 +10,5 @@ navbar:
     - text: Vignettes
       menu:
         - text: "Data Analysis"
-          hreft: 1_data_analysis
+          hreft: 1_data_analysis.html
       
