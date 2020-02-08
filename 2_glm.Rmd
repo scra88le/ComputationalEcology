@@ -2,7 +2,7 @@
 title: "Generalised Linear Models (GLMs)"
 ---
 
-# Introduction to the GLM
+# Introduction
 
 In classical linear regression we make predictions of the *expected value* of a response variable as a function of the linear sum of covariates (also known as independent, explanatory or predictor variables). Generalised Linear Modelling (GLM) relaxes the constraint  that ordinary linear regression has, in that the response variable must be normally distributed.
 

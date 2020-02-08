@@ -314,8 +314,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="introduction-to-the-glm" class="section level1">
-<h1>Introduction to the GLM</h1>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>In classical linear regression we make predictions of the <em>expected value</em> of a response variable as a function of the linear sum of covariates (also known as independent, explanatory or predictor variables). Generalised Linear Modelling (GLM) relaxes the constraint that ordinary linear regression has, in that the response variable must be normally distributed.</p>
 <p>Why is the GLM useful for ecology problems? Often in ecology the response variable is in the form of counts or a presence v absence, and in general the response variable exhibits a mean-variance relationship that is not normally distributed.</p>
 <div id="three-key-properties-of-the-glm" class="section level2">
@@ -1058,13 +1058,13 @@ rfe</code></pre>
 ## 
 ## Resampling performance over subset size:
 ## 
-##  Variables  RMSE Rsquared   MAE RMSESD RsquaredSD  MAESD Selected
-##          3 1.879   0.7335 1.555 0.7781     0.2164 0.7108        *
-##          5 2.014   0.6290 1.589 0.5667     0.2118 0.3984         
-##         11 6.129   0.3458 4.286 6.1401     0.2268 3.5573         
+##  Variables  RMSE Rsquared   MAE RMSESD RsquaredSD MAESD Selected
+##          3 2.890   0.2645 2.647  1.206     0.4540 1.219        *
+##          5 3.289   0.1681 2.892  1.334     0.1792 1.351         
+##         11 5.197   0.3269 4.316  1.386     0.3000 1.054         
 ## 
 ## The top 3 variables (out of 3):
-##    slo, oxy, har</code></pre>
+##    slo, pH, oxy</code></pre>
 <p>We see that the model with four variables resulted in the lowest root means squared error (RMSE). So now we can proceed to fitting a GLM using the optimum features (covariates).</p>
 <pre class="r"><code># Create the formula for the glm
 y &lt;- &quot;y&quot;
@@ -1097,22 +1097,22 @@ summary(glm_fit)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.2694  -1.3323  -0.4852   1.0287   2.0195  
+## -1.7754  -1.2935  -0.5810   0.5979   2.6525  
 ## 
 ## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)  1.765422   2.055992   0.859   0.3905  
-## slo         -0.438256   0.264603  -1.656   0.0977 .
-## oxy         -0.008597   0.006993  -1.229   0.2190  
-## har          0.010267   0.016072   0.639   0.5230  
+##              Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept) 14.275880   8.668877   1.647  0.09960 . 
+## slo         -0.707873   0.242680  -2.917  0.00354 **
+## pH          -0.149064   0.109955  -1.356  0.17520   
+## oxy          0.002283   0.007910   0.289  0.77288   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
-##     Null deviance: 54.709  on 18  degrees of freedom
-## Residual deviance: 39.535  on 15  degrees of freedom
-## AIC: 84.646
+##     Null deviance: 48.643  on 18  degrees of freedom
+## Residual deviance: 33.297  on 15  degrees of freedom
+## AIC: 76.459
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <pre class="r"><code>glm_fit</code></pre>
@@ -1127,7 +1127,7 @@ summary(glm_fit)</code></pre>
 ## Resampling results:
 ## 
 ##   RMSE      Rsquared   MAE     
-##   2.924751  0.3430294  2.369658</code></pre>
+##   2.759776  0.3761492  2.158215</code></pre>
 <pre class="r"><code># how accurate was the trained model on the test data set?
 # Make a prediction on the test data set
 pred &lt;- predict(glm_fit, newdata = testing)
