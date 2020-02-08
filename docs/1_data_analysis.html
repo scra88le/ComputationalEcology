@@ -292,6 +292,9 @@ $(document).ready(function () {
     <li>
       <a href="1_data_analysis.html">Data Analysis</a>
     </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -363,7 +366,7 @@ $(document).ready(function () {
   ggplot(aes(x=size, y=seq(1, length(size)))) +
   geom_point(alpha=0.3) +
   ggtitle(&quot;Cleveland dot plot of Naboisho species 2016 to 2019&quot;) +
-  labs(x = &quot;Observed group size of Giraffe&quot;, 
+  labs(x = &quot;Observed group size of Species&quot;, 
        y = &quot;Order of data&quot;) +
   theme_bw() +
   facet_wrap(~species, ncol = 3, scales = &quot;free_x&quot;)</code></pre>
@@ -487,7 +490,7 @@ species_kw_test &lt;- naboisho %&gt;%
   mutate(kruskal_res = map(data, ~ kruskal.test(.x$size, .x$year)),
          kruskal     = map(kruskal_res, broom::tidy)) %&gt;%
   # We dont needed the nested data frames anymore
-  select(-data) %&gt;%
+  dplyr::select(-data) %&gt;%
   # Unnest the result
   unnest(kruskal)
 

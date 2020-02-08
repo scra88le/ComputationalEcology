@@ -1,0 +1,193 @@
+---
+title: "Generalised Linear Models (GLMs)"
+---
+
+# Introduction to the GLM
+
+In classical linear regression we make predictions of the *expected value* of a response variable as a function of the linear sum of covariates (also known as independent, explanatory or predictor variables). Generalised Linear Modelling (GLM) relaxes the constraint  that ordinary linear regression has, in that the response variable must be normally distributed.
+
+Why is the GLM useful for ecology problems? Often in ecology the response variable is in the form of counts or a presence v absence, and in general the response variable exhibits a mean-variance relationship that is not normally distributed. 
+
+## Three key properties of the GLM
+
+1. In a GLM it is assumed that the response variable (and residual errors) is from a distribution in the exponential family. These response variable distributions and their relevance comprise:
+
+* *Negative binomial* regression - non-negative count data, but variance can vary independently of the mean to handle *overdispersion*
+* *Poisson* regression - non-negative count data. Here the mean equals the variance. A sub-class of the negative binomial
+* *Gamma* regression - positive continuous data
+* *Binomial* (or logistic) regression - binary or proportional data
+
+2. The response variable is a linear sum of the predictor variables
+
+3. There is a linear relationship between a function g (the *link function* ) of the mean of the response variable, and the predictor variables. This function is used to transform the non-linear relationship to a linear one. There are a number of different link functions for each response variable distribution. 
+
+More detail on the mathematical basis for the GLM, and associated link functions, can be found here[^1].
+
+```{r, initiate libraries, echo=F, warning=F, message=F}
+# Clear all
+rm(list = ls())  
+
+# Load relevant libraries
+library(tidyverse)
+library(ade4)
+library(skimr)
+library(caret)
+```
+
+
+## The Doubs dataset
+
+As in the Data Analysis vignette (link) we will be using the doubs[^2] dataset to undertake a GLM exercise. Here the response is count data for river fish species across 30 sites, so is likely to be a `Poisson` distribution.  The covariates are a number of measurements of water chemistry and physical characteristics at each of the 30 sites.
+
+```{r load_doubs}
+#Let's load the data
+data(doubs)
+
+# Set-up species data
+species <- doubs$fish
+
+# Set-up environmental data
+environ <- doubs$env
+```
+
+We can get a quick overview of the response data (species counts at each of the 30 site) set using the `skimr` library:
+
+```{r skim_species}
+# Look at the data - drop the site column
+skim(species)
+```
+
+We can see that there are 27 species, with no missing data. Some are more numerous than others, but it doesn't seem like the data are overdisperesed. It's clear from the simplified histrogram column that  species counts are not nomrally distributed, and that a *Poisson* distribution would be a good fit for response variable data. 
+
+Similarly the covariate dataset: 
+
+```{r skim_environ}
+# Look at the data - drop the site column
+skim(environ)
+```
+
+We can see that there are no missing data. We can visualise the response data against the covariates using the `featurePlot` function from the `caret` library.
+
+```{r feature_plot, fig.align='center'}
+featurePlot(x=environ, y= species$Ruru)
+```
+
+With this simple chart we can see how the count for *Ruru* species is at a maximum for relatively low concentrations for ammonium and phosphate and high values for chalkiness (covariate `har`) of the river water. 
+
+Given the response and covariate datasets we can fit a GLM with the doubs data. We fit the count data for the species *Ruru* against all environmental covaraites, usung a Poisson distribution. A response variable that is Poisson distributed usually uses a log link function. Note, we know from the Data Analysis vignette (link) that some covariates within the `eviron` dataset have significant collinearity, so the model results may not be ideal.
+
+```{r species_glm}
+# Fit GLM to species Ruru - use all environmental covariates to fit the model
+ruru_model <- glm(formula = species$Ruru ~ . ,  
+                     # Use a Poisson distribution for the response variable
+                     family= poisson(link = "log"), 
+                     data = environ)
+
+# Summarise the model fit
+summary(ruru_model)
+```
+To understand which covariates have an effect on the response variable, we will look at the p values associated with each covariate in the table above. We can see that the `oxy` covariate is significant for the Ruru counts. If the p-value < 0.05 then, the covariate has a significant effect on the response variable.
+
+We can also check to see if the model fit is over or under-dispersed by looking at the *residual deviance*. If the residual deviance is substantially greater than the degrees of freedom, then the model is over-dispersed; the predicted values are correct but the standard deviation are not accounted for by the model. In the model fit above the residual deviance is close to the degrees of freedom, and the dispersion parameter is 31.361/18 = 1.74 (which is small), so the model is a good fit.
+
+The *null deviance* shows the predicted response when only the intercept (the overall mean) is included in the data. We can see that adding the covariates into the model reduces the null-deviance by around 50. Again, a good sign in terms of the model's overall suitability.
+
+
+# A general protocol for predictive modelling
+
+A general protcol for how to proceed with predictive modelling, for both statistical regression and machine learning techinuqes, is presented below. When fitting a covariates to a model of response data, there are four key steps. In this vignette we will focus on the  GLM, but the approach is equally valid for other modelling methods too. The four steps are:
+
+1. Split the available data into training and modelling data sets.
+2. Choose a modelling method and fit the model - 
+3. Use the model fit to make predictions
+4. Calculate the accuracy of the model preictions using relevant metrics on the test data.
+
+## Caret 
+
+We are going to use the `caret` package for running model fitting. The package is highly flexible and be used for all Let us look at the relationship between each predictor variable and the response. First we split our data into train and test subsets. Each subset will be further split later on using a method known as k-fold cross validation. This involves splitting a dataset into k-subsets. Each subset is held out while the model is trained on all other subsets. This process is completed until accuracy is determined for each instance in the dataset, and an overall accuracy estimate is provided.
+
+```{r split_data}
+inTrain <- createDataPartition(y = species$Ruru, p = 0.6, list = FALSE)
+training <- cbind(environ[inTrain,], y = species$Ruru[inTrain])
+testing <-  cbind(environ[-inTrain,], y = species$Ruru[-inTrain])
+```
+
+
+Firstly we can use `caret` to help in identifying which features are the most significant in fitting a glm. We do this with *recursive feature elimination* as follows:
+
+```{r rfe, message=FALSE, warning=FALSE}
+# Set seed for repeatable randomisation
+set.seed(123)
+
+# Specify the control parameters for the RFE
+rfe_ctrl <- rfeControl(
+  # Use a random forest algorithm to to evaluate feature selection
+  functions = lmFuncs, 
+  # Use 3-fold cross validation 
+  method = "cv",
+  number = 3,
+  returnResamp = "final",
+  verbose = F)
+
+# Perform RFE
+rfe <- rfe(
+  x = within(training, rm(y)), 
+  y = training$y,
+  # Limit the covariates to no more than 5
+  sizes= c(3, 5, 11), 
+  rfeControl = rfe_ctrl)
+
+# Let's look at the results
+rfe
+```
+We see that the model with four variables resulted in the lowest root means squared error (RMSE). So now we can proceed to fitting a GLM using the optimum features (covariates).
+
+```{r caret_search}
+
+# Create the formula for the glm
+y <- "y"
+xs  <- rfe$optVariables
+form <- as.formula(paste(y, paste(xs, collapse = " + "), sep=" ~ "))
+
+set.seed(1895)
+
+glm_fit <- train(
+  # Use the formula given the best features from the rfe process
+  form, 
+  # Select data to train the model on
+  data = training,
+  # Select the glm method with the poisson distribution
+  method = "glm", family = "poisson",
+  # Cross validation 5-fold, repeated 5 times
+  trControl = trainControl(
+    method = "repeatedcv", 
+    number = 5,
+    repeats = 5))
+
+# What are the important of the covariates in them model?
+varImp(glm_fit) %>% plot()
+
+# Show model fit and covariate significance
+summary(glm_fit)
+
+glm_fit
+
+# how accurate was the trained model on the test data set?
+# Make a prediction on the test data set
+pred <- predict(glm_fit, newdata = testing)
+
+# Calculate prediction accuracy of model, given test data
+
+
+
+
+```
+
+As we know from the vignette on Data Exploration, there is significant colinearity between a specific group of covariates. Hence `alt` and `dfs` are collinear. We can see this from the covariate significance in the above results. Note that we do have a signficant  improvement in the residual deviance, due to the caret rfe process. 
+
+
+# References
+
+[^1]: Generalised Linear Modelling - https://en.wikipedia.org/wiki/Generalized_linear_model
+
+[^2]: Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches écologiques sur le réseau hydrographique du Doubs. Essai de biotypologie. Thèse d'état, Besançon. 1–257. *Doubs river fish communities*. https://www.davidzeleny.net/anadat-r/doku.php/en:data:doubs

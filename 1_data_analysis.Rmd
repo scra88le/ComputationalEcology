@@ -74,7 +74,7 @@ naboisho %>%
   ggplot(aes(x=size, y=seq(1, length(size)))) +
   geom_point(alpha=0.3) +
   ggtitle("Cleveland dot plot of Naboisho species 2016 to 2019") +
-  labs(x = "Observed group size of Giraffe", 
+  labs(x = "Observed group size of Species", 
        y = "Order of data") +
   theme_bw() +
   facet_wrap(~species, ncol = 3, scales = "free_x")
@@ -206,7 +206,7 @@ species_kw_test <- naboisho %>%
   mutate(kruskal_res = map(data, ~ kruskal.test(.x$size, .x$year)),
          kruskal     = map(kruskal_res, broom::tidy)) %>%
   # We dont needed the nested data frames anymore
-  select(-data) %>%
+  dplyr::select(-data) %>%
   # Unnest the result
   unnest(kruskal)
 

@@ -11,4 +11,6 @@ navbar:
       menu:
         - text: "Data Analysis"
           hreft: 1_data_analysis.html
+        - text: "Generalised Linear Models"
+          hreft: 2_glm.html
       
