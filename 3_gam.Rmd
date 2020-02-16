@@ -267,9 +267,7 @@ anova(m3)
 We can visiualise the two smooths in the model that are deemed significant by the anova test:
 
 
-```{r viz, message=FALSE, warning=FALSE, fig.align='center', fig.asp=1.4}
-layout(matrix(1:2, nrow = 1))
-
+```{r viz, message=FALSE, warning=FALSE, fig.align='center', fig.width=10}
 # Plot X,Y smooth
 vis.gam(m3, 
         # Covariates we want to visualise
@@ -337,7 +335,7 @@ m3_data %>%
   geom_tile(aes(x=Xkm, y=Ykm, fill = Nhat, width = 10, height = 10)) +
   coord_equal() +
   labs(fill="Density") +
-  scale_fill_viridis() +
+  scale_fill_distiller(palette = "Spectral") +
   theme_bw()
 ```
 

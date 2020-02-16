@@ -856,9 +856,7 @@ overdispersion(m3)</code></pre>
 ## te(TimeH,DayInYear)  22.24  23.48  69.51 6.27e-06
 ## te(Xkm,Ykm,Year)     90.42 101.74 708.13  &lt; 2e-16</code></pre>
 <p>We can visiualise the two smooths in the model that are deemed significant by the anova test:</p>
-<pre class="r"><code>layout(matrix(1:2, nrow = 1))
-
-# Plot X,Y smooth
+<pre class="r"><code># Plot X,Y smooth
 vis.gam(m3, 
         # Covariates we want to visualise
         view = c(&quot;Xkm&quot;,&quot;Ykm&quot;), 
@@ -871,9 +869,9 @@ vis.gam(m3,
         # Pick colour scheme
         color = &quot;topo&quot;, 
         # Give plot a title
-        main = &quot; te(Xkm, Ykm)&quot;)
-
-# Plot TimeH,DayInYear smooth
+        main = &quot; te(Xkm, Ykm)&quot;)</code></pre>
+<p><img src="3_gam_files/figure-html/viz-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plot TimeH,DayInYear smooth
 vis.gam(m3, 
         # Covariates we want to visualise
         view = c(&quot;TimeH&quot;,&quot;DayInYear&quot;), 
@@ -887,7 +885,7 @@ vis.gam(m3,
         color = &quot;topo&quot;, 
         # Give plot a title
         main = &quot;te(TimeH, DayInYear)&quot;)</code></pre>
-<p><img src="3_gam_files/figure-html/viz-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="3_gam_files/figure-html/viz-2.png" width="960" style="display: block; margin: auto;" /></p>
 <p>It seems that for the <code>te(X,Y)</code> smooth the response is concentrated towards the south-west of the area. The <code>te(TimeH, DayInYear)</code> smooth is perhaps more difficult to interpret. It appears that the effect on the response variable is more significant at the start of the year, than at the end.</p>
 </div>
 </div>
@@ -924,7 +922,7 @@ m3_data %&gt;%
   geom_tile(aes(x=Xkm, y=Ykm, fill = Nhat, width = 10, height = 10)) +
   coord_equal() +
   labs(fill=&quot;Density&quot;) +
-  scale_fill_viridis() +
+  scale_fill_distiller(palette = &quot;Spectral&quot;) +
   theme_bw()</code></pre>
 <p><img src="3_gam_files/figure-html/m3_predict-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We can see that there is a slight increase in observed gannet density in the south west corner of the map. If we sum every cell in the grid we should get the total gannet abundance at the time specified above (middle of 2002):</p>
