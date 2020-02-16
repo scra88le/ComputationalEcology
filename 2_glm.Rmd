@@ -134,7 +134,7 @@ rfe <- rfe(
   x = within(training, rm(y)), 
   y = training$y,
   # Limit the covariates to no more than 5
-  sizes= c(3, 5, 11), 
+  sizes= c(1, 3, 5, 8, 11), 
   rfeControl = rfe_ctrl)
 
 # Let's look at the results
@@ -176,6 +176,8 @@ glm_fit
 # Make a prediction on the test data set
 pred <- predict(glm_fit, newdata = testing)
 
+pred
+
 # Calculate prediction accuracy of model, given test data
 
 
@@ -183,7 +185,9 @@ pred <- predict(glm_fit, newdata = testing)
 
 ```
 
-As we know from the vignette on Data Exploration, there is significant colinearity between a specific group of covariates. Hence `alt` and `dfs` are collinear. We can see this from the covariate significance in the above results. Note that we do have a signficant  improvement in the residual deviance, due to the caret rfe process. 
+As we know from the vignette on Data Exploration, there is significant colinearity between a specific group of covariates. Hence `alt` and `dfs` are collinear. We can see this from the covariate significance in the above results. 
+
+The caret led process has generated a model that has slightly higher residual deviance than the initial model that included all covariates. But the caret model only has one covariate, as selected by the RFE. This is reflected in the AIC score and means that a much simpler model gives effectively the same results, in terms of residual errors.
 
 
 # References

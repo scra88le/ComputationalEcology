@@ -13,4 +13,6 @@ navbar:
           hreft: 1_data_analysis.html
         - text: "Generalised Linear Models"
           hreft: 2_glm.html
+        - text: "Generalised Additive Models"
+          hreft: 3_gam.html
       

@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Generalised Additive Models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Computational Ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Generalised Additive Models</h1>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The GLM relates the mean of the response variable to a linear combination of covariates. The response variable is assumed to be conditionally distributed according to a distribution within the exponential family (bionomial, poisson, gamma etc). The Generalised Additive Model (GAM) a popular ecology modelling approach, that relaxes the need for the response variable to be characterised by a particular distribution, and instead allows the the relationship between response variable and covariats to be described by the linear combination of smooth curves. GAMs are of the form:</p>
+<p><span class="math display">\[\mathop{\mathbb{E}}(Y) = g^{-1} \left( \beta_0 + \sum^J_{j=1}f_j(x_j) \right) \]</span> , where <span class="math inline">\(\mathop{\mathbb{E}}\)</span> is the expected value of the response variable, <span class="math inline">\(Y\)</span>, <span class="math inline">\(g\)</span> is the link function and distribution. <span class="math inline">\(f_j\)</span> is the smooth function of covariate <span class="math inline">\(x_j\)</span> and <span class="math inline">\(\beta_0\)</span> is the intercept. The smooth functions are the workhorse of the GAM, and are typically <em>spline</em> functions, but there are many other forms, dependeing on the application.</p>
+</div>
+<div id="the-northern-gannet-morus-bassanus" class="section level2">
+<h2>The Northern Gannet <em>Morus bassanus</em></h2>
+<p>This vignette makes use of data collected by Camphuysen (2011) <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, who undertook a survey of the feeding range of gannets nesting on Bass Rock, a colony found in the Firth of Forth, from onboard fishery research vessels in June and July from 1991 to 2004. Gannet counts were undertaken when the survey ship was fishing. A total of 9,972 km<span class="math inline">\(^2\)</span> were surveyed, travelling a distance of 33,601 km, and 44,818 Gannets were observed during these surveys. A correction factor for detectability was not applied, with the assumption that all individual Gannets, either swimming or in flight, were detected within a 300m wide strip transect (counts were discontinued in rough conditions, e.g. above wind force 6 on the Beaufort scale).</p>
+<p>The underlying question is to determine when and where gannet feed in the vicinity of the Bass Rock colony. We will use a GAM in an attempt to answer this question, and the approach adopted makes extensive reference to Zuur (2012) <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
+<pre class="r"><code># Clear all
+rm(list = ls())  
+
+# Load relevant libraries
+library(tidyverse)
+library(skimr)
+library(mgcv)
+library(sf)
+library(lubridate)
+# colourblind-friendly colourschemes
+library(viridis)</code></pre>
+</div>
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<p>Let’s load the survey data and take a quick peak at its format and structure:</p>
+<pre class="r"><code># Read tab delimited file
+gannets &lt;- read.table(&quot;data_analysis_files/Gannets2.txt&quot;, sep = &quot;\t&quot;, header = TRUE)
+skim(gannets)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">gannets</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">12842</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">14</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">14</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ID</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6421.50</td>
+<td align="right">3707.31</td>
+<td align="right">1.00</td>
+<td align="right">3211.25</td>
+<td align="right">6421.50</td>
+<td align="right">9631.75</td>
+<td align="right">12842.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">Poskey</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">156209631.43</td>
+<td align="right">39586900.46</td>
+<td align="right">20015185.00</td>
+<td align="right">170001781.25</td>
+<td align="right">170007814.50</td>
+<td align="right">170011429.75</td>
+<td align="right">170015724.00</td>
+<td align="left">▁▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">Day</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">12.06</td>
+<td align="right">7.18</td>
+<td align="right">1.00</td>
+<td align="right">7.00</td>
+<td align="right">11.00</td>
+<td align="right">16.00</td>
+<td align="right">30.00</td>
+<td align="left">▆▇▇▂▂</td>
+</tr>
+<tr class="even">
+<td align="left">Month</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6.77</td>
+<td align="right">0.42</td>
+<td align="right">6.00</td>
+<td align="right">7.00</td>
+<td align="right">7.00</td>
+<td align="right">7.00</td>
+<td align="right">7.00</td>
+<td align="left">▂▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">Year</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1999.63</td>
+<td align="right">4.09</td>
+<td align="right">1991.00</td>
+<td align="right">1997.00</td>
+<td align="right">2001.00</td>
+<td align="right">2003.00</td>
+<td align="right">2004.00</td>
+<td align="left">▂▁▃▂▇</td>
+</tr>
+<tr class="even">
+<td align="left">Hours</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">11.03</td>
+<td align="right">4.45</td>
+<td align="right">2.00</td>
+<td align="right">7.00</td>
+<td align="right">11.00</td>
+<td align="right">15.00</td>
+<td align="right">20.00</td>
+<td align="left">▅▇▆▇▅</td>
+</tr>
+<tr class="odd">
+<td align="left">Minutes</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">27.67</td>
+<td align="right">17.31</td>
+<td align="right">0.00</td>
+<td align="right">12.00</td>
+<td align="right">28.00</td>
+<td align="right">42.00</td>
+<td align="right">59.00</td>
+<td align="left">▇▆▇▆▆</td>
+</tr>
+<tr class="even">
+<td align="left">Latitude</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">56.77</td>
+<td align="right">1.08</td>
+<td align="right">54.01</td>
+<td align="right">56.03</td>
+<td align="right">56.66</td>
+<td align="right">57.67</td>
+<td align="right">59.00</td>
+<td align="left">▁▅▇▅▃</td>
+</tr>
+<tr class="odd">
+<td align="left">Longitude</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-0.30</td>
+<td align="right">1.28</td>
+<td align="right">-3.00</td>
+<td align="right">-1.39</td>
+<td align="right">-0.39</td>
+<td align="right">0.79</td>
+<td align="right">2.00</td>
+<td align="left">▂▇▆▆▆</td>
+</tr>
+<tr class="even">
+<td align="left">Area_surveyedkm2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.78</td>
+<td align="right">0.34</td>
+<td align="right">0.00</td>
+<td align="right">0.48</td>
+<td align="right">0.66</td>
+<td align="right">1.11</td>
+<td align="right">2.79</td>
+<td align="left">▇▇▅▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Seastate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2.93</td>
+<td align="right">1.52</td>
+<td align="right">0.00</td>
+<td align="right">2.00</td>
+<td align="right">3.00</td>
+<td align="right">4.00</td>
+<td align="right">6.00</td>
+<td align="left">▆▆▇▇▅</td>
+</tr>
+<tr class="even">
+<td align="left">Gannets_in_transect</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.67</td>
+<td align="right">5.06</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">333.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">X</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">298511.27</td>
+<td align="right">77591.61</td>
+<td align="right">127832.60</td>
+<td align="right">231037.28</td>
+<td align="right">292333.01</td>
+<td align="right">365528.92</td>
+<td align="right">440991.01</td>
+<td align="left">▂▇▆▆▆</td>
+</tr>
+<tr class="even">
+<td align="left">Y</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">6297607.44</td>
+<td align="right">120950.25</td>
+<td align="right">5985125.19</td>
+<td align="right">6218768.16</td>
+<td align="right">6282868.94</td>
+<td align="right">6396381.12</td>
+<td align="right">6552041.75</td>
+<td align="left">▁▅▇▅▃</td>
+</tr>
+</tbody>
+</table>
+<p>We can see that there are no missing data, and that <code>Gannets_in_transect</code> looks like the response variable. Each records represents the number of gannets observed in a transect, and with <code>Area_survyedkm2</code> we know the number of gannet per km2. If each strip transect is 300m wide, we can establish the transect length if needed.</p>
+</div>
+<div id="data-analysis" class="section level1">
+<h1>Data analysis</h1>
+<p>Before we proceed with modelling, let’s do some basic data analysis to make sure everything is in order.</p>
+<div id="visualisng-transects" class="section level2">
+<h2>Visualisng transects</h2>
+<p>In order to see if the area sampled by year is the same, we can plot the transects by year:</p>
+<pre class="r"><code>gannets %&gt;%
+  # Create an sf geometry for each record
+  st_as_sf(coords = c(&quot;Latitude&quot;,&quot;Longitude&quot;), remove = F) %&gt;% 
+  # Transform the cooridante reference to 27700 (UK)
+  st_set_crs(27700) %&gt;%
+  ggplot() +
+  geom_sf(stat=&quot;sf&quot;, colour= &quot;red&quot;, alpha = 0.6, size = 1) +
+  facet_wrap(~Year, ncol = 3) +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/plot_transects-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Looks as if surveys effort is fairly consistent, year on year, but on inspecting the data it looks like the size of individual transects is different.</p>
+<pre class="r"><code>gannets %&gt;%
+  ggplot(aes(x = Area_surveyedkm2)) +
+  # Plot histogram of Area_surveyedkm2
+  geom_histogram(fill=&quot;blue&quot;, stat = &quot;count&quot;) +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/transect_length-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see that the transect effort, represented by <code>Area-surveyedkm2</code> is highly variable. This means that we have a variable sampling effort between transects. To account for this variable effect we can use <code>Area-surveyedkm2</code> as an <em>offset</em> variable. Efecctively this means that if the sampling effort doubles, the number of gannets also doubles.</p>
+<p>Also we have some transects where <code>Area-surveyedkm2</code> is equal to zero. We will remove these, as the boat was not moving and so a transect was not traveresed.</p>
+<pre class="r"><code># Add extra data items in preparation for modelling
+gannets &lt;- gannets %&gt;% 
+  # Remove all transects that were equal to zero size
+  filter(Area_surveyedkm2 &gt; 0) %&gt;%
+  # Create additional data for downstream analysis
+  mutate(
+    # Create offset variable to compensate for sampling effort
+    LArea = log(Area_surveyedkm2),
+    # Create continuous time measured in hours
+    TimeH = Hours + Minutes/60,
+    # Generate a date for each observation
+    Date = dmy(sprintf(&#39;%02d%02d%04d&#39;, Day, Month, Year)),
+    # Generate day in year
+    DayInYear = yday(Date),
+    # Change X and Y into km
+    Xkm = X/1000,
+    Ykm = Y/1000
+         )</code></pre>
+</div>
+<div id="gannet-density-in-space-and-time" class="section level2">
+<h2>Gannet density in space and time</h2>
+<p>We can now undertake some further data exploration and look at how surveyed gannet density varies in space and time. The first plot below shows how observed gannet density varies by year:</p>
+<pre class="r"><code># First calculate gannet density per transect
+gannets &lt;- gannets %&gt;%
+  mutate(gannet_density = Gannets_in_transect/Area_surveyedkm2)
+
+# Plot gannet density in space by year
+gannets %&gt;%
+  ggplot() +
+  geom_point(
+    # Convert m to km for transect locations
+    # Make each dot size equal to gannet abundance
+    aes(x = Xkm, y = Ykm, size = gannet_density), 
+    colour = &quot;red&quot;,
+    alpha = 0.6
+    ) +
+  # Project coordinates
+  coord_sf(crs = 27700) +
+  facet_wrap(~Year, ncol = 3) +
+  # Add a scale for the size of each dot
+  scale_size(range = c(0, 10)) +
+  labs( x = &quot;Latitude&quot;, y = &quot;Longitude&quot;) +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/density_by_year-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This clearly shows us that gannet density changes in space year on year, indicating that a three dimenstional GAM smooth of the form <span class="math inline">\(f(Year_i, lat_i, long_i)\)</span> is required to capture this effect.</p>
+<p>What can we tell about the distribution of gannet density?</p>
+<pre class="r"><code>gannets %&gt;%
+  ggplot(aes(x = gannet_density)) +
+  # Plot histogram of Area_surveyedkm2
+  geom_histogram(fill=&quot;blue&quot;, bins = 30) +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/density_histogram-1.png" width="672" /></p>
+<p>We can see that the data is clearly zero-inflated. The vast majority of observations are zero. But the data are highly dispersed too, as there are density observations of 600.</p>
+<p>We can also observe gannet density by hour of day, for each year:</p>
+<pre class="r"><code># Plot gannet density by day and hour
+gannets %&gt;%
+  ggplot() +
+  geom_point(
+    # Convert m to km for transect locations
+    # Make each dot size equal to gannet abundance
+    aes(x = TimeH, y = DayInYear, size = gannet_density), 
+    colour = &quot;blue&quot;,
+    alpha = 0.5
+    ) +
+  facet_wrap(~Year, ncol = 3) +
+  labs( x = &quot;Hour of day&quot;, y = &quot;Day in Year&quot;) +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/density_hour_of_day-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see that in 2003 surveying started earleir in the year. It seems that there is a time of day effect that changes as the breeding season progresses.</p>
+</div>
+<div id="creating-a-gam-for-gannet-abundance" class="section level2">
+<h2>Creating a GAM for Gannet abundance</h2>
+<p>We would like to build a model to predict gannet abundance in time and space. Our initial data exploration has shown that gannet abundance varies in a non-linear fashion across days, months and years. Below we will iteratively build up a model and each step attempt to evaluate the overall model fit.</p>
+<div id="model-1---incorporating-a-year-effect-and-offset-variable" class="section level3">
+<h3>Model 1 - Incorporating a year effect and offset variable</h3>
+<pre class="r"><code># Create first gam for gannet abundance
+m1 &lt;- gam(
+  # Set the model equation: abundnce is driven by a smooth of year plus 
+  # an offset equal to the log of the sample area
+  Gannets_in_transect ~ s(Year) + offset(LArea), 
+  # We assume that gannet abundance (a count) is from a poisson distribution
+  family = poisson, 
+  data = gannets)
+
+# Show summary of model fit
+summary(m1)</code></pre>
+<pre><code>## 
+## Family: poisson 
+## Link function: log 
+## 
+## Formula:
+## Gannets_in_transect ~ s(Year) + offset(LArea)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.16845    0.01212   -13.9   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##           edf Ref.df Chi.sq p-value    
+## s(Year) 8.886  8.995   3093  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.000322   Deviance explained = 6.73%
+## UBRE = 2.4997  Scale est. = 1         n = 12820</code></pre>
+<p>The results show that the smooth of year is significant in the model, and that the smooth uses 8.9 effective degrees of freedom. We can plot the effect of the smooth by year as follows:</p>
+<pre class="r"><code>plot(m1)</code></pre>
+<p><img src="3_gam_files/figure-html/m1_plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see that the effect of the <code>Year</code> variable increases to 1997, drops significantly in 1998 and then increases again in 2003. Given the fact that To calulcate the degree of overdispersion we look at the residual errors as follows:</p>
+<pre class="r"><code># Overdispersion is calculated as the sum of squared Pearson residuals divided by 
+# sample size minus the number of parameters 
+overdispersion &lt;- function(m){
+  err &lt;- resid(m, type = &quot;pearson&quot;)
+  overdispersion &lt;- sum(err^2)/m$df.residual
+  return(overdispersion)
+}
+
+overdispersion(m1)</code></pre>
+<pre><code>## [1] 36.92865</code></pre>
+<p>There is considerable overdisperson in this first model. The summary for <code>m1</code> shows that the <span class="math inline">\(R^2\)</span> is very low too.</p>
+<p>We can now add the effect of the geographical location of the surveying via a two-dimensional smooth. As the locational covariates are at a very different scale and units to the other covariates (all time based) we use the <code>te</code> or <em>tensor product</em> smoother. From our data exploration work, we noted that a three dimensional function of the form <span class="math inline">\(f(Year_i, lat_i, long_i)\)</span> might be significant. We also include the sea state as categorical variable, and the second combinatory effect of time of day coupled with day of the year.</p>
+<pre class="r"><code># Create first gam for gannet abundance
+m2 &lt;- gam(
+  # Set abundance as ther respone variable:
+  Gannets_in_transect ~ 
+    # 1 - TE smooth of time of day combined with day of year
+    te(TimeH, DayInYear) + 
+    # 2 - seastate as a categorical variable
+    as.factor(Seastate) +
+    # 3 - An offset equal to the log of the sample area
+    offset(LArea) +
+    # 4 - TE smooth of lat, long and year 
+    te(Xkm, Ykm, Year),
+  # We assume that gannet abundance (a count) is from a poisson distribution
+  family = poisson, 
+  data = gannets)
+
+# Show summary of model fit
+summary(m2)</code></pre>
+<pre><code>## 
+## Family: poisson 
+## Link function: log 
+## 
+## Formula:
+## Gannets_in_transect ~ te(TimeH, DayInYear) + as.factor(Seastate) + 
+##     offset(LArea) + te(Xkm, Ykm, Year)
+## 
+## Parametric coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)          -0.62841    0.04602 -13.654  &lt; 2e-16 ***
+## as.factor(Seastate)1  0.08529    0.04527   1.884 0.059576 .  
+## as.factor(Seastate)2 -0.16130    0.04573  -3.528 0.000419 ***
+## as.factor(Seastate)3 -0.26007    0.04679  -5.558 2.73e-08 ***
+## as.factor(Seastate)4 -0.37802    0.05179  -7.299 2.90e-13 ***
+## as.factor(Seastate)5 -0.17460    0.06644  -2.628 0.008590 ** 
+## as.factor(Seastate)6 -0.43253    0.10326  -4.189 2.81e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                       edf Ref.df Chi.sq p-value    
+## te(TimeH,DayInYear)  23.9   24.0   1830  &lt;2e-16 ***
+## te(Xkm,Ykm,Year)    123.1  123.9   8567  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.0668   Deviance explained = 30.6%
+## UBRE = 1.6279  Scale est. = 1         n = 12820</code></pre>
+<pre class="r"><code># Calculate overdispersion
+overdispersion(m2)</code></pre>
+<pre><code>## [1] 12.07295</code></pre>
+<p>This makes a significant difference to the overdispersion which has now been reduced to 12. This is still significant, and the lastest term introduced requires 124 degrees of freedom so is computationally expensive. Also the <span class="math inline">\(R^2\)</span> has improved slightly (though not significantly).</p>
+<p>One final thing is to try a negative-binomial GAM. In such a model, the variance is quadratic and as such might better capture the overdispersion we are seeing.</p>
+<pre class="r"><code># Create first gam for gannet abundance
+m3 &lt;- gam(
+    # Set abundance as ther respone variable:
+    Gannets_in_transect ~ 
+    # 1 - TE smooth of time of day combined with day of year
+    te(TimeH, DayInYear) + 
+    # 2 - seastate as a categorical variable
+    as.factor(Seastate) +
+    # 3 - An offset equal to the log of the sample area
+    offset(LArea) +
+    # 4 - TE smooth of lat, long and year 
+    te(Xkm, Ykm, Year),
+  # We assume that gannet abundance (a count) is from a negative-binomial distribution
+  # Set theta equal to 0.1
+  family = negbin(0.1), 
+  link = log,
+  data = gannets)
+
+# Show summary of model fit
+summary(m3)</code></pre>
+<pre><code>## 
+## Family: Negative Binomial(0.1) 
+## Link function: log 
+## 
+## Formula:
+## Gannets_in_transect ~ te(TimeH, DayInYear) + as.factor(Seastate) + 
+##     offset(LArea) + te(Xkm, Ykm, Year)
+## 
+## Parametric coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)          -0.52398    0.12844  -4.080 4.51e-05 ***
+## as.factor(Seastate)1  0.21261    0.15648   1.359   0.1742    
+## as.factor(Seastate)2 -0.23423    0.14832  -1.579   0.1143    
+## as.factor(Seastate)3 -0.16531    0.14498  -1.140   0.2542    
+## as.factor(Seastate)4 -0.26461    0.15211  -1.740   0.0819 .  
+## as.factor(Seastate)5 -0.04352    0.18410  -0.236   0.8131    
+## as.factor(Seastate)6 -0.36137    0.23092  -1.565   0.1176    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                       edf Ref.df Chi.sq  p-value    
+## te(TimeH,DayInYear) 22.24  23.48  69.51 6.27e-06 ***
+## te(Xkm,Ykm,Year)    90.42 101.74 708.13  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.0301   Deviance explained = 27.2%
+## UBRE = -0.63999  Scale est. = 1         n = 12820</code></pre>
+<pre class="r"><code># Calculate overdispersion
+overdispersion(m3)</code></pre>
+<pre><code>## [1] 1.430392</code></pre>
+<p>This appeared to work well. Our overdispersion measure started at 37 with model 1, and now is at 1.4 with model 3. We can run an anova test to see which smooths are significant within the final model.</p>
+<pre class="r"><code>anova(m3)</code></pre>
+<pre><code>## 
+## Family: Negative Binomial(0.1) 
+## Link function: log 
+## 
+## Formula:
+## Gannets_in_transect ~ te(TimeH, DayInYear) + as.factor(Seastate) + 
+##     offset(LArea) + te(Xkm, Ykm, Year)
+## 
+## Parametric Terms:
+##                     df Chi.sq p-value
+## as.factor(Seastate)  6   19.1 0.00399
+## 
+## Approximate significance of smooth terms:
+##                        edf Ref.df Chi.sq  p-value
+## te(TimeH,DayInYear)  22.24  23.48  69.51 6.27e-06
+## te(Xkm,Ykm,Year)     90.42 101.74 708.13  &lt; 2e-16</code></pre>
+<p>We can visiualise the two smooths in the model that are deemed significant by the anova test:</p>
+<pre class="r"><code>layout(matrix(1:2, nrow = 1))
+
+# Plot X,Y smooth
+vis.gam(m3, 
+        # Covariates we want to visualise
+        view = c(&quot;Xkm&quot;,&quot;Ykm&quot;), 
+        # Number of points in either direction for calculating the surface
+        n.grid = 50, 
+        # Define plot orientation
+        theta = 35, phi = 32, 
+        # Define labels
+        zlab = &quot;smooth&quot;, xlab = &quot;Xkm&quot;, ylab = &quot;Ykm&quot;,
+        # Pick colour scheme
+        color = &quot;topo&quot;, 
+        # Give plot a title
+        main = &quot; te(Xkm, Ykm)&quot;)
+
+# Plot TimeH,DayInYear smooth
+vis.gam(m3, 
+        # Covariates we want to visualise
+        view = c(&quot;TimeH&quot;,&quot;DayInYear&quot;), 
+        # Number of points in either direction for calculating the surface
+        n.grid = 50, 
+        # Define plot orientation
+        theta = 35, phi = 32, 
+        # Define labels
+        zlab = &quot;smooth&quot;, xlab = &quot;TimeH&quot;, ylab = &quot;DayInYear&quot;,
+        # Pick colour scheme
+        color = &quot;topo&quot;, 
+        # Give plot a title
+        main = &quot;te(TimeH, DayInYear)&quot;)</code></pre>
+<p><img src="3_gam_files/figure-html/viz-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It seems that for the <code>te(X,Y)</code> smooth the response is concentrated towards the south-west of the area. The <code>te(TimeH, DayInYear)</code> smooth is perhaps more difficult to interpret. It appears that the effect on the response variable is more significant at the start of the year, than at the end.</p>
+</div>
+</div>
+</div>
+<div id="make-a-prediction-and-plot-it-in-space-and-time" class="section level1">
+<h1>Make a prediction and plot it in space and time</h1>
+<p>To map fitted values, we first create a <code>data.frame</code> of covariates required by the model. Then we use the <code>predict</code> function to generate a set of values. In the example below we will fit a model to give abundance of gannets within 1km squares. First we need to create the data to use when predicting the overall response.</p>
+<pre class="r"><code># Create dataframe containing all data
+m3_data &lt;- expand.grid(
+  # Create X values for model - one every 1km
+  Xkm = X_values &lt;- seq(min(gannets$Xkm), max(gannets$Xkm), by = 1), 
+  # Create Y values for model - one every 1km
+  Ykm = Y_values &lt;- seq(min(gannets$Ykm), max(gannets$Ykm), by = 1), 
+  # Pick a year to model
+  Year = 2002,
+  # Pick a seastate
+  Seastate = as.factor(1),
+  # Set offset area equal to cell size (1km)
+  LArea = 1,
+  # Pick the middle of the year
+  DayInYear = 180,
+  # Pick middle of the day
+  TimeH = 12
+)
+
+# Now make a prediction using m3
+abundance_pred &lt;- predict(m3, m3_data)
+# Add it to the prediction grid
+m3_data$Nhat &lt;- abundance_pred
+
+# Now plot
+m3_data %&gt;%
+  ggplot() +
+  geom_tile(aes(x=Xkm, y=Ykm, fill = Nhat, width = 10, height = 10)) +
+  coord_equal() +
+  labs(fill=&quot;Density&quot;) +
+  scale_fill_viridis() +
+  theme_bw()</code></pre>
+<p><img src="3_gam_files/figure-html/m3_predict-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We can see that there is a slight increase in observed gannet density in the south west corner of the map. If we sum every cell in the grid we should get the total gannet abundance at the time specified above (middle of 2002):</p>
+<pre class="r"><code>sum(m3_data$Nhat)</code></pre>
+<pre><code>## [1] 123167</code></pre>
+<p>As of 2015, the colony size is thought to be around 150,000 birds on Bass Rock<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. So the final abundance estimate for 2002, seems consitent with this. Note we did not accoutn for detectability in the above. It was assumed that everything present was observed within the 300m wide transect.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Northern Gannets in the North Sea, KCJ Camphuysen (2011). <a href="https://britishbirds.co.uk/wp-content/uploads/2014/05/V104_N02_P060%E2%80%93076_A.pdf">https://britishbirds.co.uk/wp-content/uploads/2014/05/V104_N02_P060%E2%80%93076_A.pdf</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Beginner’s Guide to Generalized Additive Models with R, Zuur, AF (2012). <a href="https://highstat.com/index.php/beginner-s-guide-to-generalized-additive-models-with-r" class="uri">https://highstat.com/index.php/beginner-s-guide-to-generalized-additive-models-with-r</a><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>BBC News (2015), <a href="https://www.bbc.co.uk/news/uk-scotland-edinburgh-east-fife-31453488" class="uri">https://www.bbc.co.uk/news/uk-scotland-edinburgh-east-fife-31453488</a><a href="#fnref3">↩</a></p></li>
+</ol>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

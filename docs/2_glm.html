@@ -295,6 +295,9 @@ $(document).ready(function () {
     <li>
       <a href="2_glm.html">Generalised Linear Models</a>
     </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -1046,7 +1049,7 @@ rfe &lt;- rfe(
   x = within(training, rm(y)), 
   y = training$y,
   # Limit the covariates to no more than 5
-  sizes= c(3, 5, 11), 
+  sizes= c(1, 3, 5, 8, 11), 
   rfeControl = rfe_ctrl)
 
 # Let&#39;s look at the results
@@ -1058,13 +1061,15 @@ rfe</code></pre>
 ## 
 ## Resampling performance over subset size:
 ## 
-##  Variables  RMSE Rsquared   MAE RMSESD RsquaredSD MAESD Selected
-##          3 2.890   0.2645 2.647  1.206     0.4540 1.219        *
-##          5 3.289   0.1681 2.892  1.334     0.1792 1.351         
-##         11 5.197   0.3269 4.316  1.386     0.3000 1.054         
+##  Variables  RMSE Rsquared   MAE RMSESD RsquaredSD  MAESD Selected
+##          1 2.443   0.1599 2.210 0.4804     0.1481 0.5343        *
+##          3 2.890   0.2645 2.647 1.2056     0.4540 1.2186         
+##          5 3.289   0.1681 2.892 1.3336     0.1792 1.3506         
+##          8 4.450   0.2323 3.874 1.8134     0.3508 1.4211         
+##         11 5.197   0.3269 4.316 1.3856     0.3000 1.0538         
 ## 
-## The top 3 variables (out of 3):
-##    slo, pH, oxy</code></pre>
+## The top 1 variables (out of 1):
+##    slo</code></pre>
 <p>We see that the model with four variables resulted in the lowest root means squared error (RMSE). So now we can proceed to fitting a GLM using the optimum features (covariates).</p>
 <pre class="r"><code># Create the formula for the glm
 y &lt;- &quot;y&quot;
@@ -1088,6 +1093,8 @@ glm_fit &lt;- train(
 
 # What are the important of the covariates in them model?
 varImp(glm_fit) %&gt;% plot()</code></pre>
+<pre><code>## Warning in FUN(newX[, i], ...): no non-missing arguments to max; returning
+## -Inf</code></pre>
 <p><img src="2_glm_files/figure-html/caret_search-1.png" width="672" /></p>
 <pre class="r"><code># Show model fit and covariate significance
 summary(glm_fit)</code></pre>
@@ -1097,43 +1104,47 @@ summary(glm_fit)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.7754  -1.2935  -0.5810   0.5979   2.6525  
+## -2.6006  -1.3297  -0.6105   0.9198   2.4041  
 ## 
 ## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept) 14.275880   8.668877   1.647  0.09960 . 
-## slo         -0.707873   0.242680  -2.917  0.00354 **
-## pH          -0.149064   0.109955  -1.356  0.17520   
-## oxy          0.002283   0.007910   0.289  0.77288   
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   2.4032     0.5047   4.762 1.92e-06 ***
+## slo          -0.6612     0.2121  -3.117  0.00183 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
 ##     Null deviance: 48.643  on 18  degrees of freedom
-## Residual deviance: 33.297  on 15  degrees of freedom
-## AIC: 76.459
+## Residual deviance: 35.465  on 17  degrees of freedom
+## AIC: 74.627
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <pre class="r"><code>glm_fit</code></pre>
 <pre><code>## Generalized Linear Model 
 ## 
 ## 19 samples
-##  3 predictor
+##  1 predictor
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (5 fold, repeated 5 times) 
 ## Summary of sample sizes: 15, 15, 15, 16, 15, 15, ... 
 ## Resampling results:
 ## 
-##   RMSE      Rsquared   MAE     
-##   2.759776  0.3761492  2.158215</code></pre>
+##   RMSE      Rsquared  MAE     
+##   2.020324  0.430049  1.715951</code></pre>
 <pre class="r"><code># how accurate was the trained model on the test data set?
 # Make a prediction on the test data set
 pred &lt;- predict(glm_fit, newdata = testing)
 
-# Calculate prediction accuracy of model, given test data</code></pre>
-<p>As we know from the vignette on Data Exploration, there is significant colinearity between a specific group of covariates. Hence <code>alt</code> and <code>dfs</code> are collinear. We can see this from the covariate significance in the above results. Note that we do have a signficant improvement in the residual deviance, due to the caret rfe process.</p>
+pred</code></pre>
+<pre><code>##         3         4         6         8        12        14        17 
+## 0.9978455 1.0953428 1.0953428 1.2828520 1.6990692 2.0284514 3.3816129 
+##        21        22        28        30 
+## 2.2652545 1.8454555 4.4228556 5.3470218</code></pre>
+<pre class="r"><code># Calculate prediction accuracy of model, given test data</code></pre>
+<p>As we know from the vignette on Data Exploration, there is significant colinearity between a specific group of covariates. Hence <code>alt</code> and <code>dfs</code> are collinear. We can see this from the covariate significance in the above results.</p>
+<p>The caret led process has generated a model that has slightly higher residual deviance than the initial model that included all covariates. But the caret model only has one covariate, as selected by the RFE. This is reflected in the AIC score and means that a much simpler model gives effectively the same results, in terms of residual errors.</p>
 </div>
 </div>
 <div id="references" class="section level1">
