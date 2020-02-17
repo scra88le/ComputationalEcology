@@ -15,4 +15,6 @@ navbar:
           hreft: 2_glm.html
         - text: "Generalised Additive Models"
           hreft: 3_gam.html
+        - texxt: "Species Distribution Modelling"
+          hreft: 4_sdm.html
       
