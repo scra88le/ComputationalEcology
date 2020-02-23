@@ -1,0 +1,19 @@
+File name is a combination of campaign year, reference year, inventory year and release version.
+
+
+General file name format:	[Mapping_Campaign]_[CLC_Reference_Year]_[Created_Inventory_Year]_[Version]
+
+
+Stable version example with file name CLC2006_CLC2000_V2018_20 means:
+	CLC2006_ 	That the file came from the 2006 mapping campaign (the file content was last modified in this campaign)
+	_CLC2000_ 	That the file captures Land Cover mapping results for 2000 reference year
+	_V2018_		That this file comes from a delivery created in 2018 inventory year
+	_20		That this is the final stable version
+
+
+Beta-version example with file name CLC2006_CLC2000_V2018_20b2 means:
+	CLC2006_ 	That the file came from the 2006 mapping campaign (the file content was last modified in this campaign)
+	_CLC2000_ 	That the file captures Land Cover mapping results for 2000 reference year
+	_V2018_		That this file comes from a delivery created in 2018 inventory year
+	_20b2		That this is the second beta-version
+
