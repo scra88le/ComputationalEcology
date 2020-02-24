@@ -393,8 +393,8 @@ div.tocify {
 </div>
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 <pre class="r"><code># Load libraries
 library(dada2)</code></pre>
@@ -402,8 +402,8 @@ library(dada2)</code></pre>
 <pre class="r"><code>packageVersion(&quot;dada2&quot;)</code></pre>
 <pre><code>## [1] &#39;1.14.0&#39;</code></pre>
 </div>
-<div id="extracting-the-file-structure-of-samples" class="section level2">
-<h2>Extracting the file structure of samples</h2>
+<div id="extracting-the-file-structure-of-samples" class="section level1">
+<h1>Extracting the file structure of samples</h1>
 <pre class="r"><code>path &lt;- &quot;data_analysis_files/fasta/MiSeq&quot;
 list.files(path)</code></pre>
 <pre><code>## [1] &quot;back-up&quot;            &quot;filtered&quot;           &quot;SRR9041213_1.fastq&quot;
@@ -416,8 +416,8 @@ fnRs &lt;- sort(list.files(path, pattern=&quot;2.fastq&quot;, full.names = TRUE)
 # Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
 sample.names &lt;- sapply(strsplit(basename(fnFs), &quot;_&quot;), `[`, 1)</code></pre>
 </div>
-<div id="inspect-read-quality-profiles" class="section level2">
-<h2>Inspect read quality profiles</h2>
+<div id="inspect-read-quality-profiles" class="section level1">
+<h1>Inspect read quality profiles</h1>
 <p>Visualise the quality profiles of the forward reads for the first two fastq files:</p>
 <pre class="r"><code>plotQualityProfile(fnFs[1:2])</code></pre>
 <p><img src="5_eDNA_files/figure-html/qual_prof_fwd_reads-1.png" width="960" /></p>
@@ -435,8 +435,8 @@ sample.names &lt;- sapply(strsplit(basename(fnFs), &quot;_&quot;), `[`, 1)</code
 <p><img src="5_eDNA_files/figure-html/qual_prof_rev_reads-1.png" width="960" /></p>
 <p>The reverse reads do not look as good qualoty as the forward reads; there is a significant reduction of quality starting around halfway along the read (around nucleotide 150), so we will trim here.</p>
 </div>
-<div id="filter-and-trim" class="section level2">
-<h2>Filter and trim</h2>
+<div id="filter-and-trim" class="section level1">
+<h1>Filter and trim</h1>
 <p>Assign filenames for filtered <em>fastq.qz</em> files.</p>
 <pre class="r"><code># Place filtered files in filtered/ subdirectory
 filtFs &lt;- file.path(path, &quot;filtered&quot;, paste0(sample.names, &quot;_F_filt.fastq.gz&quot;))
@@ -475,8 +475,8 @@ names(filtRs) &lt;- sample.names</code></pre>
 ## 1    66387     30450 -0.5413259
 ## 2    52633     24607 -0.5324796</code></pre>
 </div>
-<div id="learn-the-error-rates" class="section level2">
-<h2>Learn the error rates</h2>
+<div id="learn-the-error-rates" class="section level1">
+<h1>Learn the error rates</h1>
 <p>Every amplicon dataset has a different set of error rates. The DADA2 algorithm uses a parametric error model to learn the error rates.</p>
 <pre class="r"><code># Learn forward error rates
 errF &lt;- learnErrors(filtFs, multithread=TRUE)</code></pre>
@@ -499,8 +499,8 @@ plotErrors(errR, nominalQ=TRUE)</code></pre>
 <p><img src="5_eDNA_files/figure-html/vis_error_rates-2.png" width="672" /></p>
 <p>The plots show the error rate for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. In generate, the error rates appear to drop with increased quality.</p>
 </div>
-<div id="sample-inference" class="section level2">
-<h2>Sample inference</h2>
+<div id="sample-inference" class="section level1">
+<h1>Sample inference</h1>
 <p>We can now apply the core <em>DADA2</em> inference algorithm (inc. ref), to the filtered and trimmed data.</p>
 <pre class="r"><code># Apply sample inference to forward data
 dadaFs &lt;- dada(filtFs, err=errF, multithread=4)</code></pre>
@@ -517,8 +517,8 @@ dadaFs$SRR9041213</code></pre>
 ## 353 sequence variants were inferred from 14499 input unique sequences.
 ## Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
 </div>
-<div id="merge-paired-reads" class="section level2">
-<h2>Merge paired reads</h2>
+<div id="merge-paired-reads" class="section level1">
+<h1>Merge paired reads</h1>
 <p>We can now merge the forward and reverse reads together to obtain the full denoised sequences. Merging is performed by aligning the denoised forward reads with the reverse-complement of the corresponding denoised reverse reads, and then constructing the merged “contig” sequences. By default, merged sequences are only output if the forward and reverse reads overlap by at least 12 bases, and are identical to each other in the overlap region.</p>
 <p>Paired reads that did not exactly overlap are removed by <code>mergePairs</code>, further reducing spurious output.</p>
 <pre class="r"><code># Merge pairs
@@ -542,7 +542,6 @@ head(mergers[[1]])</code></pre>
 ## 5      1165       4       5     31         0      0      2   TRUE
 ## 6       857       6       7     35         0      0      2   TRUE</code></pre>
 <p>How to interpret this?</p>
-</div>
 <div id="construct-a-sequence-table" class="section level2">
 <h2>Construct a sequence table</h2>
 <p>We can now construct an amplicon sequence variant table (ASV) table, a higher-resolution version of the OTU table produced by traditional methods. The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants.</p>
@@ -562,8 +561,9 @@ table(nchar(getSequences(seqtab)))</code></pre>
 ##  20  21  13   3   4   4   7   4   6   2   4   1   3   3</code></pre>
 <p>The table contains 65 ASVs</p>
 </div>
-<div id="remove-chimeras" class="section level2">
-<h2>Remove chimeras</h2>
+</div>
+<div id="remove-chimeras" class="section level1">
+<h1>Remove chimeras</h1>
 <p>What is a chimera?!</p>
 <pre class="r"><code>seqtab.nochim &lt;- removeBimeraDenovo(seqtab, method=&quot;consensus&quot;, multithread=TRUE, verbose=TRUE)</code></pre>
 <pre><code>## Identified 117 bimeras out of 443 input sequences.</code></pre>
@@ -572,9 +572,8 @@ table(nchar(getSequences(seqtab)))</code></pre>
 <pre class="r"><code># What % of the merged reads?
 sum(seqtab.nochim)/sum(seqtab)</code></pre>
 <pre><code>## [1] 0.9369989</code></pre>
-</div>
-<div id="we-can-track-the-number-of-reads-through-the-pipeline" class="section level2">
-<h2>We can track the number of reads through the pipeline</h2>
+<div id="pipeline-tracking" class="section level2">
+<h2>Pipeline tracking</h2>
 <p>We can track the number of reads that made it through each step in the pipeline:</p>
 <pre class="r"><code>getN &lt;- function(x) sum(getUniques(x))
 track &lt;- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
@@ -587,8 +586,9 @@ track</code></pre>
 ## SRR9041214 52633    24607     24030     24319  21181   20007</code></pre>
 <p>Doesn’t look to hot! Maybe we truncated too much towards the start?</p>
 </div>
-<div id="assign-taxonomy" class="section level2">
-<h2>Assign taxonomy</h2>
+</div>
+<div id="assign-taxonomy" class="section level1">
+<h1>Assign taxonomy</h1>
 <p>This section is not executed as it returns no result after 1 hour!</p>
 <p>Awaiting greater horsepower…</p>
 <pre class="r"><code>taxa &lt;- assignTaxonomy(

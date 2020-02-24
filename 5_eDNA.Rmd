@@ -2,7 +2,7 @@
 title: "Environmental DNA analysis"
 ---
 
-## Introduction
+# Introduction
 
 Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. [^1]
 
@@ -12,7 +12,7 @@ library(dada2)
 packageVersion("dada2")
 ```
 
-## Extracting the file structure of samples
+# Extracting the file structure of samples
 
 ```{r load_fastq_filenames}
 path <- "data_analysis_files/fasta/MiSeq"
@@ -30,7 +30,7 @@ fnRs <- sort(list.files(path, pattern="2.fastq", full.names = TRUE))
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
 ```
 
-## Inspect read quality profiles
+# Inspect read quality profiles
 
 Visualise the quality profiles of the forward reads for the first two fastq files:
 
@@ -57,7 +57,7 @@ plotQualityProfile(fnRs[1:2])
 
 The reverse reads do not look as good qualoty as the forward reads; there is a significant reduction of quality starting around halfway along the read (around nucleotide 150), so we will trim here.
 
-## Filter and trim
+# Filter and trim
 
 Assign filenames for filtered *fastq.qz* files.
 
@@ -105,7 +105,7 @@ library(dplyr)
    mutate(p_chg = (.$reads.out - .$reads.in) / .$reads.in)
 ```
 
-## Learn the error rates
+# Learn the error rates
 
 Every amplicon dataset has a different set of error rates. The DADA2 algorithm uses a parametric error model to learn the error rates.
 
@@ -127,7 +127,7 @@ plotErrors(errR, nominalQ=TRUE)
 
 The plots show the error rate for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. In generate, the error rates appear to drop with increased quality.
 
-## Sample inference
+# Sample inference
 
 We can now apply the core *DADA2* inference algorithm (inc. ref), to the filtered and trimmed data.
 
@@ -145,7 +145,7 @@ The core DADA2 algorithm corrects Illumina-sequenced amplicon errors, and can re
 dadaFs$SRR9041213
 ```
 
-## Merge paired reads
+# Merge paired reads
 
 We can now merge the forward and reverse reads together to obtain the full denoised sequences. Merging is performed by aligning the denoised forward reads with the reverse-complement of the corresponding denoised reverse reads, and then constructing the merged “contig” sequences. By default, merged sequences are only output if the forward and reverse reads overlap by at least 12 bases, and are identical to each other in the overlap region.
 
@@ -178,7 +178,7 @@ table(nchar(getSequences(seqtab)))
 The table contains 65 ASVs
 
 
-## Remove chimeras
+# Remove chimeras
 
 What is a chimera?!
 
@@ -190,7 +190,7 @@ sum(seqtab.nochim)/sum(seqtab)
 
 ```
 
-## We can track the number of reads through the pipeline
+## Pipeline tracking
 
 We can track the number of reads that made it through each step in the pipeline:
 
@@ -205,7 +205,7 @@ track
 
 Doesn't look to hot! Maybe we truncated too much towards the start?
 
-## Assign taxonomy
+# Assign taxonomy
 
 This section is not executed as it returns no result after 1 hour!
 
