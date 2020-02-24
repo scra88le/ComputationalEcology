@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Species Distribution Modelling</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Computational Ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
+    <li>
+      <a href="4_sdm.html">Species Distribution Modelling</a>
+    </li>
+    <li>
+      <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Species Distribution Modelling</h1>
+
+</div>
+
+
+<pre class="r"><code># Load libraries
+library(tidyverse)
+library(rgbif)
+library(lubridate)
+library(caret)
+library(raster)
+library(reshape2)
+library(viridis)
+
+# Clear environment and set working directory
+rm(list = ls())  
+
+#options(stringsAsFactors = FALSE)</code></pre>
+<p>Use the Global Biodiversity Information Facility (GBIF) to gather presence records for the migratory hoverfly <em>Volucella zonaria</em>, also known as the hornet mimic hoverfly. In Great Britain, it was only known from two specimens prior to 1940, so was regarded as rare. Since then, it has become increasingly widespread in many parts of the South and South East England, often in association with parks and gardens, where adults are usually seen visiting flowers. Elsewhere in England, only a few scattered records exist.</p>
+<pre class="r"><code># get the database id (&quot;key&quot;) for the hornet mimic
+gbif_response &lt;- read_rds(&quot;~/Documents/GitHub/ComputationalEcology/data_analysis_files/clim_data/gbif_volucella_zonaria.rds&quot;)
+
+# Create presence records across decades
+zonaria_clean &lt;- gbif_response$data %&gt;%
+  # get decade of record from eventDate
+  mutate(decade = eventDate %&gt;% 
+           ymd_hms() %&gt;% 
+           round_date(&quot;10y&quot;) %&gt;% 
+           year() %&gt;% 
+           as.numeric()) %&gt;%
+  rename(y = decimalLatitude,
+         x = decimalLongitude) %&gt;%
+  # clean data using metadata filters
+  filter(
+    # only records with no issues
+    issues == &quot;&quot; &amp;
+    # let&#39;s take data from 2000 to 2020
+    decade %in% c(2010,2020)) %&gt;%
+  # retain only relevant variables
+  dplyr::select(x, y, decade) %&gt;% arrange(decade)</code></pre>
+<p>Now we need to grab some environmental data. For this vignette we will use the worldclim database as this is directly available via the <code>raster</code> package. We can download 19 bioclimatic variables at 10’ resolution. They are coded as follows:</p>
+<ul>
+<li>BIO1 = Annual Mean Temperature</li>
+<li>BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))</li>
+<li>BIO3 = Isothermality (BIO2/BIO7) (* 100)</li>
+<li>BIO4 = Temperature Seasonality (standard deviation *100)</li>
+<li>BIO5 = Max Temperature of Warmest Month</li>
+<li>BIO6 = Min Temperature of Coldest Month</li>
+<li>BIO7 = Temperature Annual Range (BIO5-BIO6)</li>
+<li>BIO8 = Mean Temperature of Wettest Quarter</li>
+<li>BIO9 = Mean Temperature of Driest Quarter</li>
+<li>BIO10 = Mean Temperature of Warmest Quarter</li>
+<li>BIO11 = Mean Temperature of Coldest Quarter</li>
+<li>BIO12 = Annual Precipitation</li>
+<li>BIO13 = Precipitation of Wettest Month</li>
+<li>BIO14 = Precipitation of Driest Month</li>
+<li>BIO15 = Precipitation Seasonality (Coefficient of Variation)</li>
+<li>BIO16 = Precipitation of Wettest Quarter</li>
+<li>BIO17 = Precipitation of Driest Quarter</li>
+<li>BIO18 = Precipitation of Warmest Quarter</li>
+<li>BIO19 = Precipitation of Coldest Quarter</li>
+</ul>
+<p>Let’s download data for current bioclim and future climate change scenarios:</p>
+<pre class="r"><code># Load raster background for UK
+bg &lt;- raster(&quot;data_analysis_files/UK_bg.grd&quot;)
+
+# Reproject to lat/lon
+bg &lt;- projectRaster(bg, crs= &quot;+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&quot;)
+
+# UK extent in lon/lat coordinates
+ext_uk &lt;- c(-12, 3, 48, 62)
+
+# Get climate data
+filepath = &quot;~/Documents/GitHub/ComputationalEcology/data_analysis_files/clim_data/&quot;
+bio_curr &lt;- getData(&#39;worldclim&#39;, var=&#39;bio&#39;, download=T, lon=-5, lat=55, res=5, path=filepath)
+
+# Crop and reproject current climate
+bio_curr &lt;- crop(bio_curr, ext_uk)
+bio_curr &lt;- projectRaster(bio_curr, bg)
+bio_curr &lt;- resample(bio_curr, bg)
+bio_curr &lt;- mask(bio_curr, bg)
+
+# Future climate data
+bio_fut &lt;- getData(&#39;CMIP5&#39;, var=&#39;bio&#39;, download=T, res=5, rcp=45, model=&#39;MC&#39;, year=50, path=filepath)
+bio_fut &lt;- crop(bio_fut, ext_uk)
+
+# Crop and reproject future climate
+bio_fut &lt;- crop(bio_fut, ext_uk)
+bio_fut &lt;- projectRaster(bio_fut, bg)
+bio_fut &lt;- resample(bio_fut, bg)
+bio_fut &lt;- mask(bio_fut, bg)
+
+# Make variable names the same for both datasets
+names(bio_fut) &lt;- names(bio_curr)</code></pre>
+<p>We can plot the current bioclim data - all 19 covariates:</p>
+<pre class="r"><code># Plot the bioclim covariates - we&#39;ll use ggplot, as raster plot function not as nice output
+
+# Function to generate individual plots
+plot_bioclim &lt;- function(df, name) {
+  ggplot(data = df, aes(x=x, y=y, fill = value)) + 
+  geom_tile() +
+  coord_equal() +
+  scale_fill_viridis(name = name) +
+  theme(
+    plot.margin = rep(unit(0,&quot;null&quot;),4),
+    panel.spacing = unit(0,&quot;null&quot;),
+    legend.key.width = unit(0.01,&quot;null&quot;)
+    ) +
+  theme_bw()
+  
+}
+
+# extract all bioclim values by xy
+nested_bioclim_plots &lt;- data.frame(rasterToPoints(bio_curr)) %&gt;%
+  # Create single gouping variable by which to facet chart
+  melt(id = c(&quot;x&quot;,&quot;y&quot;)) %&gt;%
+  # Nest data by bioclim variable
+  nest(-variable) %&gt;%
+  # Create individual ggplots
+  mutate(plots = map2(.x = data, 
+                      .y = variable, 
+                      .f = plot_bioclim))
+
+# Render plots
+library(gridExtra)
+margin = theme(plot.margin = rep(unit(0,&quot;null&quot;),4))
+gridExtra::grid.arrange(grobs = nested_bioclim_plots$plots,
+                        top=&quot;Current UK Bioclim variables &quot;,
+                        ncol = 2,
+                        margin
+                        )</code></pre>
+<p><img src="4_sdm_with_climate_change_files/figure-html/plot_uk_bioclim-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>For each bioclim variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each location.</p>
+<pre class="r"><code># Generate coordinates to extract raster data from zonaria obs
+#library(sf)
+# Create a sf set of coordinates
+#df_sp &lt;- st_as_sf(zonaria_clean[1:2], 
+                  #coords = c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;), 
+                 # crs=4326)
+
+# Create coordinates
+#df_sp$x &lt;- st_coordinates(df_sp)[,1]
+#df_sp$y &lt;- st_coordinates(df_sp)[,2]
+#df_sp   &lt;- st_drop_geometry(df_sp)
+
+# Extract bioclim variables using long/lat
+df_presence &lt;-  raster::extract(bio_curr, zonaria_clean[1:2]) %&gt;%
+  # Add extracted bioclim variables to observation data
+  cbind(zonaria_clean) %&gt;%
+  # Mark observation data as presence records
+  mutate(presence = 1) %&gt;%
+  # We dont need decade anymore
+  dplyr::select(-decade)
+
+# Function to pick raster cells at random from bioclim layers
+raster_random_sample &lt;- function(bio_data, n_samples) {
+  raster::sampleRandom(
+    x = bio_data, 
+    size = n_samples,
+    na.rm = TRUE,
+    xy = TRUE) 
+  }
+
+# Sample background points (psedo absent?)
+df_absence &lt;- raster_random_sample(bio_curr, 500) %&gt;%
+  as.data.frame() %&gt;%
+  # Mark as background data
+  mutate(presence = 0)
+
+# Create single dataframe for all data
+df_zonaria &lt;- rbind(df_presence,df_absence)</code></pre>
+<p>Now we have joined our environmental and observation data together, we can begin to build a species distribution model. First we need to create a categorical response variable as we want to model presence v absence in space:</p>
+<pre class="r"><code># last pre-processing step
+df_modelling &lt;- df_zonaria %&gt;%
+  # caret requires a factorial response variable for classification
+  mutate(presence = case_when(
+    presence == 1 ~ &quot;presence&quot;,
+    presence == 0 ~ &quot;absence&quot;) %&gt;%
+    as.factor()) %&gt;%
+  # drop all observations with NA variables
+  na.omit()</code></pre>
+<p>Then we partition the available data - one set for training the other for testing:</p>
+<pre class="r"><code># Create an index to randomly partion presence and absence observations 
+inTrain &lt;- createDataPartition(y = df_modelling$presence, p = 0.7, list = FALSE)
+df_train &lt;- df_modelling[ inTrain,]
+df_test  &lt;- df_modelling[-inTrain,]</code></pre>
+<p>Before we fit the a machine learning model, we should look at the variabele importance. We can do this using the <code>caret</code> package, which has a function to evaluate covariate importance.</p>
+<pre class="r"><code># Use Recursive Feature Elimintation (RFE) to determine significan covariates 
+set.seed(100)
+
+# Select the grouping of variables to test
+subsets &lt;- c(1:5, 10, 15, 19)
+
+# Define the control using a random forest selction function
+ctrl &lt;- rfeControl(functions = rfFuncs,
+                   method = &quot;repeatedcv&quot;,
+                   repeats = 3,
+                   verbose = FALSE)
+
+results &lt;- rfe(x=df_train[1:19], 
+               y=df_train$presence,
+               sizes = subsets,
+               rfeControl = ctrl)
+
+# Print summart of results
+print(results)</code></pre>
+<pre><code>## 
+## Recursive feature selection
+## 
+## Outer resampling method: Cross-Validated (10 fold, repeated 3 times) 
+## 
+## Resampling performance over subset size:
+## 
+##  Variables Accuracy  Kappa AccuracySD KappaSD Selected
+##          1   0.8295 0.6594    0.03936 0.07844         
+##          2   0.8480 0.6962    0.04207 0.08395         
+##          3   0.8640 0.7281    0.04257 0.08503         
+##          4   0.8688 0.7378    0.03976 0.07939         
+##          5   0.8839 0.7679    0.03660 0.07311         
+##         10   0.8859 0.7718    0.03326 0.06647         
+##         15   0.8878 0.7756    0.03569 0.07133         
+##         19   0.8882 0.7766    0.03638 0.07266        *
+## 
+## The top 5 variables (out of 19):
+##    bio10, bio5, bio1, bio2, bio7</code></pre>
+<pre class="r"><code># Plot the results
+plot(results, type=c(&quot;g&quot;, &quot;o&quot;))</code></pre>
+<p><img src="4_sdm_with_climate_change_files/figure-html/feature_selection-1.png" width="672" /></p>
+<p>Let’s use the first five most significant variables in our model. We’ll fit the model using a regularised random forest (RRF):</p>
+<pre class="r"><code>library(randomForest)
+
+# take the top five variables from the feature importance
+opt_vars &lt;- results$optVariables
+
+# Recut the modelling data
+df_modelling &lt;- cbind(df_modelling[opt_vars], df_modelling %&gt;% dplyr::select(x,y,presence))
+#df_train &lt;- df_modelling[ inTrain,]
+#df_test  &lt;- df_modelling[-inTrain,]
+  
+tunecontrol &lt;- trainControl(
+  method = &#39;repeatedcv&#39;,
+  number = 5,
+  repeats = 2,
+  search = &quot;grid&quot;)
+
+
+tunegrid &lt;- expand.grid(.mtry=c(3:9))
+
+# for reproducibility
+set.seed(12345)
+
+# actual model build
+model_fit &lt;- train(
+  presence ~ .,
+  data = df_modelling,
+  method = &quot;rf&quot;,
+  metric = &quot;Accuracy&quot;,
+  tuneGrid = tunegrid,
+  trControl = tunecontrol)
+
+print(model_fit)</code></pre>
+<pre><code>## Random Forest 
+## 
+## 979 samples
+##  21 predictor
+##   2 classes: &#39;absence&#39;, &#39;presence&#39; 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (5 fold, repeated 2 times) 
+## Summary of sample sizes: 784, 783, 783, 783, 783, 783, ... 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy   Kappa    
+##   3     0.9157457  0.8315883
+##   4     0.9157431  0.8315733
+##   5     0.9152329  0.8305612
+##   6     0.9157431  0.8315818
+##   7     0.9167635  0.8336159
+##   8     0.9177839  0.8356477
+##   9     0.9172737  0.8346425
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was mtry = 8.</code></pre>
+<pre class="r"><code>plot(model_fit)</code></pre>
+<p><img src="4_sdm_with_climate_change_files/figure-html/model_fit-1.png" width="672" /></p>
+<p>Now we can evaluate the performance of the trained model. To do this we can use the Area under the Receiver Operator Characterisitc curve (AUC). Under the AUC a random model would score 0.5, and a perfect model 1.0.</p>
+<pre class="r"><code># combine prediction with validation set
+df_eval &lt;- data_frame(
+  &quot;obs&quot; = df_test$presence,
+  &quot;pred&quot; = predict(
+    object = model_fit,
+    newdata = df_test,
+    type = &quot;prob&quot;) %&gt;%
+    pull(1))
+
+# get ROC value
+library(yardstick)
+roc_auc_vec(estimator = &quot;binary&quot;, truth = df_eval$obs, estimate = df_eval$pred)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<p>Now we can now make a prediction for both the current species distribution range for V. zonaria. and a future 2050 scenario based on the CMIP5 climate change model.</p>
+<pre class="r"><code># Generate species distribution df given raster of environmental variables and sdm
+predict_dist &lt;- function(r_bio, sdm){
+  # Generate distribution data to run model on
+  dist_dat &lt;- data.frame(rasterToPoints(r_bio))
+  # Create a probability of presence/absence raster
+  r_pred &lt;- rasterFromXYZ(cbind(
+    # Coordinates to make prediction from
+    dist_dat[1:2],
+    # Predict with RRF species distribution model 
+    predict(model_fit, 
+            # Use covariates to run model against
+            dist_dat, 
+            # Type of response variable
+            type=&#39;prob&#39;))
+    )
+  # Create spatial dataframe for plotting
+  df_prob_presence &lt;- as(r_pred[[2]], &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
+  as.data.frame()
+  # Return probability of presence raster
+  return(df_prob_presence)
+}
+
+# Generate sdm for current climate vars
+curr_plot &lt;- predict_dist(bio_curr, model_fit) %&gt;%
+  mutate(plot_type = &quot;2020 range&quot;)
+
+# Generate sdm under climate change scenario
+fut_plot  &lt;- predict_dist(bio_fut, model_fit) %&gt;%
+  mutate(plot_type = &quot;2050 range&quot;)
+
+# Combine all data
+all_plots &lt;- rbind(curr_plot,fut_plot)
+
+# Plot scenarios
+all_plots %&gt;% 
+ggplot() + 
+  geom_tile(aes(x=x, y=y, fill=presence)) +
+  coord_equal() +
+  scale_fill_viridis() +
+  theme_bw() +
+  facet_wrap(~plot_type)</code></pre>
+<p><img src="4_sdm_with_climate_change_files/figure-html/predict_and_plot-1.png" width="672" /></p>
+<p>We see a sigificant incerase in range in the north and west of the UK.</p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

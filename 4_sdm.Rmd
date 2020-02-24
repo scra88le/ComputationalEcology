@@ -87,6 +87,20 @@ bio_curr <- resample(bio_curr, bg)
 bio_curr <- mask(bio_curr, bg)
 ```
 
+```{r plot_obs}
+
+bg_df <- as(bg, "SpatialPixelsDataFrame") %>% 
+  as.data.frame()
+
+colnames(bg_df) <- c("value", "x", "y")
+
+ggplot() +
+  geom_tile(data= bg_df, aes(x=x, y=y, colour = "light grey")) +
+  coord_equal() +
+  geom_point(data=zonaria_clean, aes(x=x, y=y, colour ="red"))
+  theme_bw()
+
+```
 We can plot the current bioclim data - all 19 covariates:
 
 ```{r plot_uk_bioclim, fig.asp=4, fig.align='center', message=FALSE, warning=FALSE}

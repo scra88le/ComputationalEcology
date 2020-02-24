@@ -1,0 +1,3069 @@
+--2020-02-24 09:02:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041213/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041213 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:14 (29.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:14--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041213/SRR9041213_1.fastq.gz
+           => ‘SRR9041213_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041213_1.fastq.gz ... done.
+Length: 11402390 (11M)
+
+
+2020-02-24 09:02:17 (3.27 MB/s) - ‘SRR9041213_1.fastq.gz’ saved [11402390]
+
+--2020-02-24 09:02:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041213/SRR9041213_2.fastq.gz
+           => ‘SRR9041213_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041213_2.fastq.gz ... done.
+Length: 13883907 (13M)
+
+
+2020-02-24 09:02:23 (2.57 MB/s) - ‘SRR9041213_2.fastq.gz’ saved [13883907]
+
+--2020-02-24 09:02:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041214/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041214 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:23 (24.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041214/SRR9041214_1.fastq.gz
+           => ‘SRR9041214_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041214_1.fastq.gz ... done.
+Length: 9112544 (8.7M)
+
+
+2020-02-24 09:02:26 (2.98 MB/s) - ‘SRR9041214_1.fastq.gz’ saved [9112544]
+
+--2020-02-24 09:02:26--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041214/SRR9041214_2.fastq.gz
+           => ‘SRR9041214_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041214_2.fastq.gz ... done.
+Length: 11103085 (11M)
+
+
+2020-02-24 09:02:30 (2.99 MB/s) - ‘SRR9041214_2.fastq.gz’ saved [11103085]
+
+--2020-02-24 09:02:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041215/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041215 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:30 (17.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041215/SRR9041215_1.fastq.gz
+           => ‘SRR9041215_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041215_1.fastq.gz ... done.
+Length: 11370162 (11M)
+
+
+2020-02-24 09:02:34 (2.99 MB/s) - ‘SRR9041215_1.fastq.gz’ saved [11370162]
+
+--2020-02-24 09:02:34--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041215/SRR9041215_2.fastq.gz
+           => ‘SRR9041215_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041215_2.fastq.gz ... done.
+Length: 13565079 (13M)
+
+
+2020-02-24 09:02:42 (1.67 MB/s) - ‘SRR9041215_2.fastq.gz’ saved [13565079]
+
+--2020-02-24 09:02:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041216/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041216 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:42 (28.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041216/SRR9041216_1.fastq.gz
+           => ‘SRR9041216_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041216_1.fastq.gz ... done.
+Length: 10471575 (10.0M)
+
+
+2020-02-24 09:02:46 (3.25 MB/s) - ‘SRR9041216_1.fastq.gz’ saved [10471575]
+
+--2020-02-24 09:02:46--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041216/SRR9041216_2.fastq.gz
+           => ‘SRR9041216_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041216_2.fastq.gz ... done.
+Length: 13129043 (13M)
+
+
+2020-02-24 09:02:50 (2.76 MB/s) - ‘SRR9041216_2.fastq.gz’ saved [13129043]
+
+--2020-02-24 09:02:50--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041217/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041217 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:51 (12.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041217/SRR9041217_1.fastq.gz
+           => ‘SRR9041217_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041217_1.fastq.gz ... done.
+Length: 11003812 (10M)
+
+
+2020-02-24 09:02:55 (2.53 MB/s) - ‘SRR9041217_1.fastq.gz’ saved [11003812]
+
+--2020-02-24 09:02:55--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041217/SRR9041217_2.fastq.gz
+           => ‘SRR9041217_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041217_2.fastq.gz ... done.
+Length: 14103961 (13M)
+
+
+2020-02-24 09:02:59 (3.30 MB/s) - ‘SRR9041217_2.fastq.gz’ saved [14103961]
+
+--2020-02-24 09:02:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041218/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041218 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:02:59 (36.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:02:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041218/SRR9041218_1.fastq.gz
+           => ‘SRR9041218_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041218_1.fastq.gz ... done.
+Length: 12132031 (12M)
+
+
+2020-02-24 09:03:03 (3.15 MB/s) - ‘SRR9041218_1.fastq.gz’ saved [12132031]
+
+--2020-02-24 09:03:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041218/SRR9041218_2.fastq.gz
+           => ‘SRR9041218_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041218_2.fastq.gz ... done.
+Length: 14941671 (14M)
+
+
+2020-02-24 09:03:08 (3.25 MB/s) - ‘SRR9041218_2.fastq.gz’ saved [14941671]
+
+--2020-02-24 09:03:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041219/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041219 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:08 (24.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041219/SRR9041219_1.fastq.gz
+           => ‘SRR9041219_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041219_1.fastq.gz ... done.
+Length: 10125468 (9.7M)
+
+
+2020-02-24 09:03:11 (3.19 MB/s) - ‘SRR9041219_1.fastq.gz’ saved [10125468]
+
+--2020-02-24 09:03:11--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041219/SRR9041219_2.fastq.gz
+           => ‘SRR9041219_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041219_2.fastq.gz ... done.
+Length: 12500626 (12M)
+
+
+2020-02-24 09:03:16 (2.87 MB/s) - ‘SRR9041219_2.fastq.gz’ saved [12500626]
+
+--2020-02-24 09:03:16--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041220/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041220 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:16 (22.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:16--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041220/SRR9041220_1.fastq.gz
+           => ‘SRR9041220_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041220_1.fastq.gz ... done.
+Length: 9942187 (9.5M)
+
+
+2020-02-24 09:03:19 (3.18 MB/s) - ‘SRR9041220_1.fastq.gz’ saved [9942187]
+
+--2020-02-24 09:03:19--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041220/SRR9041220_2.fastq.gz
+           => ‘SRR9041220_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041220_2.fastq.gz ... done.
+Length: 12237419 (12M)
+
+
+2020-02-24 09:03:23 (3.17 MB/s) - ‘SRR9041220_2.fastq.gz’ saved [12237419]
+
+--2020-02-24 09:03:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041221/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041221 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:23 (8.45 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041221/SRR9041221_1.fastq.gz
+           => ‘SRR9041221_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041221_1.fastq.gz ... done.
+Length: 12823515 (12M)
+
+
+2020-02-24 09:03:27 (3.15 MB/s) - ‘SRR9041221_1.fastq.gz’ saved [12823515]
+
+--2020-02-24 09:03:27--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041221/SRR9041221_2.fastq.gz
+           => ‘SRR9041221_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041221_2.fastq.gz ... done.
+Length: 15585899 (15M)
+
+
+2020-02-24 09:03:32 (3.08 MB/s) - ‘SRR9041221_2.fastq.gz’ saved [15585899]
+
+--2020-02-24 09:03:32--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041222/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041222 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:33 (28.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041222/SRR9041222_1.fastq.gz
+           => ‘SRR9041222_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041222_1.fastq.gz ... done.
+Length: 9155108 (8.7M)
+
+
+2020-02-24 09:03:36 (2.51 MB/s) - ‘SRR9041222_1.fastq.gz’ saved [9155108]
+
+--2020-02-24 09:03:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041222/SRR9041222_2.fastq.gz
+           => ‘SRR9041222_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041222_2.fastq.gz ... done.
+Length: 11690264 (11M)
+
+
+2020-02-24 09:03:40 (3.19 MB/s) - ‘SRR9041222_2.fastq.gz’ saved [11690264]
+
+--2020-02-24 09:03:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041223/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041223 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:40 (22.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041223/SRR9041223_1.fastq.gz
+           => ‘SRR9041223_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041223_1.fastq.gz ... done.
+Length: 12111574 (12M)
+
+
+2020-02-24 09:03:45 (2.33 MB/s) - ‘SRR9041223_1.fastq.gz’ saved [12111574]
+
+--2020-02-24 09:03:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041223/SRR9041223_2.fastq.gz
+           => ‘SRR9041223_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041223_2.fastq.gz ... done.
+Length: 15235808 (15M)
+
+
+2020-02-24 09:03:49 (3.57 MB/s) - ‘SRR9041223_2.fastq.gz’ saved [15235808]
+
+--2020-02-24 09:03:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041224/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041224 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:50 (11.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:50--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041224/SRR9041224_1.fastq.gz
+           => ‘SRR9041224_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041224_1.fastq.gz ... done.
+Length: 7937998 (7.6M)
+
+
+2020-02-24 09:03:53 (3.01 MB/s) - ‘SRR9041224_1.fastq.gz’ saved [7937998]
+
+--2020-02-24 09:03:53--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041224/SRR9041224_2.fastq.gz
+           => ‘SRR9041224_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041224_2.fastq.gz ... done.
+Length: 9889508 (9.4M)
+
+
+2020-02-24 09:03:56 (2.99 MB/s) - ‘SRR9041224_2.fastq.gz’ saved [9889508]
+
+--2020-02-24 09:03:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041225/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041225 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:03:56 (36.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:03:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041225/SRR9041225_1.fastq.gz
+           => ‘SRR9041225_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041225_1.fastq.gz ... done.
+Length: 11206367 (11M)
+
+
+2020-02-24 09:04:00 (3.27 MB/s) - ‘SRR9041225_1.fastq.gz’ saved [11206367]
+
+--2020-02-24 09:04:00--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041225/SRR9041225_2.fastq.gz
+           => ‘SRR9041225_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041225_2.fastq.gz ... done.
+Length: 13494342 (13M)
+
+
+2020-02-24 09:04:05 (2.52 MB/s) - ‘SRR9041225_2.fastq.gz’ saved [13494342]
+
+--2020-02-24 09:04:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041226/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041226 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:05 (26.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041226/SRR9041226_1.fastq.gz
+           => ‘SRR9041226_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041226_1.fastq.gz ... done.
+Length: 9695146 (9.2M)
+
+
+2020-02-24 09:04:08 (2.96 MB/s) - ‘SRR9041226_1.fastq.gz’ saved [9695146]
+
+--2020-02-24 09:04:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041226/SRR9041226_2.fastq.gz
+           => ‘SRR9041226_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041226_2.fastq.gz ... done.
+Length: 12192224 (12M)
+
+
+2020-02-24 09:04:12 (3.31 MB/s) - ‘SRR9041226_2.fastq.gz’ saved [12192224]
+
+--2020-02-24 09:04:12--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041227/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041227 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:12 (25.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:12--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041227/SRR9041227_1.fastq.gz
+           => ‘SRR9041227_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041227_1.fastq.gz ... done.
+Length: 9212466 (8.8M)
+
+
+2020-02-24 09:04:15 (2.96 MB/s) - ‘SRR9041227_1.fastq.gz’ saved [9212466]
+
+--2020-02-24 09:04:15--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041227/SRR9041227_2.fastq.gz
+           => ‘SRR9041227_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041227_2.fastq.gz ... done.
+Length: 12190032 (12M)
+
+
+2020-02-24 09:04:20 (2.23 MB/s) - ‘SRR9041227_2.fastq.gz’ saved [12190032]
+
+--2020-02-24 09:04:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041228/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041228 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:21 (26.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041228/SRR9041228_1.fastq.gz
+           => ‘SRR9041228_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041228_1.fastq.gz ... done.
+Length: 10074937 (9.6M)
+
+
+2020-02-24 09:04:24 (2.82 MB/s) - ‘SRR9041228_1.fastq.gz’ saved [10074937]
+
+--2020-02-24 09:04:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041228/SRR9041228_2.fastq.gz
+           => ‘SRR9041228_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041228_2.fastq.gz ... done.
+Length: 12508599 (12M)
+
+
+2020-02-24 09:04:28 (3.37 MB/s) - ‘SRR9041228_2.fastq.gz’ saved [12508599]
+
+--2020-02-24 09:04:28--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041229/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041229 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:28 (21.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:28--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041229/SRR9041229_1.fastq.gz
+           => ‘SRR9041229_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041229_1.fastq.gz ... done.
+Length: 15521724 (15M)
+
+
+2020-02-24 09:04:33 (3.10 MB/s) - ‘SRR9041229_1.fastq.gz’ saved [15521724]
+
+--2020-02-24 09:04:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041229/SRR9041229_2.fastq.gz
+           => ‘SRR9041229_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041229_2.fastq.gz ... done.
+Length: 17604232 (17M)
+
+
+2020-02-24 09:04:38 (3.06 MB/s) - ‘SRR9041229_2.fastq.gz’ saved [17604232]
+
+--2020-02-24 09:04:38--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041230/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041230 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:39 (31.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:39--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041230/SRR9041230_1.fastq.gz
+           => ‘SRR9041230_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041230_1.fastq.gz ... done.
+Length: 9738601 (9.3M)
+
+
+2020-02-24 09:04:42 (2.94 MB/s) - ‘SRR9041230_1.fastq.gz’ saved [9738601]
+
+--2020-02-24 09:04:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041230/SRR9041230_2.fastq.gz
+           => ‘SRR9041230_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041230_2.fastq.gz ... done.
+Length: 12009729 (11M)
+
+
+2020-02-24 09:04:45 (3.33 MB/s) - ‘SRR9041230_2.fastq.gz’ saved [12009729]
+
+--2020-02-24 09:04:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041231/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041231 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:46 (12.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:46--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041231/SRR9041231_1.fastq.gz
+           => ‘SRR9041231_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041231_1.fastq.gz ... done.
+Length: 14500650 (14M)
+
+
+2020-02-24 09:04:50 (3.55 MB/s) - ‘SRR9041231_1.fastq.gz’ saved [14500650]
+
+--2020-02-24 09:04:50--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041231/SRR9041231_2.fastq.gz
+           => ‘SRR9041231_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041231_2.fastq.gz ... done.
+Length: 17145527 (16M)
+
+
+2020-02-24 09:04:55 (3.42 MB/s) - ‘SRR9041231_2.fastq.gz’ saved [17145527]
+
+--2020-02-24 09:04:55--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041232/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041232 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:04:55 (22.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:04:55--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041232/SRR9041232_1.fastq.gz
+           => ‘SRR9041232_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041232_1.fastq.gz ... done.
+Length: 10538080 (10M)
+
+
+2020-02-24 09:04:59 (2.72 MB/s) - ‘SRR9041232_1.fastq.gz’ saved [10538080]
+
+--2020-02-24 09:04:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041232/SRR9041232_2.fastq.gz
+           => ‘SRR9041232_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041232_2.fastq.gz ... done.
+Length: 13301585 (13M)
+
+
+2020-02-24 09:05:03 (2.81 MB/s) - ‘SRR9041232_2.fastq.gz’ saved [13301585]
+
+--2020-02-24 09:05:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041233/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041233 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:04 (25.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:04--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041233/SRR9041233_1.fastq.gz
+           => ‘SRR9041233_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041233_1.fastq.gz ... done.
+Length: 10861067 (10M)
+
+
+2020-02-24 09:05:08 (2.29 MB/s) - ‘SRR9041233_1.fastq.gz’ saved [10861067]
+
+--2020-02-24 09:05:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041233/SRR9041233_2.fastq.gz
+           => ‘SRR9041233_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041233_2.fastq.gz ... done.
+Length: 13155761 (13M)
+
+
+2020-02-24 09:05:12 (3.36 MB/s) - ‘SRR9041233_2.fastq.gz’ saved [13155761]
+
+--2020-02-24 09:05:12--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041234/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041234 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:12 (23.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:12--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041234/SRR9041234_1.fastq.gz
+           => ‘SRR9041234_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041234_1.fastq.gz ... done.
+Length: 10018655 (9.6M)
+
+
+2020-02-24 09:05:17 (2.27 MB/s) - ‘SRR9041234_1.fastq.gz’ saved [10018655]
+
+--2020-02-24 09:05:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041234/SRR9041234_2.fastq.gz
+           => ‘SRR9041234_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041234_2.fastq.gz ... done.
+Length: 12810216 (12M)
+
+
+2020-02-24 09:05:21 (2.93 MB/s) - ‘SRR9041234_2.fastq.gz’ saved [12810216]
+
+--2020-02-24 09:05:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041235/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041235 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:21 (39.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041235/SRR9041235_1.fastq.gz
+           => ‘SRR9041235_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041235_1.fastq.gz ... done.
+Length: 11271574 (11M)
+
+
+2020-02-24 09:05:25 (3.05 MB/s) - ‘SRR9041235_1.fastq.gz’ saved [11271574]
+
+--2020-02-24 09:05:25--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041235/SRR9041235_2.fastq.gz
+           => ‘SRR9041235_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041235_2.fastq.gz ... done.
+Length: 14151463 (13M)
+
+
+2020-02-24 09:05:29 (2.97 MB/s) - ‘SRR9041235_2.fastq.gz’ saved [14151463]
+
+--2020-02-24 09:05:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041236/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041236 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:30 (35.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041236/SRR9041236_1.fastq.gz
+           => ‘SRR9041236_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041236_1.fastq.gz ... done.
+Length: 7863441 (7.5M)
+
+
+2020-02-24 09:05:33 (2.60 MB/s) - ‘SRR9041236_1.fastq.gz’ saved [7863441]
+
+--2020-02-24 09:05:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041236/SRR9041236_2.fastq.gz
+           => ‘SRR9041236_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041236_2.fastq.gz ... done.
+Length: 10190510 (9.7M)
+
+
+2020-02-24 09:05:36 (2.76 MB/s) - ‘SRR9041236_2.fastq.gz’ saved [10190510]
+
+--2020-02-24 09:05:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041237/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041237 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:36 (23.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041237/SRR9041237_1.fastq.gz
+           => ‘SRR9041237_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041237_1.fastq.gz ... done.
+Length: 10943142 (10M)
+
+
+2020-02-24 09:05:41 (2.50 MB/s) - ‘SRR9041237_1.fastq.gz’ saved [10943142]
+
+--2020-02-24 09:05:41--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041237/SRR9041237_2.fastq.gz
+           => ‘SRR9041237_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041237_2.fastq.gz ... done.
+Length: 13693239 (13M)
+
+
+2020-02-24 09:05:45 (3.35 MB/s) - ‘SRR9041237_2.fastq.gz’ saved [13693239]
+
+--2020-02-24 09:05:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041238/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041238 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:45 (28.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041238/SRR9041238_1.fastq.gz
+           => ‘SRR9041238_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041238_1.fastq.gz ... done.
+Length: 9689373 (9.2M)
+
+
+2020-02-24 09:05:49 (2.64 MB/s) - ‘SRR9041238_1.fastq.gz’ saved [9689373]
+
+--2020-02-24 09:05:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041238/SRR9041238_2.fastq.gz
+           => ‘SRR9041238_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041238_2.fastq.gz ... done.
+Length: 12209979 (12M)
+
+
+2020-02-24 09:05:52 (3.38 MB/s) - ‘SRR9041238_2.fastq.gz’ saved [12209979]
+
+--2020-02-24 09:05:52--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041239/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041239 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:05:52 (26.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:05:52--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041239/SRR9041239_1.fastq.gz
+           => ‘SRR9041239_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041239_1.fastq.gz ... done.
+Length: 10772995 (10M)
+
+
+2020-02-24 09:05:56 (2.73 MB/s) - ‘SRR9041239_1.fastq.gz’ saved [10772995]
+
+--2020-02-24 09:05:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041239/SRR9041239_2.fastq.gz
+           => ‘SRR9041239_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041239_2.fastq.gz ... done.
+Length: 12973567 (12M)
+
+
+2020-02-24 09:06:00 (3.25 MB/s) - ‘SRR9041239_2.fastq.gz’ saved [12973567]
+
+--2020-02-24 09:06:00--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041240/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041240 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:00 (29.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:00--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041240/SRR9041240_1.fastq.gz
+           => ‘SRR9041240_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041240_1.fastq.gz ... done.
+Length: 8989500 (8.6M)
+
+
+2020-02-24 09:06:03 (2.84 MB/s) - ‘SRR9041240_1.fastq.gz’ saved [8989500]
+
+--2020-02-24 09:06:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041240/SRR9041240_2.fastq.gz
+           => ‘SRR9041240_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041240_2.fastq.gz ... done.
+Length: 11738733 (11M)
+
+
+2020-02-24 09:06:07 (3.35 MB/s) - ‘SRR9041240_2.fastq.gz’ saved [11738733]
+
+--2020-02-24 09:06:07--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041241/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041241 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:07 (25.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:07--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041241/SRR9041241_1.fastq.gz
+           => ‘SRR9041241_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041241_1.fastq.gz ... done.
+Length: 9344277 (8.9M)
+
+
+2020-02-24 09:06:10 (3.24 MB/s) - ‘SRR9041241_1.fastq.gz’ saved [9344277]
+
+--2020-02-24 09:06:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041241/SRR9041241_2.fastq.gz
+           => ‘SRR9041241_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041241_2.fastq.gz ... done.
+Length: 11592670 (11M)
+
+
+2020-02-24 09:06:13 (3.44 MB/s) - ‘SRR9041241_2.fastq.gz’ saved [11592670]
+
+--2020-02-24 09:06:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041242/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041242 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:14 (19.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:14--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041242/SRR9041242_1.fastq.gz
+           => ‘SRR9041242_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041242_1.fastq.gz ... done.
+Length: 10076024 (9.6M)
+
+
+2020-02-24 09:06:17 (3.21 MB/s) - ‘SRR9041242_1.fastq.gz’ saved [10076024]
+
+--2020-02-24 09:06:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041242/SRR9041242_2.fastq.gz
+           => ‘SRR9041242_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041242_2.fastq.gz ... done.
+Length: 12167836 (12M)
+
+
+2020-02-24 09:06:21 (3.00 MB/s) - ‘SRR9041242_2.fastq.gz’ saved [12167836]
+
+--2020-02-24 09:06:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041243/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041243 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:21 (21.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041243/SRR9041243_1.fastq.gz
+           => ‘SRR9041243_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041243_1.fastq.gz ... done.
+Length: 10179826 (9.7M)
+
+
+2020-02-24 09:06:24 (3.29 MB/s) - ‘SRR9041243_1.fastq.gz’ saved [10179826]
+
+--2020-02-24 09:06:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041243/SRR9041243_2.fastq.gz
+           => ‘SRR9041243_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041243_2.fastq.gz ... done.
+Length: 12805623 (12M)
+
+
+2020-02-24 09:06:29 (2.61 MB/s) - ‘SRR9041243_2.fastq.gz’ saved [12805623]
+
+--2020-02-24 09:06:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041244/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041244 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:29 (30.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041244/SRR9041244_1.fastq.gz
+           => ‘SRR9041244_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041244_1.fastq.gz ... done.
+Length: 9085288 (8.7M)
+
+
+2020-02-24 09:06:32 (2.90 MB/s) - ‘SRR9041244_1.fastq.gz’ saved [9085288]
+
+--2020-02-24 09:06:32--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041244/SRR9041244_2.fastq.gz
+           => ‘SRR9041244_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041244_2.fastq.gz ... done.
+Length: 11434950 (11M)
+
+
+2020-02-24 09:06:36 (2.83 MB/s) - ‘SRR9041244_2.fastq.gz’ saved [11434950]
+
+--2020-02-24 09:06:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041245/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041245 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:36 (25.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041245/SRR9041245_1.fastq.gz
+           => ‘SRR9041245_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041245_1.fastq.gz ... done.
+Length: 7396967 (7.1M)
+
+
+2020-02-24 09:06:38 (3.09 MB/s) - ‘SRR9041245_1.fastq.gz’ saved [7396967]
+
+--2020-02-24 09:06:38--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041245/SRR9041245_2.fastq.gz
+           => ‘SRR9041245_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041245_2.fastq.gz ... done.
+Length: 9541547 (9.1M)
+
+
+2020-02-24 09:06:42 (2.48 MB/s) - ‘SRR9041245_2.fastq.gz’ saved [9541547]
+
+--2020-02-24 09:06:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041246/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041246 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:43 (26.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:43--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041246/SRR9041246_1.fastq.gz
+           => ‘SRR9041246_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041246_1.fastq.gz ... done.
+Length: 6975391 (6.7M)
+
+
+2020-02-24 09:06:45 (2.58 MB/s) - ‘SRR9041246_1.fastq.gz’ saved [6975391]
+
+--2020-02-24 09:06:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041246/SRR9041246_2.fastq.gz
+           => ‘SRR9041246_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041246_2.fastq.gz ... done.
+Length: 8761428 (8.4M)
+
+
+2020-02-24 09:06:48 (2.88 MB/s) - ‘SRR9041246_2.fastq.gz’ saved [8761428]
+
+--2020-02-24 09:06:48--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041247/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041247 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:49 (25.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041247/SRR9041247_1.fastq.gz
+           => ‘SRR9041247_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041247_1.fastq.gz ... done.
+Length: 10269574 (9.8M)
+
+
+2020-02-24 09:06:52 (3.11 MB/s) - ‘SRR9041247_1.fastq.gz’ saved [10269574]
+
+--2020-02-24 09:06:52--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041247/SRR9041247_2.fastq.gz
+           => ‘SRR9041247_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041247_2.fastq.gz ... done.
+Length: 12847430 (12M)
+
+
+2020-02-24 09:06:56 (3.01 MB/s) - ‘SRR9041247_2.fastq.gz’ saved [12847430]
+
+--2020-02-24 09:06:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041248/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041248 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:06:56 (17.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:06:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041248/SRR9041248_1.fastq.gz
+           => ‘SRR9041248_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041248_1.fastq.gz ... done.
+Length: 8216131 (7.8M)
+
+
+2020-02-24 09:06:59 (2.96 MB/s) - ‘SRR9041248_1.fastq.gz’ saved [8216131]
+
+--2020-02-24 09:06:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041248/SRR9041248_2.fastq.gz
+           => ‘SRR9041248_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041248_2.fastq.gz ... done.
+Length: 10388263 (9.9M)
+
+
+2020-02-24 09:07:02 (3.41 MB/s) - ‘SRR9041248_2.fastq.gz’ saved [10388263]
+
+--2020-02-24 09:07:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041249/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041249 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:02 (24.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041249/SRR9041249_1.fastq.gz
+           => ‘SRR9041249_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041249_1.fastq.gz ... done.
+Length: 11198310 (11M)
+
+
+2020-02-24 09:07:05 (3.45 MB/s) - ‘SRR9041249_1.fastq.gz’ saved [11198310]
+
+--2020-02-24 09:07:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041249/SRR9041249_2.fastq.gz
+           => ‘SRR9041249_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041249_2.fastq.gz ... done.
+Length: 13162384 (13M)
+
+
+2020-02-24 09:07:09 (3.34 MB/s) - ‘SRR9041249_2.fastq.gz’ saved [13162384]
+
+--2020-02-24 09:07:09--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041250/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041250 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:10 (24.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041250/SRR9041250_1.fastq.gz
+           => ‘SRR9041250_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041250_1.fastq.gz ... done.
+Length: 10180637 (9.7M)
+
+
+2020-02-24 09:07:13 (3.26 MB/s) - ‘SRR9041250_1.fastq.gz’ saved [10180637]
+
+--2020-02-24 09:07:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041250/SRR9041250_2.fastq.gz
+           => ‘SRR9041250_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041250_2.fastq.gz ... done.
+Length: 12171255 (12M)
+
+
+2020-02-24 09:07:17 (2.89 MB/s) - ‘SRR9041250_2.fastq.gz’ saved [12171255]
+
+--2020-02-24 09:07:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041251/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041251 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:17 (21.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041251/SRR9041251_1.fastq.gz
+           => ‘SRR9041251_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041251_1.fastq.gz ... done.
+Length: 9213942 (8.8M)
+
+
+2020-02-24 09:07:20 (3.16 MB/s) - ‘SRR9041251_1.fastq.gz’ saved [9213942]
+
+--2020-02-24 09:07:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041251/SRR9041251_2.fastq.gz
+           => ‘SRR9041251_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041251_2.fastq.gz ... done.
+Length: 11168621 (11M)
+
+
+2020-02-24 09:07:23 (3.39 MB/s) - ‘SRR9041251_2.fastq.gz’ saved [11168621]
+
+--2020-02-24 09:07:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041252/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041252 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:23 (31.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041252/SRR9041252_1.fastq.gz
+           => ‘SRR9041252_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041252_1.fastq.gz ... done.
+Length: 9330953 (8.9M)
+
+
+2020-02-24 09:07:26 (3.31 MB/s) - ‘SRR9041252_1.fastq.gz’ saved [9330953]
+
+--2020-02-24 09:07:26--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041252/SRR9041252_2.fastq.gz
+           => ‘SRR9041252_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041252_2.fastq.gz ... done.
+Length: 11266333 (11M)
+
+
+2020-02-24 09:07:29 (3.24 MB/s) - ‘SRR9041252_2.fastq.gz’ saved [11266333]
+
+--2020-02-24 09:07:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041253/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041253 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:30 (66.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041253/SRR9041253_1.fastq.gz
+           => ‘SRR9041253_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041253_1.fastq.gz ... done.
+Length: 5894060 (5.6M)
+
+
+2020-02-24 09:07:32 (2.74 MB/s) - ‘SRR9041253_1.fastq.gz’ saved [5894060]
+
+--2020-02-24 09:07:32--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041253/SRR9041253_2.fastq.gz
+           => ‘SRR9041253_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041253_2.fastq.gz ... done.
+Length: 7587218 (7.2M)
+
+
+2020-02-24 09:07:34 (3.00 MB/s) - ‘SRR9041253_2.fastq.gz’ saved [7587218]
+
+--2020-02-24 09:07:34--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041254/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041254 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:35 (23.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:35--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041254/SRR9041254_1.fastq.gz
+           => ‘SRR9041254_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041254_1.fastq.gz ... done.
+Length: 8763505 (8.4M)
+
+
+2020-02-24 09:07:37 (3.10 MB/s) - ‘SRR9041254_1.fastq.gz’ saved [8763505]
+
+--2020-02-24 09:07:37--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041254/SRR9041254_2.fastq.gz
+           => ‘SRR9041254_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041254_2.fastq.gz ... done.
+Length: 11022564 (11M)
+
+
+2020-02-24 09:07:41 (2.94 MB/s) - ‘SRR9041254_2.fastq.gz’ saved [11022564]
+
+--2020-02-24 09:07:41--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041255/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041255 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:41 (26.4 MB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:41--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041255/SRR9041255_1.fastq.gz
+           => ‘SRR9041255_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041255_1.fastq.gz ... done.
+Length: 9911381 (9.5M)
+
+
+2020-02-24 09:07:45 (2.94 MB/s) - ‘SRR9041255_1.fastq.gz’ saved [9911381]
+
+--2020-02-24 09:07:45--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041255/SRR9041255_2.fastq.gz
+           => ‘SRR9041255_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041255_2.fastq.gz ... done.
+Length: 12237123 (12M)
+
+
+2020-02-24 09:07:49 (3.06 MB/s) - ‘SRR9041255_2.fastq.gz’ saved [12237123]
+
+--2020-02-24 09:07:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041256/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041256 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:49 (26.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041256/SRR9041256_1.fastq.gz
+           => ‘SRR9041256_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041256_1.fastq.gz ... done.
+Length: 8176086 (7.8M)
+
+
+2020-02-24 09:07:52 (2.80 MB/s) - ‘SRR9041256_1.fastq.gz’ saved [8176086]
+
+--2020-02-24 09:07:52--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041256/SRR9041256_2.fastq.gz
+           => ‘SRR9041256_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041256_2.fastq.gz ... done.
+Length: 10398199 (9.9M)
+
+
+2020-02-24 09:07:55 (2.99 MB/s) - ‘SRR9041256_2.fastq.gz’ saved [10398199]
+
+--2020-02-24 09:07:55--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041257/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041257 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:07:56 (22.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:07:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041257/SRR9041257_1.fastq.gz
+           => ‘SRR9041257_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041257_1.fastq.gz ... done.
+Length: 8778068 (8.4M)
+
+
+2020-02-24 09:07:58 (3.04 MB/s) - ‘SRR9041257_1.fastq.gz’ saved [8778068]
+
+--2020-02-24 09:07:58--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041257/SRR9041257_2.fastq.gz
+           => ‘SRR9041257_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041257_2.fastq.gz ... done.
+Length: 11423676 (11M)
+
+
+2020-02-24 09:08:02 (3.25 MB/s) - ‘SRR9041257_2.fastq.gz’ saved [11423676]
+
+--2020-02-24 09:08:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041258/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041258 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:02 (9.94 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041258/SRR9041258_1.fastq.gz
+           => ‘SRR9041258_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041258_1.fastq.gz ... done.
+Length: 11018864 (11M)
+
+
+2020-02-24 09:08:06 (2.91 MB/s) - ‘SRR9041258_1.fastq.gz’ saved [11018864]
+
+--2020-02-24 09:08:06--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041258/SRR9041258_2.fastq.gz
+           => ‘SRR9041258_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041258_2.fastq.gz ... done.
+Length: 13337367 (13M)
+
+
+2020-02-24 09:08:10 (3.18 MB/s) - ‘SRR9041258_2.fastq.gz’ saved [13337367]
+
+--2020-02-24 09:08:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041259/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041259 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:10 (26.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041259/SRR9041259_1.fastq.gz
+           => ‘SRR9041259_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041259_1.fastq.gz ... done.
+Length: 8250642 (7.9M)
+
+
+2020-02-24 09:08:13 (3.16 MB/s) - ‘SRR9041259_1.fastq.gz’ saved [8250642]
+
+--2020-02-24 09:08:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041259/SRR9041259_2.fastq.gz
+           => ‘SRR9041259_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041259_2.fastq.gz ... done.
+Length: 10573086 (10M)
+
+
+2020-02-24 09:08:17 (2.47 MB/s) - ‘SRR9041259_2.fastq.gz’ saved [10573086]
+
+--2020-02-24 09:08:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041260/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041260 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:17 (22.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041260/SRR9041260_1.fastq.gz
+           => ‘SRR9041260_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041260_1.fastq.gz ... done.
+Length: 9614740 (9.2M)
+
+
+2020-02-24 09:08:20 (2.97 MB/s) - ‘SRR9041260_1.fastq.gz’ saved [9614740]
+
+--2020-02-24 09:08:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041260/SRR9041260_2.fastq.gz
+           => ‘SRR9041260_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041260_2.fastq.gz ... done.
+Length: 11560513 (11M)
+
+
+2020-02-24 09:08:24 (3.24 MB/s) - ‘SRR9041260_2.fastq.gz’ saved [11560513]
+
+--2020-02-24 09:08:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041261/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041261 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:24 (27.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041261/SRR9041261_1.fastq.gz
+           => ‘SRR9041261_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041261_1.fastq.gz ... done.
+Length: 10583803 (10M)
+
+
+2020-02-24 09:08:28 (2.68 MB/s) - ‘SRR9041261_1.fastq.gz’ saved [10583803]
+
+--2020-02-24 09:08:28--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041261/SRR9041261_2.fastq.gz
+           => ‘SRR9041261_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041261_2.fastq.gz ... done.
+Length: 12521648 (12M)
+
+
+2020-02-24 09:08:33 (2.61 MB/s) - ‘SRR9041261_2.fastq.gz’ saved [12521648]
+
+--2020-02-24 09:08:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041262/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041262 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:33 (28.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041262/SRR9041262_1.fastq.gz
+           => ‘SRR9041262_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041262_1.fastq.gz ... done.
+Length: 10691254 (10M)
+
+
+2020-02-24 09:08:36 (3.20 MB/s) - ‘SRR9041262_1.fastq.gz’ saved [10691254]
+
+--2020-02-24 09:08:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041262/SRR9041262_2.fastq.gz
+           => ‘SRR9041262_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041262_2.fastq.gz ... done.
+Length: 14081472 (13M)
+
+
+2020-02-24 09:08:40 (3.60 MB/s) - ‘SRR9041262_2.fastq.gz’ saved [14081472]
+
+--2020-02-24 09:08:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041263/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041263 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:40 (20.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041263/SRR9041263_1.fastq.gz
+           => ‘SRR9041263_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041263_1.fastq.gz ... done.
+Length: 12727355 (12M)
+
+
+2020-02-24 09:08:44 (3.52 MB/s) - ‘SRR9041263_1.fastq.gz’ saved [12727355]
+
+--2020-02-24 09:08:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041263/SRR9041263_2.fastq.gz
+           => ‘SRR9041263_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041263_2.fastq.gz ... done.
+Length: 16198512 (15M)
+
+
+2020-02-24 09:08:48 (3.44 MB/s) - ‘SRR9041263_2.fastq.gz’ saved [16198512]
+
+--2020-02-24 09:08:48--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041264/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041264 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:49 (36.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041264/SRR9041264_1.fastq.gz
+           => ‘SRR9041264_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041264_1.fastq.gz ... done.
+Length: 14493562 (14M)
+
+
+2020-02-24 09:08:53 (3.03 MB/s) - ‘SRR9041264_1.fastq.gz’ saved [14493562]
+
+--2020-02-24 09:08:53--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041264/SRR9041264_2.fastq.gz
+           => ‘SRR9041264_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041264_2.fastq.gz ... done.
+Length: 16927429 (16M)
+
+
+2020-02-24 09:08:59 (2.85 MB/s) - ‘SRR9041264_2.fastq.gz’ saved [16927429]
+
+--2020-02-24 09:08:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041265/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041265 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:08:59 (23.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:08:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041265/SRR9041265_1.fastq.gz
+           => ‘SRR9041265_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041265_1.fastq.gz ... done.
+Length: 9977644 (9.5M)
+
+
+2020-02-24 09:09:02 (3.15 MB/s) - ‘SRR9041265_1.fastq.gz’ saved [9977644]
+
+--2020-02-24 09:09:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041265/SRR9041265_2.fastq.gz
+           => ‘SRR9041265_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041265_2.fastq.gz ... done.
+Length: 12429597 (12M)
+
+
+2020-02-24 09:09:07 (2.96 MB/s) - ‘SRR9041265_2.fastq.gz’ saved [12429597]
+
+--2020-02-24 09:09:07--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041266/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041266 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:07 (24.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:07--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041266/SRR9041266_1.fastq.gz
+           => ‘SRR9041266_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041266_1.fastq.gz ... done.
+Length: 11488030 (11M)
+
+
+2020-02-24 09:09:10 (3.12 MB/s) - ‘SRR9041266_1.fastq.gz’ saved [11488030]
+
+--2020-02-24 09:09:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041266/SRR9041266_2.fastq.gz
+           => ‘SRR9041266_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041266_2.fastq.gz ... done.
+Length: 13631838 (13M)
+
+
+2020-02-24 09:09:15 (2.88 MB/s) - ‘SRR9041266_2.fastq.gz’ saved [13631838]
+
+--2020-02-24 09:09:15--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041267/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041267 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:16 (33.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:16--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041267/SRR9041267_1.fastq.gz
+           => ‘SRR9041267_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041267_1.fastq.gz ... done.
+Length: 10267796 (9.8M)
+
+
+2020-02-24 09:09:19 (3.14 MB/s) - ‘SRR9041267_1.fastq.gz’ saved [10267796]
+
+--2020-02-24 09:09:19--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041267/SRR9041267_2.fastq.gz
+           => ‘SRR9041267_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041267_2.fastq.gz ... done.
+Length: 12399891 (12M)
+
+
+2020-02-24 09:09:22 (3.40 MB/s) - ‘SRR9041267_2.fastq.gz’ saved [12399891]
+
+--2020-02-24 09:09:22--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041268/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041268 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:23 (32.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:23--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041268/SRR9041268_1.fastq.gz
+           => ‘SRR9041268_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041268_1.fastq.gz ... done.
+Length: 12824570 (12M)
+
+
+2020-02-24 09:09:26 (3.28 MB/s) - ‘SRR9041268_1.fastq.gz’ saved [12824570]
+
+--2020-02-24 09:09:26--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041268/SRR9041268_2.fastq.gz
+           => ‘SRR9041268_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041268_2.fastq.gz ... done.
+Length: 15166481 (14M)
+
+
+2020-02-24 09:09:31 (3.31 MB/s) - ‘SRR9041268_2.fastq.gz’ saved [15166481]
+
+--2020-02-24 09:09:31--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041269/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041269 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:31 (21.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:31--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041269/SRR9041269_1.fastq.gz
+           => ‘SRR9041269_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041269_1.fastq.gz ... done.
+Length: 11073394 (11M)
+
+
+2020-02-24 09:09:35 (2.89 MB/s) - ‘SRR9041269_1.fastq.gz’ saved [11073394]
+
+--2020-02-24 09:09:35--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041269/SRR9041269_2.fastq.gz
+           => ‘SRR9041269_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041269_2.fastq.gz ... done.
+Length: 13544379 (13M)
+
+
+2020-02-24 09:09:39 (3.43 MB/s) - ‘SRR9041269_2.fastq.gz’ saved [13544379]
+
+--2020-02-24 09:09:39--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041270/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041270 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:39 (32.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:39--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041270/SRR9041270_1.fastq.gz
+           => ‘SRR9041270_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041270_1.fastq.gz ... done.
+Length: 15846361 (15M)
+
+
+2020-02-24 09:09:44 (2.99 MB/s) - ‘SRR9041270_1.fastq.gz’ saved [15846361]
+
+--2020-02-24 09:09:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041270/SRR9041270_2.fastq.gz
+           => ‘SRR9041270_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041270_2.fastq.gz ... done.
+Length: 18100093 (17M)
+
+
+2020-02-24 09:09:49 (3.63 MB/s) - ‘SRR9041270_2.fastq.gz’ saved [18100093]
+
+--2020-02-24 09:09:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041271/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041271 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:49 (27.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:49--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041271/SRR9041271_1.fastq.gz
+           => ‘SRR9041271_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041271_1.fastq.gz ... done.
+Length: 11408332 (11M)
+
+
+2020-02-24 09:09:53 (3.56 MB/s) - ‘SRR9041271_1.fastq.gz’ saved [11408332]
+
+--2020-02-24 09:09:53--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041271/SRR9041271_2.fastq.gz
+           => ‘SRR9041271_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041271_2.fastq.gz ... done.
+Length: 13278237 (13M)
+
+
+2020-02-24 09:09:57 (2.72 MB/s) - ‘SRR9041271_2.fastq.gz’ saved [13278237]
+
+--2020-02-24 09:09:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041272/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041272 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:09:58 (26.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:09:58--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041272/SRR9041272_1.fastq.gz
+           => ‘SRR9041272_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041272_1.fastq.gz ... done.
+Length: 10421311 (9.9M)
+
+
+2020-02-24 09:10:01 (2.80 MB/s) - ‘SRR9041272_1.fastq.gz’ saved [10421311]
+
+--2020-02-24 09:10:01--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041272/SRR9041272_2.fastq.gz
+           => ‘SRR9041272_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041272_2.fastq.gz ... done.
+Length: 12531143 (12M)
+
+
+2020-02-24 09:10:05 (3.34 MB/s) - ‘SRR9041272_2.fastq.gz’ saved [12531143]
+
+--2020-02-24 09:10:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041273/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041273 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:05 (24.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041273/SRR9041273_1.fastq.gz
+           => ‘SRR9041273_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041273_1.fastq.gz ... done.
+Length: 10334439 (9.9M)
+
+
+2020-02-24 09:10:08 (3.26 MB/s) - ‘SRR9041273_1.fastq.gz’ saved [10334439]
+
+--2020-02-24 09:10:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041273/SRR9041273_2.fastq.gz
+           => ‘SRR9041273_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041273_2.fastq.gz ... done.
+Length: 12849532 (12M)
+
+
+2020-02-24 09:10:12 (3.10 MB/s) - ‘SRR9041273_2.fastq.gz’ saved [12849532]
+
+--2020-02-24 09:10:12--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041274/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041274 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:13 (16.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041274/SRR9041274_1.fastq.gz
+           => ‘SRR9041274_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041274_1.fastq.gz ... done.
+Length: 11159983 (11M)
+
+
+2020-02-24 09:10:16 (3.03 MB/s) - ‘SRR9041274_1.fastq.gz’ saved [11159983]
+
+--2020-02-24 09:10:16--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041274/SRR9041274_2.fastq.gz
+           => ‘SRR9041274_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041274_2.fastq.gz ... done.
+Length: 13956737 (13M)
+
+
+2020-02-24 09:10:20 (3.37 MB/s) - ‘SRR9041274_2.fastq.gz’ saved [13956737]
+
+--2020-02-24 09:10:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041275/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041275 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:21 (20.3 MB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041275/SRR9041275_1.fastq.gz
+           => ‘SRR9041275_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041275_1.fastq.gz ... done.
+Length: 11914381 (11M)
+
+
+2020-02-24 09:10:24 (3.28 MB/s) - ‘SRR9041275_1.fastq.gz’ saved [11914381]
+
+--2020-02-24 09:10:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041275/SRR9041275_2.fastq.gz
+           => ‘SRR9041275_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041275_2.fastq.gz ... done.
+Length: 13713711 (13M)
+
+
+2020-02-24 09:10:28 (3.52 MB/s) - ‘SRR9041275_2.fastq.gz’ saved [13713711]
+
+--2020-02-24 09:10:28--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041276/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041276 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:28 (26.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:28--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041276/SRR9041276_1.fastq.gz
+           => ‘SRR9041276_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041276_1.fastq.gz ... done.
+Length: 9368246 (8.9M)
+
+
+2020-02-24 09:10:31 (3.00 MB/s) - ‘SRR9041276_1.fastq.gz’ saved [9368246]
+
+--2020-02-24 09:10:31--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041276/SRR9041276_2.fastq.gz
+           => ‘SRR9041276_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041276_2.fastq.gz ... done.
+Length: 12251240 (12M)
+
+
+2020-02-24 09:10:35 (3.21 MB/s) - ‘SRR9041276_2.fastq.gz’ saved [12251240]
+
+--2020-02-24 09:10:35--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041277/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041277 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:35 (23.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:35--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041277/SRR9041277_1.fastq.gz
+           => ‘SRR9041277_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041277_1.fastq.gz ... done.
+Length: 10322406 (9.8M)
+
+
+2020-02-24 09:10:38 (3.38 MB/s) - ‘SRR9041277_1.fastq.gz’ saved [10322406]
+
+--2020-02-24 09:10:38--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041277/SRR9041277_2.fastq.gz
+           => ‘SRR9041277_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041277_2.fastq.gz ... done.
+Length: 12728676 (12M)
+
+
+2020-02-24 09:10:42 (3.20 MB/s) - ‘SRR9041277_2.fastq.gz’ saved [12728676]
+
+--2020-02-24 09:10:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041278/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041278 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:42 (31.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:42--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041278/SRR9041278_1.fastq.gz
+           => ‘SRR9041278_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041278_1.fastq.gz ... done.
+Length: 12719397 (12M)
+
+
+2020-02-24 09:10:46 (3.30 MB/s) - ‘SRR9041278_1.fastq.gz’ saved [12719397]
+
+--2020-02-24 09:10:46--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041278/SRR9041278_2.fastq.gz
+           => ‘SRR9041278_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041278_2.fastq.gz ... done.
+Length: 15613731 (15M)
+
+
+2020-02-24 09:10:51 (3.31 MB/s) - ‘SRR9041278_2.fastq.gz’ saved [15613731]
+
+--2020-02-24 09:10:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041279/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041279 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:51 (27.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041279/SRR9041279_1.fastq.gz
+           => ‘SRR9041279_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041279_1.fastq.gz ... done.
+Length: 8760817 (8.4M)
+
+
+2020-02-24 09:10:54 (2.90 MB/s) - ‘SRR9041279_1.fastq.gz’ saved [8760817]
+
+--2020-02-24 09:10:54--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041279/SRR9041279_2.fastq.gz
+           => ‘SRR9041279_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041279_2.fastq.gz ... done.
+Length: 11079277 (11M)
+
+
+2020-02-24 09:10:57 (3.06 MB/s) - ‘SRR9041279_2.fastq.gz’ saved [11079277]
+
+--2020-02-24 09:10:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041280/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041280 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:10:58 (25.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:10:58--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041280/SRR9041280_1.fastq.gz
+           => ‘SRR9041280_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041280_1.fastq.gz ... done.
+Length: 7137294 (6.8M)
+
+
+2020-02-24 09:11:00 (2.88 MB/s) - ‘SRR9041280_1.fastq.gz’ saved [7137294]
+
+--2020-02-24 09:11:00--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041280/SRR9041280_2.fastq.gz
+           => ‘SRR9041280_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041280_2.fastq.gz ... done.
+Length: 9505176 (9.1M)
+
+
+2020-02-24 09:11:03 (3.05 MB/s) - ‘SRR9041280_2.fastq.gz’ saved [9505176]
+
+--2020-02-24 09:11:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041281/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041281 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:04 (26.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:04--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041281/SRR9041281_1.fastq.gz
+           => ‘SRR9041281_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041281_1.fastq.gz ... done.
+Length: 15844013 (15M)
+
+
+2020-02-24 09:11:08 (3.41 MB/s) - ‘SRR9041281_1.fastq.gz’ saved [15844013]
+
+--2020-02-24 09:11:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041281/SRR9041281_2.fastq.gz
+           => ‘SRR9041281_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041281_2.fastq.gz ... done.
+Length: 17953754 (17M)
+
+
+2020-02-24 09:11:13 (3.46 MB/s) - ‘SRR9041281_2.fastq.gz’ saved [17953754]
+
+--2020-02-24 09:11:13--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041282/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041282 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:14 (38.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:14--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041282/SRR9041282_1.fastq.gz
+           => ‘SRR9041282_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041282_1.fastq.gz ... done.
+Length: 10123053 (9.7M)
+
+
+2020-02-24 09:11:17 (3.23 MB/s) - ‘SRR9041282_1.fastq.gz’ saved [10123053]
+
+--2020-02-24 09:11:17--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041282/SRR9041282_2.fastq.gz
+           => ‘SRR9041282_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041282_2.fastq.gz ... done.
+Length: 13120043 (13M)
+
+
+2020-02-24 09:11:20 (3.41 MB/s) - ‘SRR9041282_2.fastq.gz’ saved [13120043]
+
+--2020-02-24 09:11:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041283/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041283 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:21 (29.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041283/SRR9041283_1.fastq.gz
+           => ‘SRR9041283_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041283_1.fastq.gz ... done.
+Length: 14321007 (14M)
+
+
+2020-02-24 09:11:25 (3.40 MB/s) - ‘SRR9041283_1.fastq.gz’ saved [14321007]
+
+--2020-02-24 09:11:25--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041283/SRR9041283_2.fastq.gz
+           => ‘SRR9041283_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041283_2.fastq.gz ... done.
+Length: 16274578 (16M)
+
+
+2020-02-24 09:11:30 (3.26 MB/s) - ‘SRR9041283_2.fastq.gz’ saved [16274578]
+
+--2020-02-24 09:11:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041284/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041284 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:30 (23.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041284/SRR9041284_1.fastq.gz
+           => ‘SRR9041284_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041284_1.fastq.gz ... done.
+Length: 11497021 (11M)
+
+
+2020-02-24 09:11:33 (3.30 MB/s) - ‘SRR9041284_1.fastq.gz’ saved [11497021]
+
+--2020-02-24 09:11:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041284/SRR9041284_2.fastq.gz
+           => ‘SRR9041284_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041284_2.fastq.gz ... done.
+Length: 15833599 (15M)
+
+
+2020-02-24 09:11:37 (3.67 MB/s) - ‘SRR9041284_2.fastq.gz’ saved [15833599]
+
+--2020-02-24 09:11:37--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041285/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041285 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:38 (22.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:38--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041285/SRR9041285_1.fastq.gz
+           => ‘SRR9041285_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041285_1.fastq.gz ... done.
+Length: 12245941 (12M)
+
+
+2020-02-24 09:11:41 (3.28 MB/s) - ‘SRR9041285_1.fastq.gz’ saved [12245941]
+
+--2020-02-24 09:11:41--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041285/SRR9041285_2.fastq.gz
+           => ‘SRR9041285_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041285_2.fastq.gz ... done.
+Length: 14758934 (14M)
+
+
+2020-02-24 09:11:46 (3.30 MB/s) - ‘SRR9041285_2.fastq.gz’ saved [14758934]
+
+--2020-02-24 09:11:46--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041286/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041286 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:46 (20.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:46--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041286/SRR9041286_1.fastq.gz
+           => ‘SRR9041286_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041286_1.fastq.gz ... done.
+Length: 12484030 (12M)
+
+
+2020-02-24 09:11:51 (2.33 MB/s) - ‘SRR9041286_1.fastq.gz’ saved [12484030]
+
+--2020-02-24 09:11:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041286/SRR9041286_2.fastq.gz
+           => ‘SRR9041286_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041286_2.fastq.gz ... done.
+Length: 14577094 (14M)
+
+
+2020-02-24 09:11:57 (2.64 MB/s) - ‘SRR9041286_2.fastq.gz’ saved [14577094]
+
+--2020-02-24 09:11:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041287/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041287 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:11:57 (25.1 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:11:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041287/SRR9041287_1.fastq.gz
+           => ‘SRR9041287_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041287_1.fastq.gz ... done.
+Length: 16547498 (16M)
+
+
+2020-02-24 09:12:02 (3.41 MB/s) - ‘SRR9041287_1.fastq.gz’ saved [16547498]
+
+--2020-02-24 09:12:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041287/SRR9041287_2.fastq.gz
+           => ‘SRR9041287_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041287_2.fastq.gz ... done.
+Length: 19390804 (18M)
+
+
+2020-02-24 09:12:07 (3.43 MB/s) - ‘SRR9041287_2.fastq.gz’ saved [19390804]
+
+--2020-02-24 09:12:07--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041288/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041288 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:08 (26.7 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041288/SRR9041288_1.fastq.gz
+           => ‘SRR9041288_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041288_1.fastq.gz ... done.
+Length: 8756209 (8.3M)
+
+
+2020-02-24 09:12:10 (3.09 MB/s) - ‘SRR9041288_1.fastq.gz’ saved [8756209]
+
+--2020-02-24 09:12:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041288/SRR9041288_2.fastq.gz
+           => ‘SRR9041288_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041288_2.fastq.gz ... done.
+Length: 10209095 (9.7M)
+
+
+2020-02-24 09:12:14 (3.16 MB/s) - ‘SRR9041288_2.fastq.gz’ saved [10209095]
+
+--2020-02-24 09:12:14--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041289/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041289 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:14 (8.84 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:14--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041289/SRR9041289_1.fastq.gz
+           => ‘SRR9041289_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041289_1.fastq.gz ... done.
+Length: 11736769 (11M)
+
+
+2020-02-24 09:12:18 (3.03 MB/s) - ‘SRR9041289_1.fastq.gz’ saved [11736769]
+
+--2020-02-24 09:12:18--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041289/SRR9041289_2.fastq.gz
+           => ‘SRR9041289_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041289_2.fastq.gz ... done.
+Length: 13519814 (13M)
+
+
+2020-02-24 09:12:22 (3.26 MB/s) - ‘SRR9041289_2.fastq.gz’ saved [13519814]
+
+--2020-02-24 09:12:22--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041290/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041290 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:22 (17.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:22--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041290/SRR9041290_1.fastq.gz
+           => ‘SRR9041290_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041290_1.fastq.gz ... done.
+Length: 10163815 (9.7M)
+
+
+2020-02-24 09:12:25 (3.30 MB/s) - ‘SRR9041290_1.fastq.gz’ saved [10163815]
+
+--2020-02-24 09:12:25--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041290/SRR9041290_2.fastq.gz
+           => ‘SRR9041290_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041290_2.fastq.gz ... done.
+Length: 13877702 (13M)
+
+
+2020-02-24 09:12:29 (3.38 MB/s) - ‘SRR9041290_2.fastq.gz’ saved [13877702]
+
+--2020-02-24 09:12:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041291/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041291 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:30 (39.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:30--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041291/SRR9041291_1.fastq.gz
+           => ‘SRR9041291_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041291_1.fastq.gz ... done.
+Length: 10214205 (9.7M)
+
+
+2020-02-24 09:12:33 (3.14 MB/s) - ‘SRR9041291_1.fastq.gz’ saved [10214205]
+
+--2020-02-24 09:12:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041291/SRR9041291_2.fastq.gz
+           => ‘SRR9041291_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041291_2.fastq.gz ... done.
+Length: 14357440 (14M)
+
+
+2020-02-24 09:12:37 (3.13 MB/s) - ‘SRR9041291_2.fastq.gz’ saved [14357440]
+
+--2020-02-24 09:12:37--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041292/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041292 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:37 (23.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:37--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041292/SRR9041292_1.fastq.gz
+           => ‘SRR9041292_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041292_1.fastq.gz ... done.
+Length: 10144784 (9.7M)
+
+
+2020-02-24 09:12:40 (3.37 MB/s) - ‘SRR9041292_1.fastq.gz’ saved [10144784]
+
+--2020-02-24 09:12:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041292/SRR9041292_2.fastq.gz
+           => ‘SRR9041292_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041292_2.fastq.gz ... done.
+Length: 12520683 (12M)
+
+
+2020-02-24 09:12:44 (3.20 MB/s) - ‘SRR9041292_2.fastq.gz’ saved [12520683]
+
+--2020-02-24 09:12:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041293/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041293 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:44 (22.2 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041293/SRR9041293_1.fastq.gz
+           => ‘SRR9041293_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041293_1.fastq.gz ... done.
+Length: 8146390 (7.8M)
+
+
+2020-02-24 09:12:47 (3.25 MB/s) - ‘SRR9041293_1.fastq.gz’ saved [8146390]
+
+--2020-02-24 09:12:47--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041293/SRR9041293_2.fastq.gz
+           => ‘SRR9041293_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041293_2.fastq.gz ... done.
+Length: 10315193 (9.8M)
+
+
+2020-02-24 09:12:50 (3.07 MB/s) - ‘SRR9041293_2.fastq.gz’ saved [10315193]
+
+--2020-02-24 09:12:50--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041294/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041294 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:51 (28.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041294/SRR9041294_1.fastq.gz
+           => ‘SRR9041294_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041294_1.fastq.gz ... done.
+Length: 12061767 (12M)
+
+
+2020-02-24 09:12:54 (3.41 MB/s) - ‘SRR9041294_1.fastq.gz’ saved [12061767]
+
+--2020-02-24 09:12:54--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041294/SRR9041294_2.fastq.gz
+           => ‘SRR9041294_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041294_2.fastq.gz ... done.
+Length: 15164961 (14M)
+
+
+2020-02-24 09:12:59 (3.11 MB/s) - ‘SRR9041294_2.fastq.gz’ saved [15164961]
+
+--2020-02-24 09:12:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041295/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041295 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:12:59 (9.98 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:12:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041295/SRR9041295_1.fastq.gz
+           => ‘SRR9041295_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041295_1.fastq.gz ... done.
+Length: 10472714 (10.0M)
+
+
+2020-02-24 09:13:02 (3.62 MB/s) - ‘SRR9041295_1.fastq.gz’ saved [10472714]
+
+--2020-02-24 09:13:02--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041295/SRR9041295_2.fastq.gz
+           => ‘SRR9041295_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041295_2.fastq.gz ... done.
+Length: 13062816 (12M)
+
+
+2020-02-24 09:13:06 (3.21 MB/s) - ‘SRR9041295_2.fastq.gz’ saved [13062816]
+
+--2020-02-24 09:13:06--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041296/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041296 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:06 (30.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:06--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041296/SRR9041296_1.fastq.gz
+           => ‘SRR9041296_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041296_1.fastq.gz ... done.
+Length: 11908747 (11M)
+
+
+2020-02-24 09:13:10 (2.78 MB/s) - ‘SRR9041296_1.fastq.gz’ saved [11908747]
+
+--2020-02-24 09:13:10--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041296/SRR9041296_2.fastq.gz
+           => ‘SRR9041296_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041296_2.fastq.gz ... done.
+Length: 16016948 (15M)
+
+
+2020-02-24 09:13:15 (3.40 MB/s) - ‘SRR9041296_2.fastq.gz’ saved [16016948]
+
+--2020-02-24 09:13:15--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041297/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041297 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:15 (56.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:15--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041297/SRR9041297_1.fastq.gz
+           => ‘SRR9041297_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041297_1.fastq.gz ... done.
+Length: 13370689 (13M)
+
+
+2020-02-24 09:13:20 (2.80 MB/s) - ‘SRR9041297_1.fastq.gz’ saved [13370689]
+
+--2020-02-24 09:13:20--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041297/SRR9041297_2.fastq.gz
+           => ‘SRR9041297_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041297_2.fastq.gz ... done.
+Length: 16576980 (16M)
+
+
+2020-02-24 09:13:24 (3.44 MB/s) - ‘SRR9041297_2.fastq.gz’ saved [16576980]
+
+--2020-02-24 09:13:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041298/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041298 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:25 (27.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:25--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041298/SRR9041298_1.fastq.gz
+           => ‘SRR9041298_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041298_1.fastq.gz ... done.
+Length: 11892405 (11M)
+
+
+2020-02-24 09:13:29 (2.90 MB/s) - ‘SRR9041298_1.fastq.gz’ saved [11892405]
+
+--2020-02-24 09:13:29--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041298/SRR9041298_2.fastq.gz
+           => ‘SRR9041298_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041298_2.fastq.gz ... done.
+Length: 16340464 (16M)
+
+
+2020-02-24 09:13:33 (3.49 MB/s) - ‘SRR9041298_2.fastq.gz’ saved [16340464]
+
+--2020-02-24 09:13:33--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041299/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041299 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:34 (21.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:34--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041299/SRR9041299_1.fastq.gz
+           => ‘SRR9041299_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041299_1.fastq.gz ... done.
+Length: 13041539 (12M)
+
+
+2020-02-24 09:13:37 (3.51 MB/s) - ‘SRR9041299_1.fastq.gz’ saved [13041539]
+
+--2020-02-24 09:13:37--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041299/SRR9041299_2.fastq.gz
+           => ‘SRR9041299_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041299_2.fastq.gz ... done.
+Length: 16958243 (16M)
+
+
+2020-02-24 09:13:44 (2.45 MB/s) - ‘SRR9041299_2.fastq.gz’ saved [16958243]
+
+--2020-02-24 09:13:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041300/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041300 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:44 (18.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:44--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041300/SRR9041300_1.fastq.gz
+           => ‘SRR9041300_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041300_1.fastq.gz ... done.
+Length: 8851109 (8.4M)
+
+
+2020-02-24 09:13:47 (3.01 MB/s) - ‘SRR9041300_1.fastq.gz’ saved [8851109]
+
+--2020-02-24 09:13:47--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041300/SRR9041300_2.fastq.gz
+           => ‘SRR9041300_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041300_2.fastq.gz ... done.
+Length: 10905671 (10M)
+
+
+2020-02-24 09:13:50 (3.23 MB/s) - ‘SRR9041300_2.fastq.gz’ saved [10905671]
+
+--2020-02-24 09:13:50--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041301/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041301 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:51 (22.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041301/SRR9041301_1.fastq.gz
+           => ‘SRR9041301_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041301_1.fastq.gz ... done.
+Length: 8264091 (7.9M)
+
+
+2020-02-24 09:13:53 (2.94 MB/s) - ‘SRR9041301_1.fastq.gz’ saved [8264091]
+
+--2020-02-24 09:13:53--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041301/SRR9041301_2.fastq.gz
+           => ‘SRR9041301_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041301_2.fastq.gz ... done.
+Length: 11270101 (11M)
+
+
+2020-02-24 09:13:57 (3.18 MB/s) - ‘SRR9041301_2.fastq.gz’ saved [11270101]
+
+--2020-02-24 09:13:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041302/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/002/SRR9041302 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:13:57 (33.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:13:57--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041302/SRR9041302_1.fastq.gz
+           => ‘SRR9041302_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041302_1.fastq.gz ... done.
+Length: 11228663 (11M)
+
+
+2020-02-24 09:14:01 (3.10 MB/s) - ‘SRR9041302_1.fastq.gz’ saved [11228663]
+
+--2020-02-24 09:14:01--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/002/SRR9041302/SRR9041302_2.fastq.gz
+           => ‘SRR9041302_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041302_2.fastq.gz ... done.
+Length: 14130726 (13M)
+
+
+2020-02-24 09:14:05 (3.21 MB/s) - ‘SRR9041302_2.fastq.gz’ saved [14130726]
+
+--2020-02-24 09:14:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041303/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/003/SRR9041303 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:05 (28.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:05--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041303/SRR9041303_1.fastq.gz
+           => ‘SRR9041303_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041303_1.fastq.gz ... done.
+Length: 8103316 (7.7M)
+
+
+2020-02-24 09:14:08 (2.97 MB/s) - ‘SRR9041303_1.fastq.gz’ saved [8103316]
+
+--2020-02-24 09:14:08--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/003/SRR9041303/SRR9041303_2.fastq.gz
+           => ‘SRR9041303_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041303_2.fastq.gz ... done.
+Length: 10990090 (10M)
+
+
+2020-02-24 09:14:11 (3.21 MB/s) - ‘SRR9041303_2.fastq.gz’ saved [10990090]
+
+--2020-02-24 09:14:11--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041304/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/004/SRR9041304 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:11 (21.6 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:11--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041304/SRR9041304_1.fastq.gz
+           => ‘SRR9041304_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041304_1.fastq.gz ... done.
+Length: 9904339 (9.4M)
+
+
+2020-02-24 09:14:15 (2.96 MB/s) - ‘SRR9041304_1.fastq.gz’ saved [9904339]
+
+--2020-02-24 09:14:15--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/004/SRR9041304/SRR9041304_2.fastq.gz
+           => ‘SRR9041304_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041304_2.fastq.gz ... done.
+Length: 12182207 (12M)
+
+
+2020-02-24 09:14:18 (3.40 MB/s) - ‘SRR9041304_2.fastq.gz’ saved [12182207]
+
+--2020-02-24 09:14:18--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041305/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/005/SRR9041305 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:19 (21.5 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:19--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041305/SRR9041305_1.fastq.gz
+           => ‘SRR9041305_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041305_1.fastq.gz ... done.
+Length: 7916928 (7.5M)
+
+
+2020-02-24 09:14:21 (3.17 MB/s) - ‘SRR9041305_1.fastq.gz’ saved [7916928]
+
+--2020-02-24 09:14:21--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/005/SRR9041305/SRR9041305_2.fastq.gz
+           => ‘SRR9041305_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041305_2.fastq.gz ... done.
+Length: 10648321 (10M)
+
+
+2020-02-24 09:14:24 (3.56 MB/s) - ‘SRR9041305_2.fastq.gz’ saved [10648321]
+
+--2020-02-24 09:14:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041306/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/006/SRR9041306 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:24 (30.0 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:24--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041306/SRR9041306_1.fastq.gz
+           => ‘SRR9041306_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041306_1.fastq.gz ... done.
+Length: 9060616 (8.6M)
+
+
+2020-02-24 09:14:27 (2.95 MB/s) - ‘SRR9041306_1.fastq.gz’ saved [9060616]
+
+--2020-02-24 09:14:27--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/006/SRR9041306/SRR9041306_2.fastq.gz
+           => ‘SRR9041306_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041306_2.fastq.gz ... done.
+Length: 11567282 (11M)
+
+
+2020-02-24 09:14:31 (3.29 MB/s) - ‘SRR9041306_2.fastq.gz’ saved [11567282]
+
+--2020-02-24 09:14:31--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041307/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/007/SRR9041307 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:31 (33.9 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:31--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041307/SRR9041307_1.fastq.gz
+           => ‘SRR9041307_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041307_1.fastq.gz ... done.
+Length: 11380243 (11M)
+
+
+2020-02-24 09:14:36 (2.41 MB/s) - ‘SRR9041307_1.fastq.gz’ saved [11380243]
+
+--2020-02-24 09:14:36--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/007/SRR9041307/SRR9041307_2.fastq.gz
+           => ‘SRR9041307_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041307_2.fastq.gz ... done.
+Length: 13803692 (13M)
+
+
+2020-02-24 09:14:40 (2.77 MB/s) - ‘SRR9041307_2.fastq.gz’ saved [13803692]
+
+--2020-02-24 09:14:40--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041308/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/008/SRR9041308 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:41 (38.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:41--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041308/SRR9041308_1.fastq.gz
+           => ‘SRR9041308_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041308_1.fastq.gz ... done.
+Length: 8291309 (7.9M)
+
+
+2020-02-24 09:14:43 (3.00 MB/s) - ‘SRR9041308_1.fastq.gz’ saved [8291309]
+
+--2020-02-24 09:14:43--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/008/SRR9041308/SRR9041308_2.fastq.gz
+           => ‘SRR9041308_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041308_2.fastq.gz ... done.
+Length: 11010871 (10M)
+
+
+2020-02-24 09:14:47 (2.74 MB/s) - ‘SRR9041308_2.fastq.gz’ saved [11010871]
+
+--2020-02-24 09:14:47--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041309/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/009/SRR9041309 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:48 (14.8 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:48--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041309/SRR9041309_1.fastq.gz
+           => ‘SRR9041309_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041309_1.fastq.gz ... done.
+Length: 11903876 (11M)
+
+
+2020-02-24 09:14:51 (3.28 MB/s) - ‘SRR9041309_1.fastq.gz’ saved [11903876]
+
+--2020-02-24 09:14:51--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/009/SRR9041309/SRR9041309_2.fastq.gz
+           => ‘SRR9041309_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041309_2.fastq.gz ... done.
+Length: 15981071 (15M)
+
+
+2020-02-24 09:14:56 (3.37 MB/s) - ‘SRR9041309_2.fastq.gz’ saved [15981071]
+
+--2020-02-24 09:14:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041310/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/000/SRR9041310 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:14:56 (20.3 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:14:56--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041310/SRR9041310_1.fastq.gz
+           => ‘SRR9041310_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041310_1.fastq.gz ... done.
+Length: 10221052 (9.7M)
+
+
+2020-02-24 09:14:59 (3.17 MB/s) - ‘SRR9041310_1.fastq.gz’ saved [10221052]
+
+--2020-02-24 09:14:59--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/000/SRR9041310/SRR9041310_2.fastq.gz
+           => ‘SRR9041310_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041310_2.fastq.gz ... done.
+Length: 12677520 (12M)
+
+
+2020-02-24 09:15:03 (3.19 MB/s) - ‘SRR9041310_2.fastq.gz’ saved [12677520]
+
+--2020-02-24 09:15:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041311/*
+           => ‘.listing’
+Resolving ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)... 193.62.192.7
+Connecting to ftp.sra.ebi.ac.uk (ftp.sra.ebi.ac.uk)|193.62.192.7|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /vol1/fastq/SRR904/001/SRR9041311 ... done.
+==> PASV ... done.    ==> LIST ... done.
+
+
+2020-02-24 09:15:03 (30.4 KB/s) - ‘.listing’ saved [277]
+
+Removed ‘.listing’.
+--2020-02-24 09:15:03--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041311/SRR9041311_1.fastq.gz
+           => ‘SRR9041311_1.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041311_1.fastq.gz ... done.
+Length: 9661679 (9.2M)
+
+
+2020-02-24 09:15:06 (3.51 MB/s) - ‘SRR9041311_1.fastq.gz’ saved [9661679]
+
+--2020-02-24 09:15:06--  ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR904/001/SRR9041311/SRR9041311_2.fastq.gz
+           => ‘SRR9041311_2.fastq.gz’
+==> CWD not required.
+==> PASV ... done.    ==> RETR SRR9041311_2.fastq.gz ... done.
+Length: 12163661 (12M)
+
+
+2020-02-24 09:15:09 (3.48 MB/s) - ‘SRR9041311_2.fastq.gz’ saved [12163661]
+

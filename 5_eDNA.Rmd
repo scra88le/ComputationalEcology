@@ -1,0 +1,232 @@
+---
+title: "Environmental DNA analysis"
+---
+
+## Introduction
+
+Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. [^1]
+
+```{r prelims}
+# Load libraries
+library(dada2)
+packageVersion("dada2")
+```
+
+## Extracting the file structure of samples
+
+```{r load_fastq_filenames}
+path <- "data_analysis_files/fasta/MiSeq"
+list.files(path)
+```
+
+Now we read in the names of the fastq files, and perform some string manipulation to get matched lists of the forward and reverse fastq files.
+
+```{r match_fwd_rev_files}
+# Forward and reverse fastq filenames have format: SAMPLENAME_R1_001.fastq and SAMPLENAME_R2_001.fastq
+fnFs <- sort(list.files(path, pattern="1.fastq", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern="2.fastq", full.names = TRUE))
+
+# Extract sample names, assuming filenames have format: SAMPLENAME_XXX.fastq
+sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+```
+
+## Inspect read quality profiles
+
+Visualise the quality profiles of the forward reads for the first two fastq files:
+
+```{r qual_prof_fwd_reads, fig.align="centre", fig.width=10, message=FALSE, warning=FALSE}
+plotQualityProfile(fnFs[1:2])
+```
+
+How should we interpret the charts?
+
+The x axis shows each base position - there are 300 nucleotides in the chart above.
+
+* The grey scale is a heat map for the quality score at each base position.
+* The mean quality score at each position is shown by the green line.
+* The quartiles of the quality score distribution by the orange lines.
+* The red line shows the scaled proportion of reads that extend to at least that position.
+
+the quality seems to be ok to around 225, so we will trim the last 75 nucleotides from the forward reads.
+
+We can also visualise the quality of the first two reverse reads:
+
+```{r qual_prof_rev_reads, fig.align="centre", fig.width=10, message=FALSE, warning=FALSE}
+plotQualityProfile(fnRs[1:2])
+```
+
+The reverse reads do not look as good qualoty as the forward reads; there is a significant reduction of quality starting around halfway along the read (around nucleotide 150), so we will trim here.
+
+## Filter and trim
+
+Assign filenames for filtered *fastq.qz* files.
+
+```{r filter_trim_filenames}
+# Place filtered files in filtered/ subdirectory
+filtFs <- file.path(path, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+```
+
+Now we can parameterise the filtering and trimming of the fastq files (both forward and reverse), and then store the results in a compressed format. A standard set of filtering parameters will be used together the trim lengths we determined from the quality plots.
+
+```{r filter_trim}
+out <- filterAndTrim(
+  # File path of forward reads that are to be filtered
+  fnFs, 
+  # File path to store the filtered and trimmed results in a compressed format 
+  filtFs, 
+  # File path of reverse reads that are to be filtered
+  fnRs, 
+  # File path to store the filtered and trimmed results in a compressed format 
+  filtRs, 
+  # Forward and reverse truncation lengths respectively
+  truncLen=c(250,180),
+  # After truncation, sequences with more than maxN Ns will be discarded
+  maxN=0, 
+  # After truncation, reads with higher than maxEE "expected errors" will be discarded
+  maxEE=c(2,2), 
+  # Truncate reads at the first instance of a quality score less than or equal to 2
+  truncQ=2, 
+  # Discard reads that match against the phiX genome
+  rm.phix=TRUE,
+  # Gzip output files
+  compress=TRUE, 
+  # Process using multiple threads
+  multithread=TRUE)
+```
+
+What are the percentage change in the number of reads after the trim and filter operation?
+
+```{r trim_filter_analysis}
+library(dplyr)
+ out %>% as.data.frame() %>% 
+   mutate(p_chg = (.$reads.out - .$reads.in) / .$reads.in)
+```
+
+## Learn the error rates
+
+Every amplicon dataset has a different set of error rates. The DADA2 algorithm uses a parametric error model to learn the error rates.
+
+```{r learn_err_rates}
+# Learn forward error rates
+errF <- learnErrors(filtFs, multithread=TRUE)
+# Learn reverse error rates
+errR <- learnErrors(filtRs, multithread=TRUE)
+```
+
+We can visualise the error rates as follows:
+
+```{r vis_error_rates}
+# Visualise the forward error rates
+plotErrors(errF, nominalQ=TRUE)
+# Visualise the reverse error rates
+plotErrors(errR, nominalQ=TRUE)
+```
+
+The plots show the error rate for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. In generate, the error rates appear to drop with increased quality.
+
+## Sample inference
+
+We can now apply the core *DADA2* inference algorithm (inc. ref), to the filtered and trimmed data.
+
+```{r inference}
+# Apply sample inference to forward data
+dadaFs <- dada(filtFs, err=errF, multithread=4)
+# Apply sample inference to reverse data
+dadaRs <- dada(filtRs, err=errR, multithread=4)
+```
+
+The core DADA2 algorithm corrects Illumina-sequenced amplicon errors, and can resolve variants by as little as one nucleotide[^2]. The *dada* class object has a number of results that can be inspected:
+
+```{r dada_class}
+# Summary of a particular sample
+dadaFs$SRR9041213
+```
+
+## Merge paired reads
+
+We can now merge the forward and reverse reads together to obtain the full denoised sequences. Merging is performed by aligning the denoised forward reads with the reverse-complement of the corresponding denoised reverse reads, and then constructing the merged “contig” sequences. By default, merged sequences are only output if the forward and reverse reads overlap by at least 12 bases, and are identical to each other in the overlap region.
+
+Paired reads that did not exactly overlap are removed by `mergePairs`, further reducing spurious output.
+
+```{r merge_paired_reads}
+# Merge pairs
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
+# Inspect the merger data.frame from the first sample
+head(mergers[[1]])
+```
+
+How to interpret this?
+
+## Construct a sequence table
+
+We can now construct an amplicon sequence variant table (ASV) table, a higher-resolution version of the OTU table produced by traditional methods. The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants.
+
+```{r asv}
+# Generate sequence table
+seqtab <- makeSequenceTable(mergers)
+# Sequence table dimensions
+dim(seqtab)
+
+# Inspect distribution of sequence lengths
+table(nchar(getSequences(seqtab)))
+
+```
+
+The table contains 65 ASVs
+
+
+## Remove chimeras
+
+What is a chimera?!
+
+```{r remove_chimera}
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+dim(seqtab.nochim)
+# What % of the merged reads?
+sum(seqtab.nochim)/sum(seqtab)
+
+```
+
+## We can track the number of reads through the pipeline
+
+We can track the number of reads that made it through each step in the pipeline:
+
+```{r pipeline_track}
+getN <- function(x) sum(getUniques(x))
+track <- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+# If processing a single sample, remove the sapply calls: e.g. replace sapply(dadaFs, getN) with getN(dadaFs)
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+rownames(track) <- sample.names
+track
+```
+
+Doesn't look to hot! Maybe we truncated too much towards the start?
+
+## Assign taxonomy
+
+This section is not executed as it returns no result after 1 hour!
+
+Awaiting greater horsepower...
+
+```{r assign_taxa, eval=FALSE}
+taxa <- assignTaxonomy(
+  # Sequences to be assigned
+  seqtab.nochim, 
+  # Reference fasta database - 18S ribosomal DNA
+  "data_analysis_files/fasta/silva/silva_132.18s.99_rep_set.dada2.fa.gz", 
+  # Make multithreaded
+  multithread=4,
+  # Print status
+  verbose = TRUE
+  )
+```
+
+# References
+
+[^1]: High-throughput environmental DNA analysis informs a biological assessment of an urban stream
+[^2]: Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJA, Holmes SP (2016). “DADA2: High-resolution sample inference from
+Illumina amplicon data.” _Nature Methods_, *13*, 581-583. doi: 10.1038/nmeth.3869 (URL:
+https://doi.org/10.1038/nmeth.3869).

@@ -4,3 +4,6 @@
 .Ruserdata
 *.zip
 *.tif
+*.fastq
+*.gz
+
