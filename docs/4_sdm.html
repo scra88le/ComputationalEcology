@@ -425,6 +425,8 @@ zonaria_clean &lt;- gbif_response$data %&gt;%
     decade %in% c(2010,2020)) %&gt;%
   # retain only relevant variables
   dplyr::select(x, y, decade) %&gt;% arrange(decade)</code></pre>
+<div id="covariates" class="section level1">
+<h1>Covariates</h1>
 <p>Now we need to grab some environmental data. For this vignette we will use the worldclim database as this is directly available via the <code>raster</code> package. We can download 19 bioclimatic variables at 10’ resolution. They are coded as follows:</p>
 <ul>
 <li>BIO1 = Annual Mean Temperature</li>
@@ -447,8 +449,9 @@ zonaria_clean &lt;- gbif_response$data %&gt;%
 <li>BIO18 = Precipitation of Warmest Quarter</li>
 <li>BIO19 = Precipitation of Coldest Quarter</li>
 </ul>
-<p>Let’s download data for current bioclim and future climate change scenarios:</p>
-<pre class="r"><code># Load raster background for UK
+<p>We’ll also to use landcover classification for the UK (from 2015).</p>
+<p>Let’s download data for the current bioclim and UK lancover classification rasters:</p>
+<pre class="r"><code># Load UK background mask
 bg &lt;- raster(&quot;data_analysis_files/UK_bg.grd&quot;)
 
 # Reproject to lat/lon
@@ -459,427 +462,54 @@ ext_uk &lt;- c(-12, 3, 48, 62)
 
 # Get climate data for current date
 filepath = &quot;~/Documents/GitHub/ComputationalEcology/data_analysis_files/clim_data/&quot;
-bio_curr &lt;- getData(&#39;worldclim&#39;, var=&#39;bio&#39;, download=T, lon=-5, lat=55, res=5, path=filepath)
+bio_curr &lt;- getData(&#39;worldclim&#39;, var=&#39;bio&#39;, download=F, lon=-5, lat=55, res=5, path=filepath)
 
 # Crop and reproject current climate
 bio_curr &lt;- crop(bio_curr, ext_uk)
 bio_curr &lt;- projectRaster(bio_curr, bg)
 bio_curr &lt;- resample(bio_curr, bg)
-bio_curr &lt;- mask(bio_curr, bg)</code></pre>
+bio_curr &lt;- mask(bio_curr, bg)
+
+# Future climate data
+bio_fut &lt;- getData(&#39;CMIP5&#39;, var=&#39;bio&#39;, download=F, res=5, rcp=45, model=&#39;MC&#39;, year=50, path=filepath)
+bio_fut &lt;- crop(bio_fut, ext_uk)
+
+# Crop and reproject future climate
+bio_fut &lt;- crop(bio_fut, ext_uk)
+bio_fut &lt;- projectRaster(bio_fut, bg)
+bio_fut &lt;- resample(bio_fut, bg)
+bio_fut &lt;- mask(bio_fut, bg)
+
+# Make variable names the same for both datasets
+names(bio_fut) &lt;- names(bio_curr)
+
+# Load UK Landcover percentage classification at 1km
+uk_lcm &lt;- stack(&quot;data_analysis_files/lcm/LCM2015_GB_1km_percent_cover_target_class_WGS84.tif&quot;)
+
+# Join uk landcover and current bioclim rasters
+curr_clim_resampled &lt;- resample(uk_lcm, bio_curr)
+curr_clim_stacked &lt;- stack(curr_clim_resampled, bio_curr)
+
+# Join uk landcover and future bioclim rasters
+fut_clim_resampled &lt;- resample(uk_lcm, bio_fut)
+fut_clim_stacked &lt;- stack(fut_clim_resampled, bio_fut)</code></pre>
+<p>Let’s plot our GBIF observations for V. zoanria</p>
 <pre class="r"><code>bg_df &lt;- as(bg, &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
   as.data.frame()
 
 colnames(bg_df) &lt;- c(&quot;value&quot;, &quot;x&quot;, &quot;y&quot;)
 
 ggplot() +
-  geom_tile(data= bg_df, aes(x=x, y=y, colour = &quot;light grey&quot;)) +
+  geom_tile(data= bg_df, aes(x=x, y=y)) +
   coord_equal() +
-  geom_point(data=zonaria_clean, aes(x=x, y=y, colour =&quot;red&quot;))</code></pre>
+  geom_point(data=zonaria_clean, 
+             aes(x=x, y=y), 
+             colour =&quot;red&quot;, 
+             size = 0.5) +
+  theme_bw()</code></pre>
 <p><img src="4_sdm_files/figure-html/plot_obs-1.png" width="672" /></p>
-<pre class="r"><code>  theme_bw()</code></pre>
-<pre><code>## List of 65
-##  $ line                      :List of 6
-##   ..$ colour       : chr &quot;black&quot;
-##   ..$ size         : num 0.5
-##   ..$ linetype     : num 1
-##   ..$ lineend      : chr &quot;butt&quot;
-##   ..$ arrow        : logi FALSE
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-##  $ rect                      :List of 5
-##   ..$ fill         : chr &quot;white&quot;
-##   ..$ colour       : chr &quot;black&quot;
-##   ..$ size         : num 0.5
-##   ..$ linetype     : num 1
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ text                      :List of 11
-##   ..$ family       : chr &quot;&quot;
-##   ..$ face         : chr &quot;plain&quot;
-##   ..$ colour       : chr &quot;black&quot;
-##   ..$ size         : num 11
-##   ..$ hjust        : num 0.5
-##   ..$ vjust        : num 0.5
-##   ..$ angle        : num 0
-##   ..$ lineheight   : num 0.9
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : logi FALSE
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.title.x              :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 1
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 2.75pt 0pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.title.x.top          :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 0
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 2.75pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.title.y              :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 1
-##   ..$ angle        : num 90
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 2.75pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.title.y.right        :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 0
-##   ..$ angle        : num -90
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 0pt 2.75pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.text                 :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : chr &quot;grey30&quot;
-##   ..$ size         : &#39;rel&#39; num 0.8
-##   ..$ hjust        : NULL
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : NULL
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.text.x               :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 1
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 2.2pt 0pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.text.x.top           :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : num 0
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 2.2pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.text.y               :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : num 1
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 2.2pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.text.y.right         :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : num 0
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 0pt 2.2pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ axis.ticks                :List of 6
-##   ..$ colour       : chr &quot;grey20&quot;
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ lineend      : NULL
-##   ..$ arrow        : logi FALSE
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-##  $ axis.ticks.length         : &#39;unit&#39; num 2.75pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ axis.ticks.length.x       : NULL
-##  $ axis.ticks.length.x.top   : NULL
-##  $ axis.ticks.length.x.bottom: NULL
-##  $ axis.ticks.length.y       : NULL
-##  $ axis.ticks.length.y.left  : NULL
-##  $ axis.ticks.length.y.right : NULL
-##  $ axis.line                 : list()
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
-##  $ axis.line.x               : NULL
-##  $ axis.line.y               : NULL
-##  $ legend.background         :List of 5
-##   ..$ fill         : NULL
-##   ..$ colour       : logi NA
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ legend.margin             : &#39;margin&#39; num [1:4] 5.5pt 5.5pt 5.5pt 5.5pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ legend.spacing            : &#39;unit&#39; num 11pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ legend.spacing.x          : NULL
-##  $ legend.spacing.y          : NULL
-##  $ legend.key                :List of 5
-##   ..$ fill         : chr &quot;white&quot;
-##   ..$ colour       : logi NA
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ legend.key.size           : &#39;unit&#39; num 1.2lines
-##   ..- attr(*, &quot;valid.unit&quot;)= int 3
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;lines&quot;
-##  $ legend.key.height         : NULL
-##  $ legend.key.width          : NULL
-##  $ legend.text               :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : &#39;rel&#39; num 0.8
-##   ..$ hjust        : NULL
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : NULL
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ legend.text.align         : NULL
-##  $ legend.title              :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : num 0
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : NULL
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ legend.title.align        : NULL
-##  $ legend.position           : chr &quot;right&quot;
-##  $ legend.direction          : NULL
-##  $ legend.justification      : chr &quot;center&quot;
-##  $ legend.box                : NULL
-##  $ legend.box.margin         : &#39;margin&#39; num [1:4] 0cm 0cm 0cm 0cm
-##   ..- attr(*, &quot;valid.unit&quot;)= int 1
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;cm&quot;
-##  $ legend.box.background     : list()
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
-##  $ legend.box.spacing        : &#39;unit&#39; num 11pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ panel.background          :List of 5
-##   ..$ fill         : chr &quot;white&quot;
-##   ..$ colour       : logi NA
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ panel.border              :List of 5
-##   ..$ fill         : logi NA
-##   ..$ colour       : chr &quot;grey20&quot;
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ panel.spacing             : &#39;unit&#39; num 5.5pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ panel.spacing.x           : NULL
-##  $ panel.spacing.y           : NULL
-##  $ panel.grid                :List of 6
-##   ..$ colour       : chr &quot;grey92&quot;
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ lineend      : NULL
-##   ..$ arrow        : logi FALSE
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-##  $ panel.grid.minor          :List of 6
-##   ..$ colour       : NULL
-##   ..$ size         : &#39;rel&#39; num 0.5
-##   ..$ linetype     : NULL
-##   ..$ lineend      : NULL
-##   ..$ arrow        : logi FALSE
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-##  $ panel.ontop               : logi FALSE
-##  $ plot.background           :List of 5
-##   ..$ fill         : NULL
-##   ..$ colour       : chr &quot;white&quot;
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ plot.title                :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : &#39;rel&#39; num 1.2
-##   ..$ hjust        : num 0
-##   ..$ vjust        : num 1
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 5.5pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ plot.subtitle             :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : num 0
-##   ..$ vjust        : num 1
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 0pt 0pt 5.5pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ plot.caption              :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : &#39;rel&#39; num 0.8
-##   ..$ hjust        : num 1
-##   ..$ vjust        : num 1
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 5.5pt 0pt 0pt 0pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ plot.tag                  :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : &#39;rel&#39; num 1.2
-##   ..$ hjust        : num 0.5
-##   ..$ vjust        : num 0.5
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : NULL
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ plot.tag.position         : chr &quot;topleft&quot;
-##  $ plot.margin               : &#39;margin&#39; num [1:4] 5.5pt 5.5pt 5.5pt 5.5pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ strip.background          :List of 5
-##   ..$ fill         : chr &quot;grey85&quot;
-##   ..$ colour       : chr &quot;grey20&quot;
-##   ..$ size         : NULL
-##   ..$ linetype     : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-##  $ strip.placement           : chr &quot;inside&quot;
-##  $ strip.text                :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : chr &quot;grey10&quot;
-##   ..$ size         : &#39;rel&#39; num 0.8
-##   ..$ hjust        : NULL
-##   ..$ vjust        : NULL
-##   ..$ angle        : NULL
-##   ..$ lineheight   : NULL
-##   ..$ margin       : &#39;margin&#39; num [1:4] 4.4pt 4.4pt 4.4pt 4.4pt
-##   .. ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   .. ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ strip.text.x              : NULL
-##  $ strip.text.y              :List of 11
-##   ..$ family       : NULL
-##   ..$ face         : NULL
-##   ..$ colour       : NULL
-##   ..$ size         : NULL
-##   ..$ hjust        : NULL
-##   ..$ vjust        : NULL
-##   ..$ angle        : num -90
-##   ..$ lineheight   : NULL
-##   ..$ margin       : NULL
-##   ..$ debug        : NULL
-##   ..$ inherit.blank: logi TRUE
-##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-##  $ strip.switch.pad.grid     : &#39;unit&#39; num 2.75pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  $ strip.switch.pad.wrap     : &#39;unit&#39; num 2.75pt
-##   ..- attr(*, &quot;valid.unit&quot;)= int 8
-##   ..- attr(*, &quot;unit&quot;)= chr &quot;pt&quot;
-##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;theme&quot; &quot;gg&quot;
-##  - attr(*, &quot;complete&quot;)= logi TRUE
-##  - attr(*, &quot;validate&quot;)= logi TRUE</code></pre>
+<div id="bioclim-data" class="section level2">
+<h2>Bioclim data</h2>
 <p>We can plot the current bioclim data - all 19 covariates:</p>
 <pre class="r"><code># Plot the bioclim covariates - we&#39;ll use ggplot, as raster plot function not as nice output
 
@@ -917,34 +547,48 @@ gridExtra::grid.arrange(grobs = nested_bioclim_plots$plots,
                         margin
                         )</code></pre>
 <p><img src="4_sdm_files/figure-html/plot_uk_bioclim-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>For each bioclim variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each location.</p>
-<pre class="r"><code># Extract bioclim variables using long/lat
-df_presence &lt;-  raster::extract(bio_curr, zonaria_clean[1:2]) %&gt;%
-  # Add extracted bioclim variables to observation data
+<p>For each bioclim and uk landcover variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each location.</p>
+<pre class="r"><code>df_presence &lt;- zonaria_clean[1:2] %&gt;%
+  # Extract bioclim + lcm variables using long/lat
+  raster::extract(curr_clim_stacked, .) %&gt;%
+  # Add extracted variables to long/lat
   cbind(zonaria_clean) %&gt;%
   # Mark observation data as presence records
   mutate(presence = 1) %&gt;%
-  # We dont need decade anymore
+  # Drop decade, we dont need it
   dplyr::select(-decade)
-
+  
 # Function to pick raster cells at random from bioclim layers
-raster_random_sample &lt;- function(bio_data, n_samples) {
+raster_random_sample &lt;- function(r_covars, n_samples, xy_coords) {
   raster::sampleRandom(
-    x = bio_data, 
+    x = r_covars, 
     size = n_samples,
     na.rm = TRUE,
-    xy = TRUE) 
+    xy = xy_coords) 
   }
 
-# Sample background points (psedo absent?)
-df_absence &lt;- raster_random_sample(bio_curr, 500) %&gt;%
+# Sample background points (psedo absent?) from covariate raster 
+df_absence &lt;- raster_random_sample(curr_clim_stacked, 500, T) %&gt;%
   as.data.frame() %&gt;%
   # Mark as background data
   mutate(presence = 0)
 
-# Create single dataframe for all data
-df_zonaria &lt;- rbind(df_presence,df_absence)</code></pre>
-<p>Now we have joined our environmental and observation data together, we can begin to build a species distribution model. First we need to create a categorical response variable as we want to model presence v absence in space:</p>
+# Create single dataframe for presence and absence data
+df_zonaria &lt;- rbind(df_presence, df_absence)</code></pre>
+</div>
+</div>
+<div id="variable-selection" class="section level1">
+<h1>Variable selection</h1>
+<p>In order to avoid collinearity we should remove covariates with absolute correlation of 0.8 or higher. We can achieve this by calculating a correlation matrix.</p>
+<pre class="r"><code># Generate correlation matrix with covariates as correlates
+cor_mat &lt;- cor(df_zonaria %&gt;% dplyr::select(-x,-y,-presence), method=&quot;spearman&quot;)
+# Subset covariates that are highly correlated
+highlyCorrelated &lt;- findCorrelation(cor_mat, cutoff=0.75)
+# Generate column names to remove
+cols_to_remove &lt;- names(df_zonaria[highlyCorrelated])
+# Remove highly correlated variables from df
+df_zonaria &lt;- df_zonaria %&gt;% dplyr::select(-cols_to_remove)</code></pre>
+<p>Now we have joined our environmental and observation data together into one dataset, we can begin to build a species distribution model. First we need to create a categorical response variable as we want to model presence v absence in space:</p>
 <pre class="r"><code># last pre-processing step
 df_modelling &lt;- df_zonaria %&gt;%
   # caret requires a factorial response variable for classification
@@ -954,17 +598,15 @@ df_modelling &lt;- df_zonaria %&gt;%
     as.factor()) %&gt;%
   # drop all observations with NA variables
   na.omit()</code></pre>
-<p>Then we partition the available data - one set for training the other for testing:</p>
-<pre class="r"><code># Create an index to randomly partion presence and absence observations 
-inTrain &lt;- createDataPartition(y = df_modelling$presence, p = 0.7, list = FALSE)
-df_train &lt;- df_modelling[ inTrain,]
-df_test  &lt;- df_modelling[-inTrain,]</code></pre>
+</div>
+<div id="covariate-importance" class="section level1">
+<h1>Covariate importance</h1>
 <p>Before we fit the a machine learning model, we should look at the variabele importance. We can do this using the <code>caret</code> package, which has a function to evaluate covariate importance.</p>
-<pre class="r"><code># Use Recursive Feature Elimintation (RFE) to determine significan covariates 
+<pre class="r"><code># Use Recursive Feature Elimintation (RFE) to determine significant covariates 
 set.seed(100)
 
 # Select the grouping of variables to test
-subsets &lt;- c(1:5, 10, 15, 19)
+subsets &lt;- c(1:5, 10, 15, 20, length(df_modelling))
 
 # Define the control using a random forest selction function
 ctrl &lt;- rfeControl(functions = rfFuncs,
@@ -972,7 +614,7 @@ ctrl &lt;- rfeControl(functions = rfFuncs,
                    repeats = 3,
                    verbose = FALSE)
 
-results &lt;- rfe(x=df_modelling[1:19], 
+results &lt;- rfe(x=df_modelling %&gt;% dplyr::select(-c(&quot;x&quot;,&quot;y&quot;,&quot;presence&quot;)), 
                y=df_modelling$presence,
                sizes = subsets,
                rfeControl = ctrl)
@@ -987,25 +629,29 @@ print(results)</code></pre>
 ## Resampling performance over subset size:
 ## 
 ##  Variables Accuracy  Kappa AccuracySD KappaSD Selected
-##          1   0.8522 0.7048    0.04100 0.08171         
-##          2   0.8757 0.7518    0.03607 0.07200         
-##          3   0.8785 0.7571    0.03430 0.06848         
-##          4   0.8802 0.7604    0.03386 0.06763         
-##          5   0.8873 0.7746    0.02942 0.05886         
-##         10   0.8880 0.7760    0.02479 0.04966         
-##         15   0.8924 0.7849    0.02375 0.04752        *
-##         19   0.8921 0.7842    0.02482 0.04963         
+##          1   0.8311 0.6629    0.04170 0.08310         
+##          2   0.8658 0.7320    0.03253 0.06494         
+##          3   0.8856 0.7714    0.03108 0.06207         
+##          4   0.8842 0.7686    0.03412 0.06825         
+##          5   0.8853 0.7706    0.02905 0.05810         
+##         10   0.8941 0.7882    0.03402 0.06816         
+##         15   0.9026 0.8052    0.03490 0.06989         
+##         20   0.9023 0.8045    0.02871 0.05745         
+##         24   0.9050 0.8100    0.02848 0.05702        *
 ## 
-## The top 5 variables (out of 15):
-##    bio10, bio5, bio2, bio1, bio3</code></pre>
+## The top 5 variables (out of 24):
+##    bio4, LCM2015_GB_1km_percent_cover_target_class_WGS84.20, bio3, LCM2015_GB_1km_percent_cover_target_class_WGS84.6, bio2</code></pre>
 <pre class="r"><code># Plot the results
 plot(results, type=c(&quot;g&quot;, &quot;o&quot;))</code></pre>
 <p><img src="4_sdm_files/figure-html/feature_selection-1.png" width="672" /></p>
-<p>Let’s use the first five most significant variables in our model. We’ll fit the model using a regularised random forest (RRF):</p>
+</div>
+<div id="fit-a-random-forest-ml-model" class="section level1">
+<h1>Fit a Random Forest ML model</h1>
+<p>Looks like we can get most of the way with the top five variables, so let’s use the first five most significant variables in our model. We’ll fit the model using a random forest.</p>
 <pre class="r"><code>library(randomForest)
 
 # take the top five variables from the feature importance
-opt_vars &lt;- results$optVariables
+opt_vars &lt;- results$optVariables[1:5]
 
 # Recut the modelling data
 df_modelling &lt;- cbind(df_modelling[opt_vars], df_modelling %&gt;% dplyr::select(x,y,presence))
@@ -1017,7 +663,7 @@ tunecontrol &lt;- trainControl(
   repeats = 2,
   search = &quot;grid&quot;)
 
-
+# Create tuning parameters as grid
 tunegrid &lt;- expand.grid(.mtry=c(3:9))
 
 # for reproducibility
@@ -1036,7 +682,7 @@ print(model_fit)</code></pre>
 <pre><code>## Random Forest 
 ## 
 ## 979 samples
-##  17 predictor
+##   7 predictor
 ##   2 classes: &#39;absence&#39;, &#39;presence&#39; 
 ## 
 ## No pre-processing
@@ -1045,53 +691,79 @@ print(model_fit)</code></pre>
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##   3     0.8983595  0.7968064
-##   4     0.8973391  0.7947568
-##   5     0.8993747  0.7988050
-##   6     0.8988619  0.7977907
-##   7     0.8978414  0.7957350
-##   8     0.8973339  0.7947197
-##   9     0.8983490  0.7967683
+##   3     0.9055050  0.8111109
+##   4     0.9070434  0.8142075
+##   5     0.9055076  0.8111353
+##   6     0.9055076  0.8111469
+##   7     0.9039770  0.8081041
+##   8     0.9019309  0.8040253
+##   9     0.9049948  0.8101494
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 5.</code></pre>
+## The final value used for the model was mtry = 4.</code></pre>
 <pre class="r"><code>plot(model_fit)</code></pre>
 <p><img src="4_sdm_files/figure-html/model_fit-1.png" width="672" /></p>
+</div>
+<div id="make-a-prediction" class="section level1">
+<h1>Make a prediction</h1>
 <p>Now we can now make a prediction for the current species distribution range for V. zonaria, using the bioclim covariates.</p>
 <pre class="r"><code># Generate species distribution df given raster of environmental variables and sdm
-predict_dist &lt;- function(r_bio, sdm){
-  # Generate distribution data to run model on
-  dist_dat &lt;- data.frame(rasterToPoints(r_bio))
-  # Create a probability of presence/absence raster
-  r_pred &lt;- rasterFromXYZ(cbind(
-    # Coordinates to make prediction from
-    dist_dat[1:2],
-    # Predict with RRF species distribution model 
-    predict(model_fit, 
-            # Use covariates to run model against
-            dist_dat, 
-            # Type of response variable
-            type=&#39;prob&#39;))
-    )
-  # Create spatial dataframe for plotting
-  df_prob_presence &lt;- as(r_pred[[2]], &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
-  as.data.frame()
+predict_dist &lt;- function(
+  # Raster containing all covariates
+  r_covar, 
+  # Model fit
+  sdm)
+  # Subset of covariates required by model fit
+  #opt_covars)
+  {
+     # Generate distribution data from raster to run model on
+     dist_dat &lt;- data.frame(rasterToPoints(r_covar)) %&gt;% 
+       dplyr::select(opt_vars,x,y) %&gt;%
+       na.omit()
+     
+     # Set seed for repeatable results
+     set.seed(123)
+     # Create a probability of presence/absence raster
+     r_pred &lt;- rasterFromXYZ(
+       cbind(
+       # Coordinates to make prediction from
+       dist_dat %&gt;% dplyr::select(x,y),
+       # Predict with RF species distribution model 
+       predict(model_fit, 
+               # Use covariates to run model against
+               dist_dat, 
+               # Type of response variable
+               type=&#39;prob&#39;)))
+     # Create spatial dataframe for plotting
+     df_prob_presence &lt;- as(r_pred[[2]], &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
+            as.data.frame()
+     
   # Return probability of presence raster
   return(df_prob_presence)
-}
+  }
 
 # Generate sdm for current climate vars
-curr_plot &lt;- predict_dist(bio_curr, model_fit)
+curr_plot &lt;- predict_dist(curr_clim_stacked, model_fit) %&gt;% 
+  mutate(plot_type = &quot;2020 range&quot;)
+
+# Generate sdm under future climate vars
+fut_plot &lt;- predict_dist(fut_clim_stacked, model_fit) %&gt;% 
+  mutate(plot_type = &quot;2050 range&quot;)
+
+# Combine all data
+all_plots &lt;- rbind(curr_plot,fut_plot)
 
 # Plot scenarios
-curr_plot %&gt;%
+all_plots %&gt;% 
 ggplot() + 
   geom_tile(aes(x=x, y=y, fill=presence)) +
   coord_equal() +
   scale_fill_viridis() +
-  theme_bw()</code></pre>
+  theme_bw() +
+  facet_wrap(~plot_type)</code></pre>
 <p><img src="4_sdm_files/figure-html/predict_and_plot-1.png" width="864" /></p>
-<p>We see the range is laregely confied to south of the Lake District, with significant hot spots around East Anglia and the Bristol Channel.</p>
+<p>We see the 2020 range is laregely confied to south of the Lake District. A future climate change scenario does not appear significantly different in that there is no significant range expansion north.</p>
+</div>
 
 
 
