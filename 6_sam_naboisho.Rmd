@@ -15,6 +15,7 @@ library(raster)
 
 # Set filename of raw csv to load
 rm(list = ls())  
+setwd("/Users/anthony/Documents/GitHub/ComputationalEcology/")
 survey <- readRDS("data_analysis_files/naboisho/clean_survey.RData")
 ```
 
