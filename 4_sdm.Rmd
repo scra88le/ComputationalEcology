@@ -239,6 +239,9 @@ df_modelling <- df_zonaria %>%
     as.factor()) %>%
   # drop all observations with NA variables
   na.omit()
+
+# Scale the covariates using the caret preProcess function
+preProcValues <- preProcess(df_modelling, method = c("center", "scale"))
 ```
 
 # Covariate importance

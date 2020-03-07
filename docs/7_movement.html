@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Puffinus puffinus movement analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Computational Ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
+    <li>
+      <a href="4_sdm.html">Species Distribution Modelling</a>
+    </li>
+    <li>
+      <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Puffinus puffinus movement analysis</h1>
+
+</div>
+
+
+<pre class="r"><code>library(skimr)
+library(tidyverse)
+library(moveHMM)</code></pre>
+<p>Let’s load the data. There are a lot of records here.</p>
+<pre class="r"><code>manx_obs &lt;- read.csv(&quot;data_analysis_files/movementdata/shearwaters.csv&quot;)</code></pre>
+<p>Generate a quick overview of the data.</p>
+<pre class="r"><code>skim(manx_obs)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">manx_obs</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">707654</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">factor</td>
+<td align="left">5</td>
+</tr>
+<tr class="odd">
+<td align="left">logical</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">timestamp</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">3312</td>
+<td align="left">24:: 929, 14:: 928, 19:: 928, 29:: 928</td>
+</tr>
+<tr class="even">
+<td align="left">sensor.type</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
+<td align="left">gps: 707654</td>
+</tr>
+<tr class="odd">
+<td align="left">individual.taxon.canonical.name</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
+<td align="left">Puf: 707654</td>
+</tr>
+<tr class="even">
+<td align="left">ID</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">359</td>
+<td align="left">FB3: 9558, EG4: 8627, ET0: 8533, EK5: 7381</td>
+</tr>
+<tr class="odd">
+<td align="left">study.name</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
+<td align="left">Fre: 707654</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="left">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">visible</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">TRU: 707654</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">event.id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1.232513e+10</td>
+<td align="right">217878.53</td>
+<td align="right">1.232477e+10</td>
+<td align="right">1.232494e+10</td>
+<td align="right">1.232512e+10</td>
+<td align="right">1.232532e+10</td>
+<td align="right">1.232551e+10</td>
+<td align="left">▇▇▇▆▇</td>
+</tr>
+<tr class="even">
+<td align="left">location.long</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-5.830000e+00</td>
+<td align="right">2.30</td>
+<td align="right">-3.264000e+01</td>
+<td align="right">-5.960000e+00</td>
+<td align="right">-5.390000e+00</td>
+<td align="right">-4.920000e+00</td>
+<td align="right">-3.090000e+00</td>
+<td align="left">▁▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">location.lat</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5.350000e+01</td>
+<td align="right">1.59</td>
+<td align="right">4.657000e+01</td>
+<td align="right">5.217000e+01</td>
+<td align="right">5.378000e+01</td>
+<td align="right">5.439000e+01</td>
+<td align="right">6.226000e+01</td>
+<td align="left">▁▅▇▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">tag.local.identifier</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2.674330e+03</td>
+<td align="right">1398.92</td>
+<td align="right">2.000000e+00</td>
+<td align="right">1.359000e+03</td>
+<td align="right">2.842000e+03</td>
+<td align="right">3.789000e+03</td>
+<td align="right">5.115000e+03</td>
+<td align="left">▅▃▇▇▅</td>
+</tr>
+</tbody>
+</table>
+<p>So there is a lot of redundant information in our 700k records! Let’s strip out all the stuff we dont need.</p>
+<pre class="r"><code>manx_obs &lt;- manx_obs %&gt;%
+  dplyr::select(ID,
+                location.long, 
+                location.lat)
+
+manx_obs$ID &lt;- as.character(manx_obs$ID)</code></pre>
+<p>It looks like we have 359 individual animals that were tracked. Let’s select the top five by number of observations, so that we can visualise the data.</p>
+<pre class="r"><code># Find the five data sets with the most records
+top_five_id &lt;- manx_obs %&gt;% 
+  # Group by animal id
+  group_by(ID) %&gt;% 
+  # Count by group
+  summarise(n = n()) %&gt;% 
+  # Arrange in descening order
+  arrange(desc(n)) %&gt;% 
+  # Show the top five
+  top_n(-20) %&gt;%
+  # Convert to dataframe
+  as.data.frame()
+
+# Select all observations for the top five
+top_five_obs &lt;- manx_obs %&gt;% 
+  filter(#ID ==&quot;FB30295&quot; | 
+         #ID ==&quot;ET00632&quot; |
+         #ID ==&quot;EK59880&quot;
+         ID %in% top_five_id$ID
+
+    
+    ) %&gt;%
+  as.data.frame()</code></pre>
+<p>Now we can calculate a covariate - distance from land, in this case the UK and Ireland. For each long/lat position, we will generate a shortest distance to land.</p>
+<pre class="r"><code># Load some basic spatial data
+library(spData)</code></pre>
+<pre><code>## To access larger datasets in this package, install the spDataLarge
+## package with: `install.packages(&#39;spDataLarge&#39;,
+## repos=&#39;https://nowosad.github.io/drat/&#39;, type=&#39;source&#39;)`</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0</code></pre>
+<pre class="r"><code>library(dplyr)
+
+# Generate sf object
+land_sf &lt;- world %&gt;% 
+  filter(name_long == &quot;Ireland&quot; | name_long == &quot;United Kingdom&quot;) %&gt;% 
+  st_union()
+
+# Generate sf points of shearwater tracks 
+pnts_sf &lt;- top_five_obs %&gt;%
+  dplyr::select(location.long, location.lat) %&gt;%
+  st_as_sf(crs= 4326, coords = c(&quot;location.long&quot;,&quot;location.lat&quot;))
+
+# Calculate distance between all points and land
+top_five_obs &lt;- top_five_obs %&gt;% 
+  cbind(
+    dist_to_land = 
+      # sf coordinates to measure distance from  
+      pnts_sf %&gt;% 
+      # Calculate the minimum distance between land and tracks
+      st_distance(land_sf) %&gt;%
+      # We dont need the units (in m)
+      as.numeric()
+  )</code></pre>
+<pre class="r"><code>top_five_obs %&gt;%
+  ggplot() +
+  geom_point(aes(x=location.long, y=location.lat, colour = ID),size = 0.5) +
+  facet_wrap(~ID, scales = &quot;free&quot;)</code></pre>
+<p><img src="7_movement_files/figure-html/plot_tracks-1.png" width="672" /></p>
+<p>Now we can start to use the <code>moveHMM</code> package. We start by using the <code>prepData</code> function to compute step lengths and angles.</p>
+<pre class="r"><code>data &lt;- prepData(top_five_obs, 
+                 # Our coordinates are longitude latitude
+                 type=&quot;LL&quot;, 
+                 # Specify columns containing coordinates
+                 coordNames = c(&quot;location.long&quot;, &quot;location.lat&quot;)
+                 )
+
+# Summarise data
+summary(data)</code></pre>
+<pre><code>## Movement data for 20 tracks:
+## EX97382 -- 219 observations
+## EF98338 -- 212 observations
+## EW87558 -- 161 observations
+## EX74021 -- 145 observations
+## EJ99629 -- 210 observations
+## EJ99642 -- 225 observations
+## EJ99644 -- 224 observations
+## EK47565 -- 208 observations
+## EX01941 -- 175 observations
+## EX41781 -- 216 observations
+## EX83007 -- 213 observations
+## EX93604 -- 210 observations
+## EX93909 -- 214 observations
+## FB30383 -- 224 observations
+## FB30633 -- 216 observations
+## FB32180 -- 190 observations
+## FB32304 -- 221 observations
+## EZ16714 -- 215 observations
+## EX93842 -- 225 observations
+## FB30392 -- 205 observations
+## 
+## Covariate(s): 
+##  dist_to_land 
+##      Min.       25%    Median      Mean       75%      Max. 
+##      0.00  19182.79  33491.93  33964.63  45804.20 105463.91</code></pre>
+<p>Now we can plot the data</p>
+<pre class="r"><code>plot(data, ask=F)</code></pre>
+<p><img src="7_movement_files/figure-html/plot_data-1.png" width="672" /><img src="7_movement_files/figure-html/plot_data-2.png" width="672" /><img src="7_movement_files/figure-html/plot_data-3.png" width="672" /><img src="7_movement_files/figure-html/plot_data-4.png" width="672" /><img src="7_movement_files/figure-html/plot_data-5.png" width="672" /><img src="7_movement_files/figure-html/plot_data-6.png" width="672" /><img src="7_movement_files/figure-html/plot_data-7.png" width="672" /><img src="7_movement_files/figure-html/plot_data-8.png" width="672" /><img src="7_movement_files/figure-html/plot_data-9.png" width="672" /><img src="7_movement_files/figure-html/plot_data-10.png" width="672" /><img src="7_movement_files/figure-html/plot_data-11.png" width="672" /><img src="7_movement_files/figure-html/plot_data-12.png" width="672" /><img src="7_movement_files/figure-html/plot_data-13.png" width="672" /><img src="7_movement_files/figure-html/plot_data-14.png" width="672" /><img src="7_movement_files/figure-html/plot_data-15.png" width="672" /><img src="7_movement_files/figure-html/plot_data-16.png" width="672" /><img src="7_movement_files/figure-html/plot_data-17.png" width="672" /><img src="7_movement_files/figure-html/plot_data-18.png" width="672" /><img src="7_movement_files/figure-html/plot_data-19.png" width="672" /><img src="7_movement_files/figure-html/plot_data-20.png" width="672" /><img src="7_movement_files/figure-html/plot_data-21.png" width="672" /><img src="7_movement_files/figure-html/plot_data-22.png" width="672" /><img src="7_movement_files/figure-html/plot_data-23.png" width="672" /><img src="7_movement_files/figure-html/plot_data-24.png" width="672" /><img src="7_movement_files/figure-html/plot_data-25.png" width="672" /><img src="7_movement_files/figure-html/plot_data-26.png" width="672" /><img src="7_movement_files/figure-html/plot_data-27.png" width="672" /><img src="7_movement_files/figure-html/plot_data-28.png" width="672" /><img src="7_movement_files/figure-html/plot_data-29.png" width="672" /><img src="7_movement_files/figure-html/plot_data-30.png" width="672" /><img src="7_movement_files/figure-html/plot_data-31.png" width="672" /><img src="7_movement_files/figure-html/plot_data-32.png" width="672" /><img src="7_movement_files/figure-html/plot_data-33.png" width="672" /><img src="7_movement_files/figure-html/plot_data-34.png" width="672" /><img src="7_movement_files/figure-html/plot_data-35.png" width="672" /><img src="7_movement_files/figure-html/plot_data-36.png" width="672" /><img src="7_movement_files/figure-html/plot_data-37.png" width="672" /><img src="7_movement_files/figure-html/plot_data-38.png" width="672" /><img src="7_movement_files/figure-html/plot_data-39.png" width="672" /><img src="7_movement_files/figure-html/plot_data-40.png" width="672" /></p>
+<p>We can now fit our first hidden markov model</p>
+<pre class="r"><code># Standardise the covariate
+data$dist_to_land &lt;- (data$dist_to_land - mean(data$dist_to_land))/sd(data$dist_to_land)
+
+## initial parameters for gamma and von Mises distributions
+mu0 &lt;- c(0.1,1) # step mean (two parameters: one for each state)
+sigma0 &lt;- c(0.1,1) # step SD
+zeromass0 &lt;- c(0.1,0.05) # step zero-mass
+stepPar0 &lt;- c(mu0,sigma0,zeromass0)
+
+angleMean0 &lt;- c(pi,0) # angle mean
+kappa0 &lt;- c(1,1) # angle concentration
+anglePar0 &lt;- c(angleMean0,kappa0)
+
+## call to fitting function
+m &lt;- fitHMM(data=data,
+            nbStates=2,
+            stepPar0=stepPar0, 
+            anglePar0=anglePar0,
+            formula=~dist_to_land)
+m</code></pre>
+<pre><code>## Value of the maximum log-likelihood: -5733.033 
+## 
+## Step length parameters:
+## ----------------------
+##               state 1      state 2
+## mean      0.795171051 1.187068e+00
+## sd        0.896902114 1.314536e+00
+## zero-mass 0.003657125 1.909819e-12
+## 
+## Turning angle parameters:
+## ------------------------
+##                   state 1       state 2
+## mean          -0.01664459  -0.001566071
+## concentration  1.65972657 115.872439567
+## 
+## Regression coeffs for the transition probabilities:
+## --------------------------------------------------
+##                  1 -&gt; 2     2 -&gt; 1
+## intercept    -1.5270628 -1.6959079
+## dist_to_land -0.0305707  0.1707017
+## 
+## Initial distribution:
+## --------------------
+## [1] 0.4431017 0.5568983</code></pre>
+<pre class="r"><code># Plot the model
+plot(m, plotCI = T, ask=F)</code></pre>
+<pre><code>## Decoding states sequence... DONE</code></pre>
+<p><img src="7_movement_files/figure-html/fit_hmm-1.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-2.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-3.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-4.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-5.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-6.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-7.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-8.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-9.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-10.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-11.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-12.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-13.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-14.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-15.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-16.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-17.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-18.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-19.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-20.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-21.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-22.png" width="672" /><img src="7_movement_files/figure-html/fit_hmm-23.png" width="672" /></p>
+<p>We can look at the stationary state probabilities. When the transition probabilities are time-varying (i.e. functions of covariates), the stationary distribution does not exist. However, for fixed values of the covariates, we can obtain one transition probability matrix, and thus one stationary distribution.</p>
+<pre class="r"><code>plotStationary(m, plotCI=TRUE)</code></pre>
+<p><img src="7_movement_files/figure-html/stat_state_prob-1.png" width="672" /></p>
+<pre class="r"><code>plotStates(m,animals=&quot;FB30633&quot;, ask = F)</code></pre>
+<pre><code>## Decoding states sequence... DONE
+## Computing states probabilities... DONE</code></pre>
+<p><img src="7_movement_files/figure-html/plot_states-1.png" width="672" /></p>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

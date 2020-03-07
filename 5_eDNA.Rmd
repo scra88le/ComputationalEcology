@@ -6,6 +6,21 @@ title: "Environmental DNA analysis"
 
 Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. [^1]
 
+
+Look at fastp
+
+fastp -i read 
+
+Above 20 looks good
+
+remove adapters
+
+bioconda
+
+cluster by 5% similarity
+
+paired because from the same molecule
+
 ```{r prelims}
 # Load libraries
 library(dada2)

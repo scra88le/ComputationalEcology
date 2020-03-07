@@ -15,10 +15,14 @@ navbar:
           hreft: 2_glm.html
         - text: "Generalised Additive Models"
           hreft: 3_gam.html
-        - text: "Species Distribution Modelling"
+        - text: "Distribution Modelling"
           hreft: 4_sdm.html
         - text: "Environmental DNA"
           hreft: 5_eDNA.html
+        - text: "Abundance Modelling"
+          hreft: 6_sam_naboisho.Rmd
+        - text: "Movement Modelling"  
+          hreft: 7_movement_BA055.Rmd
 output:  
   html_document:  
     toc: true  

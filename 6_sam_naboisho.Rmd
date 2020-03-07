@@ -1,0 +1,224 @@
+---
+title: "Species abundance analysis"
+---
+
+```{r load_libs_and_data, message=FALSE, warning=FALSE}
+# Load libraries
+library(tidyr)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(geosphere)
+library(lwgeom)
+library(PrevMap)
+library(raster)
+
+# Set filename of raw csv to load
+rm(list = ls())  
+survey <- readRDS("data_analysis_files/naboisho/clean_survey.RData")
+```
+
+First change a few bits of the data structure
+
+```{r data_wrangling, message=FALSE, warning=FALSE}
+# Add sf POINTs to dataframe for coords
+survey <- survey %>% 
+  # Remove observations with no long, lat data
+  filter(!is.na(lat) & !is.na(long)) %>%
+  # Create sf points with WGS84
+  st_as_sf(coords = c("long", "lat"), crs = 4326, remove = F)
+
+# Plot overall data set
+survey %>%
+  ggplot() +
+    geom_point(aes(x=long, y=lat)) +
+    facet_wrap(~transect, scale = "free") +
+    theme_bw()
+```
+
+Now we need to generate the coordinates of all species, given the observer location (long, lat), distance between species and observer and bearing
+
+```{r generate_target_locations, message=FALSE, warning=FALSE}
+species_locations <- geosphere::destPoint(
+  # drop sf geometry and select vector of observer locations
+  p = survey %>% st_drop_geometry() %>% dplyr::select(long,lat),
+  # vector of bearings from observer to observations
+  b = survey$Compass.Bearing,
+  # vector of distance in meters between observer and observation
+  d = survey$Distance..m.) %>%
+  # Convert new destinations to a dataframe
+  as.data.frame() %>%
+  # Create sf point from species location
+  st_as_sf(coords = c('lon', 'lat'), crs = 4326, remove = F) %>%
+  # Project into planar coordinates for Kenya
+  st_transform(32636) %>%
+  # Bind with relevant survey data
+  cbind(
+    survey %>% dplyr::select(size, Region.Label, transect, species, year, month)) %>%
+  distinct(.keep_all=T)
+
+# Add Easting/Northing references to datframe
+species_locations <- species_locations %>%
+  st_coordinates() %>%
+  cbind(species_locations) %>%
+  rename (easting = X,
+          northing = Y) %>%
+  st_drop_geometry() 
+
+# Plot all species locations
+species_locations %>%
+  ggplot() +
+    geom_point(aes(x=lon, y=lat)) +
+    theme_bw()
+```
+
+Looks like we have a few outliers, so let's remove them.
+
+```{r remove_outliers, message=FALSE, warning=FALSE}
+# Remove the outlier
+species_locations <- species_locations %>% 
+  filter(lat < -1.325) %>%
+  # Remove species marked as None
+  filter(species != "None")
+
+#Replot
+species_locations %>%
+    ggplot() +
+    geom_point(aes(x=lon, y=lat)) +
+    theme_bw() +
+    facet_wrap(~species)
+
+# Generate bounding box for Naboisho in WGS84
+naboisho_bbox <- st_bbox(species_locations$geometry)
+```
+
+We want to select Zebra to generate a spatial abundance estimation. Let's also subset by year and month
+
+```{r filter_species, message=FALSE, warning=FALSE}
+# Create target dataset
+zebra <- species_locations %>% 
+  filter(species == "Zebra") %>%
+  filter(year == 2018) %>%
+  filter(month == "Jul") %>%
+  # Keep only the location, count and covariates
+  dplyr::select(easting, northing, size, Region.Label, transect)
+
+# Plot Zebra in July of 2019
+zebra %>%
+  ggplot() +
+  geom_point(aes(x=easting, y=northing, size=size)) +
+  theme_bw()
+```
+
+For the species observation locations, we need to load the ndvi as a covariate.
+
+```{r ndvi_join, message=FALSE, warning=FALSE}
+# Load NDVI of naboisho for July 2019
+ndvi_r <- raster("data_analysis_files/naboisho/naboisho_ndvi_cropped") %>%
+  # Downsample raster to 120m x 120m cells
+  aggregate(fact=4, fun=mean)
+# Plot NDVI of Naboisho study region
+plot(ndvi_r)
+# Extract NDVI for each observation and bind to observation data
+zebra <- ndvi_r %>%
+  extract(zebra[1:2]) %>%
+  cbind(zebra) %>%
+  dplyr::rename(ndvi = ".")
+```
+
+Now we can fit a variogram.
+
+```{r variogram_fit, message=FALSE, warning=FALSE}
+library(gstat)
+coordinates(zebra) <- ~ easting + northing
+# Generate sample variogram values for species location data
+species_vgm <- gstat::variogram(size ~ ndvi, zebra)
+# Fit model
+species_fit <- fit.variogram(species_vgm, model=vgm(1, "Sph", 900, 1)) # fit model
+# Show model parameters
+species_fit
+# Plot the model fit
+plot(species_vgm, species_fit)
+```
+
+
+```{r fit_LA, warning=FALSE, echo=F, results='hide'}
+fit.LA <- glgm.LA(size ~ ndvi,
+                  coords = ~ I(easting) + I(northing),
+                  kappa=0.5,
+                  start.cov.pars = species_fit$range[2],
+                  fixed.rel.nugget = 0.0,
+                  data=zebra,
+                  family="Poisson")
+```
+```{r run_mcml, message=FALSE, warning=FALSE, echo=F, results='hide' }
+par0 <- coef(fit.LA)
+
+c.mcmc <- control.mcmc.MCML(n.sim=10000,
+                            burnin=2000,
+                            thin=8)
+
+fit.MCML <- poisson.log.MCML(size ~ ndvi,
+                             control.mcmc = c.mcmc,
+                             par0=par0,
+                             coords=~I(easting)+I(northing),
+                             kappa=0.5,
+                             start.cov.pars = species_fit$range[2],
+                             fixed.rel.nugget = 0,
+                             data=zebra,
+                             method="nlminb")
+
+summary(fit.MCML)
+```
+
+Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate.
+
+```{r make_pred_grid}
+pred_grid <- ndvi_r %>%
+  # Convert raster to vector of points
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  rename(easting = x,
+         northing = y,
+         ndvi = layer)
+```
+
+Now we can make a prediction.
+
+```{r make_prediction, message=FALSE, warning=FALSE, echo=T,results='hide', fig.align="centre", fig.width= 9}
+# Generate prediction data
+pred.MCML <- spatial.pred.poisson.MCML(fit.MCML, 
+                                       grid.pred = pred_grid,
+                                       control.mcmc = c.mcmc,
+                                       type = "marginal",
+                                       predictors = pred_grid)
+```
+
+We can plot the spatial distribution of the mean exponential abundance together with the variance.
+
+```{r }
+predictions <- cbind(exp_pred = 
+                       # Select predictions
+                       pred.MCML$exponential$predictions,
+                       # Against coordinate grid
+                       pred_grid %>% dplyr::select(easting,northing))
+
+# Now plot predictions
+predictions %>%
+  ggplot(aes(x=easting, y=northing)) + 
+  geom_tile(aes(fill=exp_pred)) + 
+  coord_equal() +
+  scale_fill_viridis_c() +
+  theme_bw()
+```
+
+Calculate the overall population density per km2
+
+```{r abundance}
+total_exp_count = sum(pred.MCML$exponential$predictions)
+survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
+
+# Calculate average density per km2
+exp_density = total_exp_count / survey_area
+log(exp_density)
+```

@@ -1,0 +1,131 @@
+---
+title: "Spatial abundance modelling"
+---
+
+```{r set_up}
+library(PrevMap)
+library(osmdata)
+library(sf)
+library(splancs)
+library(dplyr)
+```
+Load Snipe survey data from Yell 2019 survey
+
+```{r load_data, message=FALSE, warning=FALSE}
+snipe <- read_csv("~/Documents/GitHub/ComputationalEcology/data_analysis_files/snipe.csv")
+yell  <- st_read("data_analysis_files/yell.shp") %>%
+  # Transform from Long/Lat to OSGB36
+  st_transform(27700)
+shetland_habitat <- raster("data_analysis_files/Shetland_EUNIS_CODE_layer.tif")
+# Plot Snipe locations
+plot(snipe$X,snipe$Y)
+
+```
+
+```{r crop_to_yell}
+# Createa a raster just for Yell
+crop_ext <- yell %>% st_union() %>% st_as_sf("POLYGON")
+r_yell <- crop(shetland_habitat, crop_ext)
+plot(r_yell)
+
+```
+
+Now extract covariate data
+
+```{r extraxt_covariates}
+# Reproject snipe to OSGB36
+snipe %>% st_as_sf(coords = c("X","Y"), crs = 27700) %>%
+  st_transform(27700)
+
+# Extract habitat covariate at Snipe locations
+snipe <- raster::extract(r_yell, snipe) %>%
+  as.factor() %>%
+  cbind(snipe) %>%
+  mutate(count = 1) %>%
+  dplyr::rename(EUNIS_code = ".")
+```
+
+Create a data grid for modelling
+```{r create_data_grid}
+# Convert raster to data frame
+yell_grid <- r_yell %>%
+  rasterToPoints() %>%
+  as.data.frame() 
+```
+
+Fit variogram
+
+```{r variogram}
+v <- variogram(as.factor(EUNIS_code)~1, loc=~X+Y, data=snipe)
+v
+v.fit <- fit.variogram(v, vgm(c("Exp", "Mat", "Sph")))
+v.fit
+
+PrevMap::variogram(data = snipe, count ~ factor(EUNIS_code), coords = ~ I(X/1000) + I(Y/1000)) -> var
+
+```
+
+```{r fit_LA}
+fit.LA <- glgm.LA(count ~ as.factor(EUNIS_code),
+                  coords = ~ I(X/1000) + I(Y/1000),
+                  kappa=0.5,
+                  start.cov.pars = 101.965,
+                  fixed.rel.nugget = 0,
+                  data=snipe,
+                  family="Poisson")
+```
+
+```{r spatial_corr_diagnostic}
+spat.corr.diagnostic(
+  count ~ factor(EUNIS_code),
+  units.m = NULL,
+  coords=~I(X/1000)+I(Y/1000),
+  data = snipe,
+  likelihood = "Binomial",
+  n.sim = 200,
+  plot.results = T,
+  which.test = "both"
+  
+)
+
+```
+
+```{r run_mcml}
+par0 <- coef(fit.LA)
+
+c.mcmc <- control.mcmc.MCML(n.sim=10000,
+                            burnin=2000,
+                            thin=4)
+
+fit.MCML <- poisson.log.MCML(count ~ factor(EUNIS_code),
+                             control.mcmc = c.mcmc,
+                             par0=par0,
+                             coords=~I(X/1000)+I(Y/1000),
+                             kappa=0.5,
+                             start.cov.pars = 101.965/1000,
+                             fixed.rel.nugget = 0,
+                             data=snipe,
+                             method="nlminb")
+
+summary(fit.MCML)
+```
+
+Make a prediction
+
+```{r predict}
+# Generate prediction data
+pred.MCML <- spatial.pred.poisson.MCML(fit.MCML, 
+                                       grid.pred = yell_grid,
+                                       control.mcmc = c.mcmc,
+                                       type = "marginal",
+                                       predictors = yell_grid)
+# Plot data
+plot(pred.MCML, 
+     type = "log",
+     summary = "predictions",
+     main = "Prevalence - predictions")
+```
+
+
+
+
