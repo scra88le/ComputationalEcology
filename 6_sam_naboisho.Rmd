@@ -117,7 +117,7 @@ For the species observation locations, we need to load the ndvi as a covariate.
 # Load NDVI of naboisho for July 2019
 ndvi_r <- raster("data_analysis_files/naboisho/naboisho_ndvi_cropped") %>%
   # Downsample raster to 120m x 120m cells
-  aggregate(fact=4, fun=mean)
+  aggregate(fact=8, fun=mean)
 # Plot NDVI of Naboisho study region
 plot(ndvi_r)
 # Extract NDVI for each observation and bind to observation data
@@ -135,7 +135,8 @@ coordinates(zebra) <- ~ easting + northing
 # Generate sample variogram values for species location data
 species_vgm <- gstat::variogram(size ~ ndvi, zebra)
 # Fit model
-species_fit <- fit.variogram(species_vgm, model=vgm(1, "Sph", 900, 1)) # fit model
+species_fit <- fit.variogram(species_vgm, model=vgm(1, "Sph", 900,1))
+#species_fit <- fit.variogram(species_vgm, model=vgm(5, "Sph", 8,2))
 # Show model parameters
 species_fit
 # Plot the model fit
@@ -197,7 +198,7 @@ pred.MCML <- spatial.pred.poisson.MCML(fit.MCML,
 
 We can plot the spatial distribution of the mean exponential abundance together with the variance.
 
-```{r }
+```{r make_plot}
 predictions <- cbind(exp_pred = 
                        # Select predictions
                        pred.MCML$exponential$predictions,
@@ -216,10 +217,13 @@ predictions %>%
 Calculate the overall population density per km2
 
 ```{r abundance}
-total_exp_count = sum(pred.MCML$exponential$predictions)
+# Calculate total number
+total_count = sum(log(pred.MCML$exponential$predictions))
+total_count
+# Calculate survey area
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
-
+survey_area
 # Calculate average density per km2
-exp_density = total_exp_count / survey_area
-log(exp_density)
+density = total_count / survey_area
+density
 ```

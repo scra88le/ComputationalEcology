@@ -369,13 +369,16 @@ div.tocify {
       <a href="3_gam.html">Generalised Additive Models</a>
     </li>
     <li>
-      <a href="4_sdm.html">Species Distribution Modelling</a>
+      <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
       <a href="5_eDNA.html">Environmental DNA</a>
     </li>
     <li>
-      <a href="6_sam_naboisho.Rmd">Species Abundance Modelling</a>
+      <a href="6_sam_naboisho.Rmd">Abundance Modelling</a>
+    </li>
+    <li>
+      <a href="7_movement_BA055.Rmd">Movement Modelling</a>
     </li>
   </ul>
 </li>
@@ -408,6 +411,7 @@ library(raster)
 
 # Set filename of raw csv to load
 rm(list = ls())  
+setwd(&quot;/Users/anthony/Documents/GitHub/ComputationalEcology/&quot;)
 survey &lt;- readRDS(&quot;data_analysis_files/naboisho/clean_survey.RData&quot;)</code></pre>
 <p>First change a few bits of the data structure</p>
 <pre class="r"><code># Add sf POINTs to dataframe for coords
@@ -492,7 +496,7 @@ zebra %&gt;%
 <pre class="r"><code># Load NDVI of naboisho for July 2019
 ndvi_r &lt;- raster(&quot;data_analysis_files/naboisho/naboisho_ndvi_cropped&quot;) %&gt;%
   # Downsample raster to 120m x 120m cells
-  aggregate(fact=4, fun=mean)
+  aggregate(fact=8, fun=mean)
 # Plot NDVI of Naboisho study region
 plot(ndvi_r)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/ndvi_join-1.png" width="672" /></p>
@@ -507,12 +511,13 @@ coordinates(zebra) &lt;- ~ easting + northing
 # Generate sample variogram values for species location data
 species_vgm &lt;- gstat::variogram(size ~ ndvi, zebra)
 # Fit model
-species_fit &lt;- fit.variogram(species_vgm, model=vgm(1, &quot;Sph&quot;, 900, 1)) # fit model
+species_fit &lt;- fit.variogram(species_vgm, model=vgm(1, &quot;Sph&quot;, 900,1))
+#species_fit &lt;- fit.variogram(species_vgm, model=vgm(5, &quot;Sph&quot;, 8,2))
 # Show model parameters
 species_fit</code></pre>
 <pre><code>##   model    psill    range
-## 1   Nug 168.3036   0.0000
-## 2   Sph 174.9407 665.1904</code></pre>
+## 1   Nug 183.8316   0.0000
+## 2   Sph 162.2805 709.7361</code></pre>
 <pre class="r"><code># Plot the model fit
 plot(species_vgm, species_fit)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/variogram_fit-1.png" width="672" /></p>
@@ -546,15 +551,20 @@ predictions %&gt;%
   coord_equal() +
   scale_fill_viridis_c() +
   theme_bw()</code></pre>
-<p><img src="6_sam_naboisho_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="6_sam_naboisho_files/figure-html/make_plot-1.png" width="672" /></p>
 <p>Calculate the overall population density per km2</p>
-<pre class="r"><code>total_exp_count = sum(pred.MCML$exponential$predictions)
+<pre class="r"><code># Calculate total number
+total_count = sum(log(pred.MCML$exponential$predictions))
+total_count</code></pre>
+<pre><code>## [1] 4397.861</code></pre>
+<pre class="r"><code># Calculate survey area
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
-
-# Calculate average density per km2
-exp_density = total_exp_count / survey_area
-log(exp_density)</code></pre>
-<pre><code>## [1] 6.197221</code></pre>
+survey_area</code></pre>
+<pre><code>## [1] 138.0672</code></pre>
+<pre class="r"><code># Calculate average density per km2
+density = total_count / survey_area
+density</code></pre>
+<pre><code>## [1] 31.85305</code></pre>
 
 
 
