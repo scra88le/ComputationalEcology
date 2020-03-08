@@ -502,7 +502,7 @@ plot(ndvi_r)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/ndvi_join-1.png" width="672" /></p>
 <pre class="r"><code># Extract NDVI for each observation and bind to observation data
 zebra &lt;- ndvi_r %&gt;%
-  extract(zebra[1:2]) %&gt;%
+  raster::extract(zebra[1:2]) %&gt;%
   cbind(zebra) %&gt;%
   dplyr::rename(ndvi = &quot;.&quot;)</code></pre>
 <p>Now we can fit a variogram.</p>
@@ -556,7 +556,7 @@ predictions %&gt;%
 <pre class="r"><code># Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count</code></pre>
-<pre><code>## [1] 4397.861</code></pre>
+<pre><code>## [1] 4408.644</code></pre>
 <pre class="r"><code># Calculate survey area
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area</code></pre>
@@ -564,7 +564,7 @@ survey_area</code></pre>
 <pre class="r"><code># Calculate average density per km2
 density = total_count / survey_area
 density</code></pre>
-<pre><code>## [1] 31.85305</code></pre>
+<pre><code>## [1] 31.93115</code></pre>
 
 
 

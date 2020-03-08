@@ -122,7 +122,7 @@ ndvi_r <- raster("data_analysis_files/naboisho/naboisho_ndvi_cropped") %>%
 plot(ndvi_r)
 # Extract NDVI for each observation and bind to observation data
 zebra <- ndvi_r %>%
-  extract(zebra[1:2]) %>%
+  raster::extract(zebra[1:2]) %>%
   cbind(zebra) %>%
   dplyr::rename(ndvi = ".")
 ```
