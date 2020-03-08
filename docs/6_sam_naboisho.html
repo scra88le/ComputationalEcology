@@ -375,10 +375,10 @@ div.tocify {
       <a href="5_eDNA.html">Environmental DNA</a>
     </li>
     <li>
-      <a href="6_sam_naboisho.Rmd">Abundance Modelling</a>
+      <a href="6_sam_naboisho.html">Abundance Modelling</a>
     </li>
     <li>
-      <a href="7_movement_BA055.Rmd">Movement Modelling</a>
+      <a href="7_movement_BA055.html">Movement Modelling</a>
     </li>
   </ul>
 </li>
@@ -556,7 +556,7 @@ predictions %&gt;%
 <pre class="r"><code># Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count</code></pre>
-<pre><code>## [1] 4408.644</code></pre>
+<pre><code>## [1] 4404.203</code></pre>
 <pre class="r"><code># Calculate survey area
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area</code></pre>
@@ -564,7 +564,7 @@ survey_area</code></pre>
 <pre class="r"><code># Calculate average density per km2
 density = total_count / survey_area
 density</code></pre>
-<pre><code>## [1] 31.93115</code></pre>
+<pre><code>## [1] 31.89898</code></pre>
 
 
 
