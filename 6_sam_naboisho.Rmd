@@ -254,7 +254,7 @@ Calculate the overall population density per km2
 # Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count
-# Calculate survey area
+# Calculate survey area in km2
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area
 # Calculate average density per km2
