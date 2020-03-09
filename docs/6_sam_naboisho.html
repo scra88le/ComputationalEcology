@@ -375,7 +375,7 @@ div.tocify {
       <a href="5_eDNA.html">Environmental DNA</a>
     </li>
     <li>
-      <a href="6_sam_naboisho.html">Abundance Modelling</a>
+      <a href="6_sam_naboisho.html">Geostatistics</a>
     </li>
     <li>
       <a href="7_movement_BA055.html">Movement Modelling</a>
@@ -399,6 +399,10 @@ div.tocify {
 </div>
 
 
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Geostatistics is a class of statistics used to analyze and predict the values associated with spatial or spatiotemporal phenomena. It incorporates the spatial (and in some cases temporal) coordinates of the data within the analyses. Geostatistics attempts to fit a stochastic model to the known location of a phenomenon and associated covariates, inorder to</p>
+<p>Here we use a dataset of species observation locations within the Naboisho conservancy in Kenya. In this example we will model the distribution of Zebra abudaance using geostatistical techniques.</p>
 <pre class="r"><code># Load libraries
 library(tidyr)
 library(dplyr)
@@ -413,7 +417,9 @@ library(raster)
 rm(list = ls())  
 setwd(&quot;/Users/anthony/Documents/GitHub/ComputationalEcology/&quot;)
 survey &lt;- readRDS(&quot;data_analysis_files/naboisho/clean_survey.RData&quot;)</code></pre>
-<p>First change a few bits of the data structure</p>
+</div>
+<div id="visualising-the-data" class="section level1">
+<h1>Visualising the data</h1>
 <pre class="r"><code># Add sf POINTs to dataframe for coords
 survey &lt;- survey %&gt;% 
   # Remove observations with no long, lat data
@@ -428,6 +434,8 @@ survey %&gt;%
     facet_wrap(~transect, scale = &quot;free&quot;) +
     theme_bw()</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/data_wrangling-1.png" width="672" /></p>
+<div id="generating-species-locations" class="section level2">
+<h2>Generating species locations</h2>
 <p>Now we need to generate the coordinates of all species, given the observer location (long, lat), distance between species and observer and bearing</p>
 <pre class="r"><code>species_locations &lt;- geosphere::destPoint(
   # drop sf geometry and select vector of observer locations
@@ -477,7 +485,11 @@ species_locations %&gt;%
 <p><img src="6_sam_naboisho_files/figure-html/remove_outliers-1.png" width="672" /></p>
 <pre class="r"><code># Generate bounding box for Naboisho in WGS84
 naboisho_bbox &lt;- st_bbox(species_locations$geometry)</code></pre>
-<p>We want to select Zebra to generate a spatial abundance estimation. Let’s also subset by year and month</p>
+</div>
+</div>
+<div id="spatial-zebra-observations-in-time" class="section level1">
+<h1>Spatial Zebra observations in time</h1>
+<p>We want to select Zebra to generate a spatial abundance estimation. Our spatial model assumes that the random process within it is a <em>stationary process</em>. That is, the statistical properties within it are applicable across the entire spatial domain. Therefore we should select Zebra observations from a particular point in time. Below we choose observations from July 2018 only.</p>
 <pre class="r"><code># Create target dataset
 zebra &lt;- species_locations %&gt;% 
   filter(species == &quot;Zebra&quot;) %&gt;%
@@ -492,7 +504,12 @@ zebra %&gt;%
   geom_point(aes(x=easting, y=northing, size=size)) +
   theme_bw()</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/filter_species-1.png" width="672" /></p>
-<p>For the species observation locations, we need to load the ndvi as a covariate.</p>
+<p>the plot above shows Zebra locations from a survey within the Naboisho conservancy as of July 2018. Note the size of the dot shows the size of the Zebra heard observed.</p>
+</div>
+<div id="adding-ndvi-as-a-model-covariate" class="section level1">
+<h1>Adding NDVI as a model covariate</h1>
+<p>Before we generate our spatial model, we can generate a Normalised Difference Vegetation Index (NDVI) for the Naboisho conservancy. NDVI quantifies the degree of vegetation spatially by measuring the difference between reflected near-infrared (which vegetation reflects) and red light (which vegetation absorbs). We can use this spatial information as a covariate and can therefore explore the association of Zebra abundance with the degree of vegetation.</p>
+<p>To generate an NDVI index we use a Landsat satellite raster from July 2018. For each 30m x 30m cell within the raster image, we process the NIR and Red light values to generate an NDVI value. The results in a set of coordinates in space, each of which with a value between -1 and 1. A value of +1 represents represents dense green vegetation and values around 0 or less represent urbanised developments.</p>
 <pre class="r"><code># Load NDVI of naboisho for July 2019
 ndvi_r &lt;- raster(&quot;data_analysis_files/naboisho/naboisho_ndvi_cropped&quot;) %&gt;%
   # Downsample raster to 120m x 120m cells
@@ -505,9 +522,14 @@ zebra &lt;- ndvi_r %&gt;%
   raster::extract(zebra[1:2]) %&gt;%
   cbind(zebra) %&gt;%
   dplyr::rename(ndvi = &quot;.&quot;)</code></pre>
-<p>Now we can fit a variogram.</p>
+</div>
+<div id="fitting-a-variogram" class="section level1">
+<h1>Fitting a variogram</h1>
+<p>A variogram captures the spatial continuity of a dataset. In our Zebra example, a variogram will give a measure of how two different observations vary in abundance as a function of distance between them. To calculate it, a function selects pairs of points (at a different distances, known as laghs) from a dataset and measures the variability between them.</p>
+<p>We can use the r package <code>gstat</code> to fit and plot an empirical variogram.</p>
 <pre class="r"><code>library(gstat)
 coordinates(zebra) &lt;- ~ easting + northing
+
 # Generate sample variogram values for species location data
 species_vgm &lt;- gstat::variogram(size ~ ndvi, zebra)
 # Fit model
@@ -521,8 +543,22 @@ species_fit</code></pre>
 <pre class="r"><code># Plot the model fit
 plot(species_vgm, species_fit)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/variogram_fit-1.png" width="672" /></p>
-<p><img src="6_sam_naboisho_files/figure-html/run_mcml-1.png" width="672" /></p>
-<p>Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate.</p>
+<p>There are three key parameters that describe the variogram:</p>
+<ul>
+<li><em>nugget</em> : the point at which the variograme hits the y axis.</li>
+<li><em>sill</em> : the limit of the variogram tending to infinity lag distances</li>
+<li><em>range</em> : the distance in which the difference of the variogram from the sill becomes negligible</li>
+</ul>
+<p>The range is the key parameter that helps fit our geospatial model.</p>
+</div>
+<div id="a-spatial-abundance-model" class="section level1">
+<h1>A spatial abundance model</h1>
+<p>In order to generate a spatial abundance model from the Naboisho Zebra data, we use the r package <code>PrevMap</code> <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. PreMap is used to analyse spatially referenced prevalance data, and uses classical maximum likelihod estimation as we as Bayesian inference to estate parameters of spatial models. In order to model species abundance counts in space, we use a geostatisical <em>poission</em> model that has its parameters estimated by using a Monte Carlo maximum likelihood estimator. We take the output of the variogram model to initiate parameterisation of the estimator.</p>
+<p><img src="6_sam_naboisho_files/figure-html/fit_LA-1.png" width="672" /></p>
+</div>
+<div id="model-prediction" class="section level1">
+<h1>Model prediction</h1>
+<p>Now we have estimated the parameters for our model, we can make a spatial abundance prediction. Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate data that we generated earlier.</p>
 <pre class="r"><code>pred_grid &lt;- ndvi_r %&gt;%
   # Convert raster to vector of points
   rasterToPoints() %&gt;%
@@ -556,7 +592,7 @@ predictions %&gt;%
 <pre class="r"><code># Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count</code></pre>
-<pre><code>## [1] 4404.203</code></pre>
+<pre><code>## [1] 4409.337</code></pre>
 <pre class="r"><code># Calculate survey area
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area</code></pre>
@@ -564,7 +600,17 @@ survey_area</code></pre>
 <pre class="r"><code># Calculate average density per km2
 density = total_count / survey_area
 density</code></pre>
-<pre><code>## [1] 31.89898</code></pre>
+<pre><code>## [1] 31.93617</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Giorgi, E., Diggle, P. J. (2016). PrevMap: an R package for prevalence mapping. Journal of Statistical Software. In press<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
 
 
 

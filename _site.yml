@@ -19,7 +19,7 @@ navbar:
           hreft: 4_sdm.html
         - text: "Environmental DNA"
           hreft: 5_eDNA.html
-        - text: "Abundance Modelling"
+        - text: "Geostatistics"
           hreft: 6_sam_naboisho.html
         - text: "Movement Modelling"  
           hreft: 7_movement_BA055.html

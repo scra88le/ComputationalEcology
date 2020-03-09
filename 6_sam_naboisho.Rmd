@@ -2,6 +2,12 @@
 title: "Species abundance analysis"
 ---
 
+# Introduction
+
+Geostatistics is a class of statistics used to analyze and predict the values associated with spatial or spatiotemporal phenomena. It incorporates the spatial (and in some cases temporal) coordinates of the data within the analyses. Geostatistics attempts to fit a stochastic model to the known location of a phenomenon and associated covariates, inorder to 
+
+Here we use a dataset of species observation locations within the Naboisho conservancy in Kenya. In this example we will model the distribution of Zebra abudaance using geostatistical techniques.
+
 ```{r load_libs_and_data, message=FALSE, warning=FALSE}
 # Load libraries
 library(tidyr)
@@ -19,7 +25,7 @@ setwd("/Users/anthony/Documents/GitHub/ComputationalEcology/")
 survey <- readRDS("data_analysis_files/naboisho/clean_survey.RData")
 ```
 
-First change a few bits of the data structure
+# Visualising the data
 
 ```{r data_wrangling, message=FALSE, warning=FALSE}
 # Add sf POINTs to dataframe for coords
@@ -36,6 +42,8 @@ survey %>%
     facet_wrap(~transect, scale = "free") +
     theme_bw()
 ```
+
+## Generating species locations
 
 Now we need to generate the coordinates of all species, given the observer location (long, lat), distance between species and observer and bearing
 
@@ -93,7 +101,9 @@ species_locations %>%
 naboisho_bbox <- st_bbox(species_locations$geometry)
 ```
 
-We want to select Zebra to generate a spatial abundance estimation. Let's also subset by year and month
+# Spatial Zebra observations in time
+
+We want to select Zebra to generate a spatial abundance estimation. Our spatial model assumes that the random process within it is a *stationary process*. That is, the statistical properties within it are applicable across the entire spatial domain. Therefore we should select Zebra observations from a particular point in time. Below we choose observations from July 2018 only.
 
 ```{r filter_species, message=FALSE, warning=FALSE}
 # Create target dataset
@@ -111,7 +121,13 @@ zebra %>%
   theme_bw()
 ```
 
-For the species observation locations, we need to load the ndvi as a covariate.
+the plot above shows Zebra locations from a survey within the Naboisho conservancy as of July 2018. Note the size of the dot shows the size of the Zebra heard observed. 
+
+# Adding NDVI as a model covariate
+
+Before we generate our spatial model, we can generate a Normalised Difference Vegetation Index (NDVI) for the Naboisho conservancy. NDVI quantifies the degree of vegetation spatially by measuring the difference between reflected near-infrared  (which vegetation reflects) and red light (which vegetation absorbs). We can use this spatial information as a covariate and can therefore explore the association of Zebra abundance with the degree of vegetation. 
+
+To generate an NDVI index we use a Landsat satellite raster from July 2018. For each 30m x 30m cell within the raster image, we process the NIR and Red light values to generate an NDVI value. The results in a set of coordinates in space, each of which with a value between -1 and 1. A value of +1 represents represents dense green vegetation and values around 0 or less represent urbanised developments.
 
 ```{r ndvi_join, message=FALSE, warning=FALSE}
 # Load NDVI of naboisho for July 2019
@@ -127,11 +143,16 @@ zebra <- ndvi_r %>%
   dplyr::rename(ndvi = ".")
 ```
 
-Now we can fit a variogram.
+# Fitting a variogram
+
+A variogram captures the spatial continuity of a dataset. In our Zebra example, a variogram will give a measure of how two different observations vary in abundance as a function of distance between them. To calculate it, a function selects pairs of points (at a different distances, known as laghs) from a dataset and measures the variability between them. 
+
+We can use the r package `gstat` to fit and plot an empirical variogram.
 
 ```{r variogram_fit, message=FALSE, warning=FALSE}
 library(gstat)
 coordinates(zebra) <- ~ easting + northing
+
 # Generate sample variogram values for species location data
 species_vgm <- gstat::variogram(size ~ ndvi, zebra)
 # Fit model
@@ -143,8 +164,19 @@ species_fit
 plot(species_vgm, species_fit)
 ```
 
+There are three key parameters that describe the variogram:
 
-```{r fit_LA, warning=FALSE, echo=F, results='hide'}
+* *nugget* : the point at which the variograme hits the y axis.
+* *sill* : the limit of the variogram tending to infinity lag distances
+* *range* : the distance in which the difference of the variogram from the sill becomes negligible
+
+The range is the key parameter that helps fit our geospatial model.
+
+# A spatial abundance model
+
+In order to generate a spatial abundance model from the Naboisho Zebra data, we use the r package `PrevMap` [^1]. PreMap is used to analyse spatially referenced prevalance data, and uses classical maximum likelihod estimation as we as Bayesian inference to estate parameters of spatial models. In order to model species abundance counts in space, we use a geostatisical *poission* model that has its parameters estimated by using a Monte Carlo maximum likelihood estimator. We take the output of the variogram model to initiate parameterisation of the estimator.
+
+```{r fit_LA, message= F, warning=FALSE, echo=F, results='hide'}
 fit.LA <- glgm.LA(size ~ ndvi,
                   coords = ~ I(easting) + I(northing),
                   kappa=0.5,
@@ -152,8 +184,7 @@ fit.LA <- glgm.LA(size ~ ndvi,
                   fixed.rel.nugget = 0.0,
                   data=zebra,
                   family="Poisson")
-```
-```{r run_mcml, message=FALSE, warning=FALSE, echo=F, results='hide' }
+
 par0 <- coef(fit.LA)
 
 c.mcmc <- control.mcmc.MCML(n.sim=10000,
@@ -173,7 +204,10 @@ fit.MCML <- poisson.log.MCML(size ~ ndvi,
 summary(fit.MCML)
 ```
 
-Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate.
+# Model prediction
+
+Now we have estimated the parameters for our model, we can make a spatial abundance prediction. 
+Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate data that we generated earlier.
 
 ```{r make_pred_grid}
 pred_grid <- ndvi_r %>%
@@ -227,3 +261,7 @@ survey_area
 density = total_count / survey_area
 density
 ```
+
+# References
+
+[^1]: Giorgi, E., Diggle, P. J. (2016). PrevMap: an R package for prevalence mapping. Journal of Statistical Software. In press
