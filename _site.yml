@@ -23,7 +23,8 @@ navbar:
           hreft: 6_sam_naboisho.html
         - text: "Movement Modelling"  
           hreft: 7_movement_BA055.html
-          
+        - text: "Distance Sampling"
+          hreft: 8_distance_sampling.html
 output:  
   html_document:  
     toc: true  

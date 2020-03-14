@@ -227,7 +227,9 @@ pred.MCML <- spatial.pred.poisson.MCML(fit.MCML,
                                        grid.pred = pred_grid,
                                        control.mcmc = c.mcmc,
                                        type = "marginal",
-                                       predictors = pred_grid)
+                                       predictors = pred_grid,
+                                       standard.errors = T,
+                                       plot.correlogram = T)
 ```
 
 We can plot the spatial distribution of the mean exponential abundance together with the variance.
@@ -236,6 +238,9 @@ We can plot the spatial distribution of the mean exponential abundance together 
 predictions <- cbind(exp_pred = 
                        # Select predictions
                        pred.MCML$exponential$predictions,
+                     std_err =
+                       # Select standard errors
+                       pred.MCML$exponential$standard.errors,
                        # Against coordinate grid
                        pred_grid %>% dplyr::select(easting,northing))
 
@@ -253,7 +258,7 @@ Calculate the overall population density per km2
 ```{r abundance}
 # Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
-total_count
+total_countR
 # Calculate survey area in km2
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area
