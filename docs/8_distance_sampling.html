@@ -403,11 +403,11 @@ div.tocify {
 </div>
 
 
-<div id="introduction---detecting-rare-species-in-multi-species-survey" class="section level1">
-<h1>Introduction - detecting rare species in multi-species survey</h1>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <p>This vignette is based upon a vignette by Erix Rexstad at the CREEM, St Andrews University<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The underlying data for the analysis presented is part of an ongoing survey within the Naboisho conservancy within the greater Mara ecosystem, and is led by Professor Stewart Thompson<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. The project uses <em>distance sampling</em> techniques to record observations across 9 different transects within the conservancy. The overall aim of the project is to provide an evidence based approach for the ecological outcomes of conservancy partnerships between indigenous land owners and private investors.</p>
 <div id="distance-sampling" class="section level2">
-<h2>Distance sampling</h2>
+<h2><span class="header-section-number">1.1</span> Distance sampling</h2>
 <p>Distance sampling <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> is a statistical method that can be used for estimating population densities and abundance. Typically an observer traverses a straightline (a transecrt) that is randomly loated within the study area. On observing a species of interest, the distance from the observer to the observed species is recorded (<em>r</em>), as well as the angle of detection (<span class="math inline">\(\theta\)</span>) to the transect line. The distance between the species detected and the transect line may then be calculatd as <span class="math inline">\(d = r \sin \theta\)</span>.</p>
 <p>Once a number of detections have been made along a transect, the set of distance data, <span class="math inline">\(d\)</span>, can be used to estimate a <em>detection function</em>. This describes the probability of detecting a given species at a given distance. In effect, the detection models the <em>detectability</em> or species distribution across the landscape for a given habitat, and so helps to account for species that were undetected when the observer traversed the transect(s) in question. A key assumption is that all species at zero distance (on the transect) are detected; that is, detectability at zero distance has probabiliy 1.</p>
 <p>Species density, <span class="math inline">\(D\)</span>, within a given survey area, <span class="math inline">\(A\)</span>, may then be determined as:</p>
@@ -415,8 +415,9 @@ div.tocify {
 <p>Where <span class="math inline">\(n\)</span> = number of species detected, and <span class="math inline">\(P\)</span> is the average probability of detecting a species within width <em>w</em> of a transect line.</p>
 </div>
 <div id="multi-species-surveys" class="section level2">
-<h2>Multi-species surveys</h2>
-<p>The Naboisho data is an example of a multi-species survey. <more stuff here></p>
+<h2><span class="header-section-number">1.2</span> Multi-species surveys</h2>
+<p>The Naboisho data is an example of a multi-species survey. Multispecies wildlife monitoring across large geographical regions is important for effective conservation planning in response to expected impacts from climate change and land use. This does mean the procesing of the data set is more complicated than it might be for a single species survey, as multiple detection functions must be calculated. The naboisho survey comprises observations from ten woodland and plains transects over four years of field work. Plains and woddlands transect types are known as <em>strata</em>. Different stratum exhibit different detectability functions, sowe need to fit specific detection functions accordingly.</p>
+<p>Species observed within the Naboisho conservancy are typical of a large savannah ecosystem and includes large carnoves and ungulates. Some of the species observed, such as <em>Dik Dik</em> or <em>Lion</em>, are quite rare. As such there is often insufficient detections to fit a detection function from data for a rare species. But it is often true that the presence of rare species is a function of more common species. As such we can exploit this correlation an treat <em>Species</em> as a covariate in modelling the detection function. This vignette sets out to demonstrate how we can estimate abundance and density across a multi-species survey, useing the <code>Distance</code> package.</p>
 <pre class="r"><code># Load some libraries to get started
 library(Distance)
 library(tidyverse)
@@ -431,11 +432,14 @@ wd = &quot;/Users/anthony/Documents/GitHub/ComputationalEcology/data_analysis_fi
 setwd(wd)
 
 # Load underlying survey data
-clean_obs &lt;- read.csv(&quot;clean_obs.csv&quot;, stringsAsFactors = F)</code></pre>
+clean_obs &lt;- read.csv(&quot;clean_obs.csv&quot;, stringsAsFactors = F)
+
+# Set units of measure
+convunit &lt;- convert_units(&quot;meter&quot;, &quot;kilometer&quot;, &quot;square kilometre&quot;)</code></pre>
 </div>
 </div>
 <div id="clean-the-data" class="section level1">
-<h1>Clean the data</h1>
+<h1><span class="header-section-number">2</span> Clean the data</h1>
 <p>Before we can proceed with our distance sampling analysis, we load all observations from the Naboisho surveys, from 2017 to 2019. This is a multi-species survey comprising:</p>
 <ul>
 <li>Nine different transects</li>
@@ -461,8 +465,8 @@ data_clean &lt;- clean_obs %&gt;%
     Region.Label == &quot;Plains&quot;   ~ as.character(Plains))) %&gt;%
   # Add in region area for each observation stratum
   mutate(Area = case_when(
-    Region.Label == &quot;Woodland&quot; ~ as.numeric(165.763 * 1000),         
-    Region.Label == &quot;Plains&quot;   ~ as.numeric(36.579  * 1000))) %&gt;% 
+    Region.Label == &quot;Woodland&quot; ~ as.numeric(165.763),         
+    Region.Label == &quot;Plains&quot;   ~ as.numeric(36.579))) %&gt;% 
   # Create a new column for the date
   mutate(Year = lubridate::dmy(as.character(Date)) %&gt;% lubridate::year()) %&gt;%
   # Add a new column for the month of the year
@@ -477,7 +481,7 @@ data_clean &lt;- clean_obs %&gt;%
 # Plot</code></pre>
 </div>
 <div id="analysis-periods" class="section level1">
-<h1>Analysis periods</h1>
+<h1><span class="header-section-number">3</span> Analysis periods</h1>
 <p>We want to generate a detection function and ultimately a density estimate for each species by:</p>
 <ul>
 <li>Year</li>
@@ -503,9 +507,8 @@ head(ds_params)</code></pre>
 ## 4     Woodland 2018   Jan
 ## 5       Plains 2017   Feb
 ## 6     Woodland 2017   Feb</code></pre>
-</div>
-<div id="generating-datasets-for-each-analysis-period" class="section level1">
-<h1>Generating datasets for each analysis period</h1>
+<div id="generating-datasets-for-analysis" class="section level2">
+<h2><span class="header-section-number">3.1</span> Generating datasets for analysis</h2>
 <p>We can now use <code>ds_params</code> together with the <code>purrr::map</code> function to subset our data set of all observations to create a subset for each row within <code>ds_params</code>.</p>
 <pre class="r"><code># Create all data set permutations for ddf calc
 ds_data &lt;- pmap_df(
@@ -520,14 +523,16 @@ ds_data &lt;- pmap_df(
     Year         == ..2,
     Month        == ..3)) %&gt;%
   # Add effort column
-  group_by(Sample.Label) %&gt;%       
+  group_by(Sample.Label) %&gt;%
+  # Each transect is 2km
   mutate(Effort = length(unique(Date)) * 2) %&gt;%
   ungroup() %&gt;%
   # Nest the output data
   group_by(Region.Label,Year,Month) %&gt;% nest()</code></pre>
 </div>
-<div id="calculating-species-detectability" class="section level1">
-<h1>Calculating species detectability</h1>
+</div>
+<div id="species-detectability" class="section level1">
+<h1><span class="header-section-number">4</span> Species detectability</h1>
 <pre class="r"><code># Generate a distance model for each dataset
 ds_data &lt;- ds_data %&gt;%
   mutate(
@@ -540,16 +545,16 @@ ds_data &lt;- ds_data %&gt;%
           data = as.data.frame(.) ,
           # Use a half-normal fit
           key=&quot;hn&quot;,
-          # Convert distances (m) to km
-          #convert.units = 0.001,
+          # Convert to correct UoM
+          convert.units = convunit,
           # Use species observed as covariate
           formula = ~Species),
         # Retrun NULL if fit fails
         otherwise = NULL)))</code></pre>
 </div>
-<div id="calculating-species-abundance" class="section level1">
-<h1>Calculating species abundance</h1>
-<p>Now we can calculate the abundance of individual species within the overall dataset, for each calculation period.</p>
+<div id="species-abundance" class="section level1">
+<h1><span class="header-section-number">5</span> Species abundance</h1>
+<p>Now we can calculate the abundance of individual species within the overall dataset, for each calculation period. Density estimates for each species can be produced by using the <code>dht2</code> function that contains the argument <em>strat_formula</em> used to specific the levels of stratum-specific estimates requested.</p>
 <pre class="r"><code># Function to generate species abundance
 # The function stratifies by species
 dht2_poss &lt;- function (.x, .y) {
@@ -557,6 +562,7 @@ dht2_poss &lt;- function (.x, .y) {
       ddf = .y,
       flatfile = as.data.frame(.x),
       strat_formula = ~Species, 
+      convert_units = convunit,
       stratification = &quot;object&quot;)
 }
                      
@@ -570,31 +576,21 @@ ds_data &lt;- ds_data %&gt;%
     # Catch failed dht2 fits
     possibly(~dht2_poss(.x,.y), 
              # Return NULL if failure
-             otherwise = NULL)))
-
-# Examine final data structure
-head(ds_data)</code></pre>
-<pre><code>## # A tibble: 6 x 6
-## # Groups:   Region.Label, Year, Month [24]
-##   Region.Label  Year Month data               model     abun_model         
-##   &lt;chr&gt;        &lt;int&gt; &lt;fct&gt; &lt;list&gt;             &lt;list&gt;    &lt;list&gt;             
-## 1 Plains        2018 Jan   &lt;tibble [796 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [14 × 30]&gt;
-## 2 Woodland      2018 Jan   &lt;tibble [586 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [13 × 30]&gt;
-## 3 Plains        2018 Feb   &lt;tibble [538 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [13 × 30]&gt;
-## 4 Woodland      2018 Feb   &lt;tibble [374 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [15 × 30]&gt;
-## 5 Plains        2018 Mar   &lt;tibble [514 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [13 × 30]&gt;
-## 6 Woodland      2018 Mar   &lt;tibble [351 × 7]&gt; &lt;dsmodel&gt; &lt;df[,30] [15 × 30]&gt;</code></pre>
+             otherwise = NULL)))</code></pre>
 </div>
 <div id="results" class="section level1">
-<h1>Results</h1>
-<p>Output a detailed results table</p>
+<h1><span class="header-section-number">6</span> Results</h1>
+<p>The results of the modelling can be seen below across all months.</p>
 <pre class="r"><code># Create a table of results that we&#39;re interested in
 tab &lt;- ds_data %&gt;% unnest(abun_model) %&gt;%
   dplyr::select(Year, Month, Region.Label, Species, Abundance, LCI, UCI) %&gt;%
   # group by Year, Month and strata
   group_by(Year, Month, Region.Label) %&gt;%
+  # Sort the data
+  arrange(Year, Month) %&gt;%
   # Set precision on doubles
   mutate_if(is.double, format, digits=2, scientific = FALSE) %&gt;%
+  # Calculate species densities
   mutate(Density = case_when(
     Region.Label == &quot;Woodland&quot; ~ as.numeric(Abundance) / 165.763,
     Region.Label == &quot;Plains&quot;   ~ as.numeric(Abundance) / 36.579
@@ -636,7 +632,2841 @@ Density
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="95">
+<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="163">
+2017
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="23">
+May
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="9">
+Plains
+</td>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+1.42
+</td>
+<td style="text-align:center;">
+0.002926
+</td>
+<td style="text-align:center;">
+692
+</td>
+<td style="text-align:center;">
+0.0388201
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+1.43
+</td>
+<td style="text-align:center;">
+0.256135
+</td>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+0.0390935
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+1.07
+</td>
+<td style="text-align:center;">
+0.063089
+</td>
+<td style="text-align:center;">
+18
+</td>
+<td style="text-align:center;">
+0.0292518
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+10.76
+</td>
+<td style="text-align:center;">
+2.075677
+</td>
+<td style="text-align:center;">
+56
+</td>
+<td style="text-align:center;">
+0.2941579
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.000099
+</td>
+<td style="text-align:center;">
+353
+</td>
+<td style="text-align:center;">
+0.0051942
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+1.03
+</td>
+<td style="text-align:center;">
+0.064431
+</td>
+<td style="text-align:center;">
+16
+</td>
+<td style="text-align:center;">
+0.0281582
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+17.89
+</td>
+<td style="text-align:center;">
+6.080585
+</td>
+<td style="text-align:center;">
+53
+</td>
+<td style="text-align:center;">
+0.4890784
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+8.51
+</td>
+<td style="text-align:center;">
+0.433942
+</td>
+<td style="text-align:center;">
+167
+</td>
+<td style="text-align:center;">
+0.2326471
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+42.30
+</td>
+<td style="text-align:center;">
+0.759108
+</td>
+<td style="text-align:center;">
+2357
+</td>
+<td style="text-align:center;">
+1.1564012
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="14">
+Woodland
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+8.5
+</td>
+<td style="text-align:center;">
+1.4410
+</td>
+<td style="text-align:center;">
+50
+</td>
+<td style="text-align:center;">
+0.0512780
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+1.9
+</td>
+<td style="text-align:center;">
+0.0266
+</td>
+<td style="text-align:center;">
+132
+</td>
+<td style="text-align:center;">
+0.0114621
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+3.8
+</td>
+<td style="text-align:center;">
+0.0024
+</td>
+<td style="text-align:center;">
+5788
+</td>
+<td style="text-align:center;">
+0.0229243
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+5.2
+</td>
+<td style="text-align:center;">
+0.7500
+</td>
+<td style="text-align:center;">
+36
+</td>
+<td style="text-align:center;">
+0.0313701
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+11.7
+</td>
+<td style="text-align:center;">
+2.4942
+</td>
+<td style="text-align:center;">
+55
+</td>
+<td style="text-align:center;">
+0.0705827
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+14.6
+</td>
+<td style="text-align:center;">
+3.5558
+</td>
+<td style="text-align:center;">
+60
+</td>
+<td style="text-align:center;">
+0.0880776
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+143.1
+</td>
+<td style="text-align:center;">
+64.2687
+</td>
+<td style="text-align:center;">
+318
+</td>
+<td style="text-align:center;">
+0.8632807
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+55.7
+</td>
+<td style="text-align:center;">
+19.7066
+</td>
+<td style="text-align:center;">
+158
+</td>
+<td style="text-align:center;">
+0.3360219
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+22.8
+</td>
+<td style="text-align:center;">
+8.4712
+</td>
+<td style="text-align:center;">
+61
+</td>
+<td style="text-align:center;">
+0.1375458
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+9.2
+</td>
+<td style="text-align:center;">
+2.8206
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+0.0555009
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+9.0
+</td>
+<td style="text-align:center;">
+0.0059
+</td>
+<td style="text-align:center;">
+13611
+</td>
+<td style="text-align:center;">
+0.0542944
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+266.6
+</td>
+<td style="text-align:center;">
+142.6757
+</td>
+<td style="text-align:center;">
+498
+</td>
+<td style="text-align:center;">
+1.6083203
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+98.5
+</td>
+<td style="text-align:center;">
+61.5690
+</td>
+<td style="text-align:center;">
+158
+</td>
+<td style="text-align:center;">
+0.5942219
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+650.5
+</td>
+<td style="text-align:center;">
+6.5752
+</td>
+<td style="text-align:center;">
+64349
+</td>
+<td style="text-align:center;">
+3.9242774
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="27">
+Jun
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
+Plains
+</td>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+0.301
+</td>
+<td style="text-align:center;">
+0.015839
+</td>
+<td style="text-align:center;">
+5.7
+</td>
+<td style="text-align:center;">
+0.0082288
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+1.323
+</td>
+<td style="text-align:center;">
+0.326853
+</td>
+<td style="text-align:center;">
+5.4
+</td>
+<td style="text-align:center;">
+0.0361683
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+0.838
+</td>
+<td style="text-align:center;">
+0.150382
+</td>
+<td style="text-align:center;">
+4.7
+</td>
+<td style="text-align:center;">
+0.0229093
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+1.339
+</td>
+<td style="text-align:center;">
+0.373061
+</td>
+<td style="text-align:center;">
+4.8
+</td>
+<td style="text-align:center;">
+0.0366057
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+9.837
+</td>
+<td style="text-align:center;">
+3.941190
+</td>
+<td style="text-align:center;">
+24.6
+</td>
+<td style="text-align:center;">
+0.2689248
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+21.987
+</td>
+<td style="text-align:center;">
+8.201572
+</td>
+<td style="text-align:center;">
+58.9
+</td>
+<td style="text-align:center;">
+0.6010826
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+297.147
+</td>
+<td style="text-align:center;">
+199.801877
+</td>
+<td style="text-align:center;">
+441.9
+</td>
+<td style="text-align:center;">
+8.1234315
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+3.140
+</td>
+<td style="text-align:center;">
+1.101653
+</td>
+<td style="text-align:center;">
+8.9
+</td>
+<td style="text-align:center;">
+0.0858416
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+7.855
+</td>
+<td style="text-align:center;">
+1.924018
+</td>
+<td style="text-align:center;">
+32.1
+</td>
+<td style="text-align:center;">
+0.2147407
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+0.056
+</td>
+<td style="text-align:center;">
+0.000026
+</td>
+<td style="text-align:center;">
+121.4
+</td>
+<td style="text-align:center;">
+0.0015309
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+169.963
+</td>
+<td style="text-align:center;">
+87.004711
+</td>
+<td style="text-align:center;">
+332.0
+</td>
+<td style="text-align:center;">
+4.6464638
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+13.813
+</td>
+<td style="text-align:center;">
+2.952501
+</td>
+<td style="text-align:center;">
+64.6
+</td>
+<td style="text-align:center;">
+0.3776210
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+527.598
+</td>
+<td style="text-align:center;">
+316.585189
+</td>
+<td style="text-align:center;">
+879.3
+</td>
+<td style="text-align:center;">
+14.4235217
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="14">
+Woodland
+</td>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+11.4
+</td>
+<td style="text-align:center;">
+2.56
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+0.0687729
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+41.4
+</td>
+<td style="text-align:center;">
+11.42
+</td>
+<td style="text-align:center;">
+150
+</td>
+<td style="text-align:center;">
+0.2497542
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+11.6
+</td>
+<td style="text-align:center;">
+2.72
+</td>
+<td style="text-align:center;">
+49
+</td>
+<td style="text-align:center;">
+0.0699794
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+32.3
+</td>
+<td style="text-align:center;">
+9.71
+</td>
+<td style="text-align:center;">
+107
+</td>
+<td style="text-align:center;">
+0.1948565
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+8.6
+</td>
+<td style="text-align:center;">
+2.29
+</td>
+<td style="text-align:center;">
+32
+</td>
+<td style="text-align:center;">
+0.0518813
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+193.0
+</td>
+<td style="text-align:center;">
+48.43
+</td>
+<td style="text-align:center;">
+769
+</td>
+<td style="text-align:center;">
+1.1643129
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+500.5
+</td>
+<td style="text-align:center;">
+248.30
+</td>
+<td style="text-align:center;">
+1009
+</td>
+<td style="text-align:center;">
+3.0193710
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+614.8
+</td>
+<td style="text-align:center;">
+241.53
+</td>
+<td style="text-align:center;">
+1565
+</td>
+<td style="text-align:center;">
+3.7089097
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+98.2
+</td>
+<td style="text-align:center;">
+50.45
+</td>
+<td style="text-align:center;">
+191
+</td>
+<td style="text-align:center;">
+0.5924121
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+71.2
+</td>
+<td style="text-align:center;">
+23.85
+</td>
+<td style="text-align:center;">
+212
+</td>
+<td style="text-align:center;">
+0.4295289
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+3.7
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+55
+</td>
+<td style="text-align:center;">
+0.0223210
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+370.2
+</td>
+<td style="text-align:center;">
+148.84
+</td>
+<td style="text-align:center;">
+921
+</td>
+<td style="text-align:center;">
+2.2333090
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+131.9
+</td>
+<td style="text-align:center;">
+72.22
+</td>
+<td style="text-align:center;">
+241
+</td>
+<td style="text-align:center;">
+0.7957144
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+2088.8
+</td>
+<td style="text-align:center;">
+1451.03
+</td>
+<td style="text-align:center;">
+3007
+</td>
+<td style="text-align:center;">
+12.6011233
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="27">
+Jul
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="12">
+Plains
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+0.27
+</td>
+<td style="text-align:center;">
+0.00181
+</td>
+<td style="text-align:center;">
+40.9
+</td>
+<td style="text-align:center;">
+0.0073813
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+0.66
+</td>
+<td style="text-align:center;">
+0.04028
+</td>
+<td style="text-align:center;">
+10.8
+</td>
+<td style="text-align:center;">
+0.0180431
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+0.21
+</td>
+<td style="text-align:center;">
+0.00014
+</td>
+<td style="text-align:center;">
+323.3
+</td>
+<td style="text-align:center;">
+0.0057410
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+0.43
+</td>
+<td style="text-align:center;">
+0.13071
+</td>
+<td style="text-align:center;">
+1.4
+</td>
+<td style="text-align:center;">
+0.0117554
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+18.93
+</td>
+<td style="text-align:center;">
+5.53653
+</td>
+<td style="text-align:center;">
+64.7
+</td>
+<td style="text-align:center;">
+0.5175100
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+44.46
+</td>
+<td style="text-align:center;">
+13.93227
+</td>
+<td style="text-align:center;">
+141.9
+</td>
+<td style="text-align:center;">
+1.2154515
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+419.21
+</td>
+<td style="text-align:center;">
+201.85385
+</td>
+<td style="text-align:center;">
+870.6
+</td>
+<td style="text-align:center;">
+11.4604008
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+5.35
+</td>
+<td style="text-align:center;">
+1.72633
+</td>
+<td style="text-align:center;">
+16.6
+</td>
+<td style="text-align:center;">
+0.1462588
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+5.72
+</td>
+<td style="text-align:center;">
+0.97506
+</td>
+<td style="text-align:center;">
+33.6
+</td>
+<td style="text-align:center;">
+0.1563739
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+821.37
+</td>
+<td style="text-align:center;">
+363.52020
+</td>
+<td style="text-align:center;">
+1855.9
+</td>
+<td style="text-align:center;">
+22.4546871
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+11.88
+</td>
+<td style="text-align:center;">
+3.34981
+</td>
+<td style="text-align:center;">
+42.1
+</td>
+<td style="text-align:center;">
+0.3247765
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+1328.49
+</td>
+<td style="text-align:center;">
+716.64911
+</td>
+<td style="text-align:center;">
+2462.7
+</td>
+<td style="text-align:center;">
+36.3183794
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="15">
+Woodland
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+15.73
+</td>
+<td style="text-align:center;">
+1.88462
+</td>
+<td style="text-align:center;">
+131
+</td>
+<td style="text-align:center;">
+0.0948945
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Bushbuck
+</td>
+<td style="text-align:center;">
+0.49
+</td>
+<td style="text-align:center;">
+0.00034
+</td>
+<td style="text-align:center;">
+713
+</td>
+<td style="text-align:center;">
+0.0029560
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+7.06
+</td>
+<td style="text-align:center;">
+2.12996
+</td>
+<td style="text-align:center;">
+23
+</td>
+<td style="text-align:center;">
+0.0425909
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+25.32
+</td>
+<td style="text-align:center;">
+7.40618
+</td>
+<td style="text-align:center;">
+87
+</td>
+<td style="text-align:center;">
+0.1527482
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+8.76
+</td>
+<td style="text-align:center;">
+1.09730
+</td>
+<td style="text-align:center;">
+70
+</td>
+<td style="text-align:center;">
+0.0528465
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+21.30
+</td>
+<td style="text-align:center;">
+5.54129
+</td>
+<td style="text-align:center;">
+82
+</td>
+<td style="text-align:center;">
+0.1284967
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+143.00
+</td>
+<td style="text-align:center;">
+45.18466
+</td>
+<td style="text-align:center;">
+453
+</td>
+<td style="text-align:center;">
+0.8626774
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+658.48
+</td>
+<td style="text-align:center;">
+390.95644
+</td>
+<td style="text-align:center;">
+1109
+</td>
+<td style="text-align:center;">
+3.9724185
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+934.94
+</td>
+<td style="text-align:center;">
+343.41110
+</td>
+<td style="text-align:center;">
+2545
+</td>
+<td style="text-align:center;">
+5.6402213
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+159.31
+</td>
+<td style="text-align:center;">
+87.78145
+</td>
+<td style="text-align:center;">
+289
+</td>
+<td style="text-align:center;">
+0.9610709
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+81.73
+</td>
+<td style="text-align:center;">
+30.83437
+</td>
+<td style="text-align:center;">
+217
+</td>
+<td style="text-align:center;">
+0.4930533
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+3.09
+</td>
+<td style="text-align:center;">
+0.24349
+</td>
+<td style="text-align:center;">
+39
+</td>
+<td style="text-align:center;">
+0.0186411
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+5640.56
+</td>
+<td style="text-align:center;">
+2321.33361
+</td>
+<td style="text-align:center;">
+13706
+</td>
+<td style="text-align:center;">
+34.0278591
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+133.88
+</td>
+<td style="text-align:center;">
+79.87869
+</td>
+<td style="text-align:center;">
+224
+</td>
+<td style="text-align:center;">
+0.8076591
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+7833.66
+</td>
+<td style="text-align:center;">
+4035.99393
+</td>
+<td style="text-align:center;">
+15205
+</td>
+<td style="text-align:center;">
+47.2581939
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="28">
+Aug
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
+Plains
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+0.042
+</td>
+<td style="text-align:center;">
+0.0040
+</td>
+<td style="text-align:center;">
+0.45
+</td>
+<td style="text-align:center;">
+0.0011482
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+0.225
+</td>
+<td style="text-align:center;">
+0.0002
+</td>
+<td style="text-align:center;">
+255.67
+</td>
+<td style="text-align:center;">
+0.0061511
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+0.251
+</td>
+<td style="text-align:center;">
+0.0770
+</td>
+<td style="text-align:center;">
+0.82
+</td>
+<td style="text-align:center;">
+0.0068619
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+0.949
+</td>
+<td style="text-align:center;">
+0.2507
+</td>
+<td style="text-align:center;">
+3.59
+</td>
+<td style="text-align:center;">
+0.0259438
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+17.357
+</td>
+<td style="text-align:center;">
+6.3965
+</td>
+<td style="text-align:center;">
+47.10
+</td>
+<td style="text-align:center;">
+0.4745072
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+13.455
+</td>
+<td style="text-align:center;">
+3.2196
+</td>
+<td style="text-align:center;">
+56.23
+</td>
+<td style="text-align:center;">
+0.3678340
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+547.998
+</td>
+<td style="text-align:center;">
+300.2003
+</td>
+<td style="text-align:center;">
+1000.34
+</td>
+<td style="text-align:center;">
+14.9812187
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+3.368
+</td>
+<td style="text-align:center;">
+1.1399
+</td>
+<td style="text-align:center;">
+9.95
+</td>
+<td style="text-align:center;">
+0.0920747
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+5.920
+</td>
+<td style="text-align:center;">
+1.4410
+</td>
+<td style="text-align:center;">
+24.32
+</td>
+<td style="text-align:center;">
+0.1618415
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+0.485
+</td>
+<td style="text-align:center;">
+0.0523
+</td>
+<td style="text-align:center;">
+4.50
+</td>
+<td style="text-align:center;">
+0.0132590
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+511.071
+</td>
+<td style="text-align:center;">
+214.0062
+</td>
+<td style="text-align:center;">
+1220.49
+</td>
+<td style="text-align:center;">
+13.9717051
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+3.499
+</td>
+<td style="text-align:center;">
+0.6274
+</td>
+<td style="text-align:center;">
+19.52
+</td>
+<td style="text-align:center;">
+0.0956560
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+1104.621
+</td>
+<td style="text-align:center;">
+667.7175
+</td>
+<td style="text-align:center;">
+1827.40
+</td>
+<td style="text-align:center;">
+30.1982285
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="15">
+Woodland
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+23.0
+</td>
+<td style="text-align:center;">
+3.91870
+</td>
+<td style="text-align:center;">
+135
+</td>
+<td style="text-align:center;">
+0.1387523
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+3.3
+</td>
+<td style="text-align:center;">
+0.76172
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+0.0199079
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+26.0
+</td>
+<td style="text-align:center;">
+11.64351
+</td>
+<td style="text-align:center;">
+58
+</td>
+<td style="text-align:center;">
+0.1568504
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+3.1
+</td>
+<td style="text-align:center;">
+0.60245
+</td>
+<td style="text-align:center;">
+16
+</td>
+<td style="text-align:center;">
+0.0187014
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+1.4
+</td>
+<td style="text-align:center;">
+0.00062
+</td>
+<td style="text-align:center;">
+2956
+</td>
+<td style="text-align:center;">
+0.0084458
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+36.3
+</td>
+<td style="text-align:center;">
+13.36400
+</td>
+<td style="text-align:center;">
+98
+</td>
+<td style="text-align:center;">
+0.2189873
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+80.5
+</td>
+<td style="text-align:center;">
+26.86481
+</td>
+<td style="text-align:center;">
+241
+</td>
+<td style="text-align:center;">
+0.4856331
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+780.4
+</td>
+<td style="text-align:center;">
+422.30000
+</td>
+<td style="text-align:center;">
+1442
+</td>
+<td style="text-align:center;">
+4.7079264
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+669.9
+</td>
+<td style="text-align:center;">
+248.01353
+</td>
+<td style="text-align:center;">
+1810
+</td>
+<td style="text-align:center;">
+4.0413120
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+121.4
+</td>
+<td style="text-align:center;">
+66.74747
+</td>
+<td style="text-align:center;">
+221
+</td>
+<td style="text-align:center;">
+0.7323709
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+39.8
+</td>
+<td style="text-align:center;">
+14.20787
+</td>
+<td style="text-align:center;">
+112
+</td>
+<td style="text-align:center;">
+0.2401018
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+3.7
+</td>
+<td style="text-align:center;">
+0.44200
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+0.0223210
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+2209.3
+</td>
+<td style="text-align:center;">
+1210.30397
+</td>
+<td style="text-align:center;">
+4033
+</td>
+<td style="text-align:center;">
+13.3280648
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+200.8
+</td>
+<td style="text-align:center;">
+90.92731
+</td>
+<td style="text-align:center;">
+444
+</td>
+<td style="text-align:center;">
+1.2113680
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+4198.9
+</td>
+<td style="text-align:center;">
+1201.41836
+</td>
+<td style="text-align:center;">
+14675
+</td>
+<td style="text-align:center;">
+25.3307433
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
+Sep
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="27">
+Plains
+</td>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+0.15
+</td>
+<td style="text-align:center;">
+0.014436
+</td>
+<td style="text-align:center;">
+1.6
+</td>
+<td style="text-align:center;">
+0.0041007
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+0.52
+</td>
+<td style="text-align:center;">
+0.000378
+</td>
+<td style="text-align:center;">
+719.4
+</td>
+<td style="text-align:center;">
+0.0142158
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+0.20
+</td>
+<td style="text-align:center;">
+0.000067
+</td>
+<td style="text-align:center;">
+594.0
+</td>
+<td style="text-align:center;">
+0.0054676
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+2.04
+</td>
+<td style="text-align:center;">
+0.584343
+</td>
+<td style="text-align:center;">
+7.1
+</td>
+<td style="text-align:center;">
+0.0557697
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+11.03
+</td>
+<td style="text-align:center;">
+2.013946
+</td>
+<td style="text-align:center;">
+60.4
+</td>
+<td style="text-align:center;">
+0.3015391
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+15.26
+</td>
+<td style="text-align:center;">
+3.297355
+</td>
+<td style="text-align:center;">
+70.6
+</td>
+<td style="text-align:center;">
+0.4171793
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+342.03
+</td>
+<td style="text-align:center;">
+181.737375
+</td>
+<td style="text-align:center;">
+643.7
+</td>
+<td style="text-align:center;">
+9.3504470
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+1.54
+</td>
+<td style="text-align:center;">
+0.286831
+</td>
+<td style="text-align:center;">
+8.3
+</td>
+<td style="text-align:center;">
+0.0421007
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+5.28
+</td>
+<td style="text-align:center;">
+2.096047
+</td>
+<td style="text-align:center;">
+13.3
+</td>
+<td style="text-align:center;">
+0.1443451
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+0.29
+</td>
+<td style="text-align:center;">
+0.000200
+</td>
+<td style="text-align:center;">
+406.2
+</td>
+<td style="text-align:center;">
+0.0079280
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+926.30
+</td>
+<td style="text-align:center;">
+478.985494
+</td>
+<td style="text-align:center;">
+1791.3
+</td>
+<td style="text-align:center;">
+25.3232729
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+9.07
+</td>
+<td style="text-align:center;">
+2.012428
+</td>
+<td style="text-align:center;">
+40.8
+</td>
+<td style="text-align:center;">
+0.2479565
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+1313.71
+</td>
+<td style="text-align:center;">
+354.407629
+</td>
+<td style="text-align:center;">
+4869.6
+</td>
+<td style="text-align:center;">
+35.9143224
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="14">
+Oct
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+1.41
+</td>
+<td style="text-align:center;">
+0.00635
+</td>
+<td style="text-align:center;">
+311.4
+</td>
+<td style="text-align:center;">
+0.0385467
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Bushbuck
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.00012
+</td>
+<td style="text-align:center;">
+283.1
+</td>
+<td style="text-align:center;">
+0.0051942
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+1.52
+</td>
+<td style="text-align:center;">
+0.16265
+</td>
+<td style="text-align:center;">
+14.1
+</td>
+<td style="text-align:center;">
+0.0415539
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+0.14
+</td>
+<td style="text-align:center;">
+0.00857
+</td>
+<td style="text-align:center;">
+2.3
+</td>
+<td style="text-align:center;">
+0.0038273
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+1.53
+</td>
+<td style="text-align:center;">
+0.37130
+</td>
+<td style="text-align:center;">
+6.3
+</td>
+<td style="text-align:center;">
+0.0418273
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+10.15
+</td>
+<td style="text-align:center;">
+3.48218
+</td>
+<td style="text-align:center;">
+29.6
+</td>
+<td style="text-align:center;">
+0.2774816
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+21.17
+</td>
+<td style="text-align:center;">
+4.32153
+</td>
+<td style="text-align:center;">
+103.7
+</td>
+<td style="text-align:center;">
+0.5787474
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+215.29
+</td>
+<td style="text-align:center;">
+112.86730
+</td>
+<td style="text-align:center;">
+410.6
+</td>
+<td style="text-align:center;">
+5.8856174
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+4.25
+</td>
+<td style="text-align:center;">
+1.08340
+</td>
+<td style="text-align:center;">
+16.7
+</td>
+<td style="text-align:center;">
+0.1161869
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+4.22
+</td>
+<td style="text-align:center;">
+1.00355
+</td>
+<td style="text-align:center;">
+17.8
+</td>
+<td style="text-align:center;">
+0.1153667
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Waterbuck
+</td>
+<td style="text-align:center;">
+2.69
+</td>
+<td style="text-align:center;">
+0.27546
+</td>
+<td style="text-align:center;">
+26.3
+</td>
+<td style="text-align:center;">
+0.0735395
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+217.67
+</td>
+<td style="text-align:center;">
+74.22225
+</td>
+<td style="text-align:center;">
+638.4
+</td>
+<td style="text-align:center;">
+5.9506821
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+25.46
+</td>
+<td style="text-align:center;">
+6.78972
+</td>
+<td style="text-align:center;">
+95.5
+</td>
+<td style="text-align:center;">
+0.6960278
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+505.68
+</td>
+<td style="text-align:center;">
+213.61928
+</td>
+<td style="text-align:center;">
+1197.0
+</td>
+<td style="text-align:center;">
+13.8243254
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
+Nov
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
+Woodland
+</td>
+<td style="text-align:center;">
+Buffalo
+</td>
+<td style="text-align:center;">
+60
+</td>
+<td style="text-align:center;">
+9.1
+</td>
+<td style="text-align:center;">
+388
+</td>
+<td style="text-align:center;">
+0.3619626
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Coke Hartebeest
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+1.7
+</td>
+<td style="text-align:center;">
+79
+</td>
+<td style="text-align:center;">
+0.0723925
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Dik Dik
+</td>
+<td style="text-align:center;">
+39
+</td>
+<td style="text-align:center;">
+14.5
+</td>
+<td style="text-align:center;">
+104
+</td>
+<td style="text-align:center;">
+0.2352757
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Elephant
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+3.2
+</td>
+<td style="text-align:center;">
+285
+</td>
+<td style="text-align:center;">
+0.1809813
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+21
+</td>
+<td style="text-align:center;">
+9.8
+</td>
+<td style="text-align:center;">
+44
+</td>
+<td style="text-align:center;">
+0.1266869
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+46
+</td>
+<td style="text-align:center;">
+16.8
+</td>
+<td style="text-align:center;">
+125
+</td>
+<td style="text-align:center;">
+0.2775046
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+557
+</td>
+<td style="text-align:center;">
+311.8
+</td>
+<td style="text-align:center;">
+993
+</td>
+<td style="text-align:center;">
+3.3602191
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+236
+</td>
+<td style="text-align:center;">
+132.1
+</td>
+<td style="text-align:center;">
+420
+</td>
+<td style="text-align:center;">
+1.4237194
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+89
+</td>
+<td style="text-align:center;">
+27.9
+</td>
+<td style="text-align:center;">
+281
+</td>
+<td style="text-align:center;">
+0.5369111
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+31
+</td>
+<td style="text-align:center;">
+15.9
+</td>
+<td style="text-align:center;">
+61
+</td>
+<td style="text-align:center;">
+0.1870140
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+616
+</td>
+<td style="text-align:center;">
+238.5
+</td>
+<td style="text-align:center;">
+1594
+</td>
+<td style="text-align:center;">
+3.7161490
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+57
+</td>
+<td style="text-align:center;">
+28.4
+</td>
+<td style="text-align:center;">
+115
+</td>
+<td style="text-align:center;">
+0.3438644
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+1792
+</td>
+<td style="text-align:center;">
+1234.2
+</td>
+<td style="text-align:center;">
+2603
+</td>
+<td style="text-align:center;">
+10.8106152
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="18">
+Dec
+</td>
+<td style="text-align:center;vertical-align: top !important;" rowspan="8">
+Plains
+</td>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+4.6
+</td>
+<td style="text-align:center;">
+0.90
+</td>
+<td style="text-align:center;">
+23.3
+</td>
+<td style="text-align:center;">
+0.1257552
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+8.5
+</td>
+<td style="text-align:center;">
+1.79
+</td>
+<td style="text-align:center;">
+40.5
+</td>
+<td style="text-align:center;">
+0.2323738
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+105.9
+</td>
+<td style="text-align:center;">
+61.73
+</td>
+<td style="text-align:center;">
+181.6
+</td>
+<td style="text-align:center;">
+2.8951037
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+1.3
+</td>
+<td style="text-align:center;">
+0.34
+</td>
+<td style="text-align:center;">
+5.3
+</td>
+<td style="text-align:center;">
+0.0355395
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+1.1
+</td>
+<td style="text-align:center;">
+0.31
+</td>
+<td style="text-align:center;">
+4.1
+</td>
+<td style="text-align:center;">
+0.0300719
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+30.8
+</td>
+<td style="text-align:center;">
+13.46
+</td>
+<td style="text-align:center;">
+70.3
+</td>
+<td style="text-align:center;">
+0.8420132
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+12.4
+</td>
+<td style="text-align:center;">
+1.87
+</td>
+<td style="text-align:center;">
+81.7
+</td>
+<td style="text-align:center;">
+0.3389923
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+164.6
+</td>
+<td style="text-align:center;">
+100.59
+</td>
+<td style="text-align:center;">
+269.2
+</td>
+<td style="text-align:center;">
+4.4998496
+</td>
+</tr>
+<tr>
+<td style="text-align:center;vertical-align: top !important;" rowspan="10">
+Woodland
+</td>
+<td style="text-align:center;">
+Eland
+</td>
+<td style="text-align:center;">
+5.8
+</td>
+<td style="text-align:center;">
+0.011
+</td>
+<td style="text-align:center;">
+2986
+</td>
+<td style="text-align:center;">
+0.0349897
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Giraffe
+</td>
+<td style="text-align:center;">
+5.9
+</td>
+<td style="text-align:center;">
+1.561
+</td>
+<td style="text-align:center;">
+22
+</td>
+<td style="text-align:center;">
+0.0355930
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Grant Gazelle
+</td>
+<td style="text-align:center;">
+36.0
+</td>
+<td style="text-align:center;">
+4.527
+</td>
+<td style="text-align:center;">
+287
+</td>
+<td style="text-align:center;">
+0.2171775
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Impala
+</td>
+<td style="text-align:center;">
+56.1
+</td>
+<td style="text-align:center;">
+13.552
+</td>
+<td style="text-align:center;">
+232
+</td>
+<td style="text-align:center;">
+0.3384350
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Thomson Gazelle
+</td>
+<td style="text-align:center;">
+144.8
+</td>
+<td style="text-align:center;">
+32.988
+</td>
+<td style="text-align:center;">
+635
+</td>
+<td style="text-align:center;">
+0.8735363
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Topi
+</td>
+<td style="text-align:center;">
+6.8
+</td>
+<td style="text-align:center;">
+1.743
+</td>
+<td style="text-align:center;">
+27
+</td>
+<td style="text-align:center;">
+0.0410224
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Warthog
+</td>
+<td style="text-align:center;">
+19.5
+</td>
+<td style="text-align:center;">
+3.268
+</td>
+<td style="text-align:center;">
+116
+</td>
+<td style="text-align:center;">
+0.1176378
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Wildebeest
+</td>
+<td style="text-align:center;">
+456.8
+</td>
+<td style="text-align:center;">
+74.609
+</td>
+<td style="text-align:center;">
+2797
+</td>
+<td style="text-align:center;">
+2.7557416
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Zebra
+</td>
+<td style="text-align:center;">
+114.1
+</td>
+<td style="text-align:center;">
+22.030
+</td>
+<td style="text-align:center;">
+591
+</td>
+<td style="text-align:center;">
+0.6883321
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Total
+</td>
+<td style="text-align:center;">
+845.8
+</td>
+<td style="text-align:center;">
+161.063
+</td>
+<td style="text-align:center;">
+4442
+</td>
+<td style="text-align:center;">
+5.1024656
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="301">
 2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="27">
@@ -1012,7 +3842,7 @@ Thomson Gazelle
 209.05
 </td>
 <td style="text-align:center;">
-146.33832
+146.33831
 </td>
 <td style="text-align:center;">
 299
@@ -1080,7 +3910,7 @@ Zebra
 497.88
 </td>
 <td style="text-align:center;">
-307.29470
+307.29468
 </td>
 <td style="text-align:center;">
 807
@@ -1097,7 +3927,7 @@ Total
 2104.26
 </td>
 <td style="text-align:center;">
-848.73798
+848.73799
 </td>
 <td style="text-align:center;">
 5217
@@ -1480,7 +4310,7 @@ Thomson Gazelle
 290.64
 </td>
 <td style="text-align:center;">
-127.50599
+127.50598
 </td>
 <td style="text-align:center;">
 662
@@ -1548,7 +4378,7 @@ Wildebeest
 450.31
 </td>
 <td style="text-align:center;">
-291.89733
+291.89776
 </td>
 <td style="text-align:center;">
 695
@@ -2080,7 +4910,7 @@ Total
 <td style="text-align:center;vertical-align: top !important;" rowspan="12">
 Apr
 </td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="21">
+<td style="text-align:center;vertical-align: top !important;" rowspan="25">
 Plains
 </td>
 <td style="text-align:center;">
@@ -2287,411 +5117,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="23">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="51">
+<td style="text-align:center;vertical-align: top !important;" rowspan="28">
 May
-</td>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-1.42
-</td>
-<td style="text-align:center;">
-0.002926
-</td>
-<td style="text-align:center;">
-692
-</td>
-<td style="text-align:center;">
-0.0388201
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-1.43
-</td>
-<td style="text-align:center;">
-0.256135
-</td>
-<td style="text-align:center;">
-8
-</td>
-<td style="text-align:center;">
-0.0390935
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-1.07
-</td>
-<td style="text-align:center;">
-0.063089
-</td>
-<td style="text-align:center;">
-18
-</td>
-<td style="text-align:center;">
-0.0292518
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-10.76
-</td>
-<td style="text-align:center;">
-2.075677
-</td>
-<td style="text-align:center;">
-56
-</td>
-<td style="text-align:center;">
-0.2941579
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-0.19
-</td>
-<td style="text-align:center;">
-0.000099
-</td>
-<td style="text-align:center;">
-353
-</td>
-<td style="text-align:center;">
-0.0051942
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-1.03
-</td>
-<td style="text-align:center;">
-0.064431
-</td>
-<td style="text-align:center;">
-16
-</td>
-<td style="text-align:center;">
-0.0281582
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-17.89
-</td>
-<td style="text-align:center;">
-6.080585
-</td>
-<td style="text-align:center;">
-53
-</td>
-<td style="text-align:center;">
-0.4890784
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-8.51
-</td>
-<td style="text-align:center;">
-0.433942
-</td>
-<td style="text-align:center;">
-167
-</td>
-<td style="text-align:center;">
-0.2326471
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-42.30
-</td>
-<td style="text-align:center;">
-0.759108
-</td>
-<td style="text-align:center;">
-2357
-</td>
-<td style="text-align:center;">
-1.1564012
-</td>
-</tr>
-<tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="14">
-Woodland
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-8.5
-</td>
-<td style="text-align:center;">
-1.4410
-</td>
-<td style="text-align:center;">
-50
-</td>
-<td style="text-align:center;">
-0.0512780
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-1.9
-</td>
-<td style="text-align:center;">
-0.0266
-</td>
-<td style="text-align:center;">
-132
-</td>
-<td style="text-align:center;">
-0.0114621
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-3.8
-</td>
-<td style="text-align:center;">
-0.0024
-</td>
-<td style="text-align:center;">
-5788
-</td>
-<td style="text-align:center;">
-0.0229243
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-5.2
-</td>
-<td style="text-align:center;">
-0.7500
-</td>
-<td style="text-align:center;">
-36
-</td>
-<td style="text-align:center;">
-0.0313701
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-11.7
-</td>
-<td style="text-align:center;">
-2.4942
-</td>
-<td style="text-align:center;">
-55
-</td>
-<td style="text-align:center;">
-0.0705827
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-14.6
-</td>
-<td style="text-align:center;">
-3.5558
-</td>
-<td style="text-align:center;">
-60
-</td>
-<td style="text-align:center;">
-0.0880776
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-143.1
-</td>
-<td style="text-align:center;">
-64.2687
-</td>
-<td style="text-align:center;">
-318
-</td>
-<td style="text-align:center;">
-0.8632807
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-55.7
-</td>
-<td style="text-align:center;">
-19.7066
-</td>
-<td style="text-align:center;">
-158
-</td>
-<td style="text-align:center;">
-0.3360219
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-22.8
-</td>
-<td style="text-align:center;">
-8.4712
-</td>
-<td style="text-align:center;">
-61
-</td>
-<td style="text-align:center;">
-0.1375458
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-9.2
-</td>
-<td style="text-align:center;">
-2.8206
-</td>
-<td style="text-align:center;">
-30
-</td>
-<td style="text-align:center;">
-0.0555009
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-9.0
-</td>
-<td style="text-align:center;">
-0.0059
-</td>
-<td style="text-align:center;">
-13611
-</td>
-<td style="text-align:center;">
-0.0542944
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-266.6
-</td>
-<td style="text-align:center;">
-142.6757
-</td>
-<td style="text-align:center;">
-498
-</td>
-<td style="text-align:center;">
-1.6083203
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-98.5
-</td>
-<td style="text-align:center;">
-61.5690
-</td>
-<td style="text-align:center;">
-158
-</td>
-<td style="text-align:center;">
-0.5942219
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-650.5
-</td>
-<td style="text-align:center;">
-6.5752
-</td>
-<td style="text-align:center;">
-64349
-</td>
-<td style="text-align:center;">
-3.9242774
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="28">
-2018
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="13">
-Plains
 </td>
 <td style="text-align:center;">
 Coke Hartebeest
@@ -3172,479 +5599,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="27">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="53">
+<td style="text-align:center;vertical-align: top !important;" rowspan="26">
 Jun
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="13">
-Plains
-</td>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-0.301
-</td>
-<td style="text-align:center;">
-0.015839
-</td>
-<td style="text-align:center;">
-5.7
-</td>
-<td style="text-align:center;">
-0.0082288
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-1.323
-</td>
-<td style="text-align:center;">
-0.326853
-</td>
-<td style="text-align:center;">
-5.4
-</td>
-<td style="text-align:center;">
-0.0361683
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-0.838
-</td>
-<td style="text-align:center;">
-0.150382
-</td>
-<td style="text-align:center;">
-4.7
-</td>
-<td style="text-align:center;">
-0.0229093
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-1.339
-</td>
-<td style="text-align:center;">
-0.373061
-</td>
-<td style="text-align:center;">
-4.8
-</td>
-<td style="text-align:center;">
-0.0366057
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-9.837
-</td>
-<td style="text-align:center;">
-3.941190
-</td>
-<td style="text-align:center;">
-24.6
-</td>
-<td style="text-align:center;">
-0.2689248
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-21.987
-</td>
-<td style="text-align:center;">
-8.201572
-</td>
-<td style="text-align:center;">
-58.9
-</td>
-<td style="text-align:center;">
-0.6010826
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-297.147
-</td>
-<td style="text-align:center;">
-199.801877
-</td>
-<td style="text-align:center;">
-441.9
-</td>
-<td style="text-align:center;">
-8.1234315
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-3.140
-</td>
-<td style="text-align:center;">
-1.101653
-</td>
-<td style="text-align:center;">
-8.9
-</td>
-<td style="text-align:center;">
-0.0858416
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-7.855
-</td>
-<td style="text-align:center;">
-1.924018
-</td>
-<td style="text-align:center;">
-32.1
-</td>
-<td style="text-align:center;">
-0.2147407
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-0.056
-</td>
-<td style="text-align:center;">
-0.000026
-</td>
-<td style="text-align:center;">
-121.4
-</td>
-<td style="text-align:center;">
-0.0015309
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-169.963
-</td>
-<td style="text-align:center;">
-87.004711
-</td>
-<td style="text-align:center;">
-332.0
-</td>
-<td style="text-align:center;">
-4.6464638
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-13.813
-</td>
-<td style="text-align:center;">
-2.952501
-</td>
-<td style="text-align:center;">
-64.6
-</td>
-<td style="text-align:center;">
-0.3776210
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-527.598
-</td>
-<td style="text-align:center;">
-316.585189
-</td>
-<td style="text-align:center;">
-879.3
-</td>
-<td style="text-align:center;">
-14.4235217
-</td>
-</tr>
-<tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="14">
-Woodland
-</td>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-11.4
-</td>
-<td style="text-align:center;">
-2.56
-</td>
-<td style="text-align:center;">
-51
-</td>
-<td style="text-align:center;">
-0.0687729
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-41.4
-</td>
-<td style="text-align:center;">
-11.42
-</td>
-<td style="text-align:center;">
-150
-</td>
-<td style="text-align:center;">
-0.2497542
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-11.6
-</td>
-<td style="text-align:center;">
-2.72
-</td>
-<td style="text-align:center;">
-49
-</td>
-<td style="text-align:center;">
-0.0699794
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-32.3
-</td>
-<td style="text-align:center;">
-9.71
-</td>
-<td style="text-align:center;">
-107
-</td>
-<td style="text-align:center;">
-0.1948565
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-8.6
-</td>
-<td style="text-align:center;">
-2.29
-</td>
-<td style="text-align:center;">
-32
-</td>
-<td style="text-align:center;">
-0.0518813
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-193.0
-</td>
-<td style="text-align:center;">
-48.43
-</td>
-<td style="text-align:center;">
-769
-</td>
-<td style="text-align:center;">
-1.1643129
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-500.5
-</td>
-<td style="text-align:center;">
-248.30
-</td>
-<td style="text-align:center;">
-1009
-</td>
-<td style="text-align:center;">
-3.0193710
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-614.8
-</td>
-<td style="text-align:center;">
-241.53
-</td>
-<td style="text-align:center;">
-1565
-</td>
-<td style="text-align:center;">
-3.7089097
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-98.2
-</td>
-<td style="text-align:center;">
-50.45
-</td>
-<td style="text-align:center;">
-191
-</td>
-<td style="text-align:center;">
-0.5924121
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-71.2
-</td>
-<td style="text-align:center;">
-23.85
-</td>
-<td style="text-align:center;">
-212
-</td>
-<td style="text-align:center;">
-0.4295289
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-3.7
-</td>
-<td style="text-align:center;">
-0.25
-</td>
-<td style="text-align:center;">
-55
-</td>
-<td style="text-align:center;">
-0.0223210
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-370.2
-</td>
-<td style="text-align:center;">
-148.84
-</td>
-<td style="text-align:center;">
-921
-</td>
-<td style="text-align:center;">
-2.2333090
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-131.9
-</td>
-<td style="text-align:center;">
-72.22
-</td>
-<td style="text-align:center;">
-241
-</td>
-<td style="text-align:center;">
-0.7957144
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-2088.8
-</td>
-<td style="text-align:center;">
-1451.03
-</td>
-<td style="text-align:center;">
-3007
-</td>
-<td style="text-align:center;">
-12.6011233
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="26">
-2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="13">
 Plains
@@ -4094,479 +6050,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="27">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="54">
+<td style="text-align:center;vertical-align: top !important;" rowspan="27">
 Jul
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="12">
-Plains
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-0.27
-</td>
-<td style="text-align:center;">
-0.00181
-</td>
-<td style="text-align:center;">
-40.9
-</td>
-<td style="text-align:center;">
-0.0073813
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-0.66
-</td>
-<td style="text-align:center;">
-0.04028
-</td>
-<td style="text-align:center;">
-10.8
-</td>
-<td style="text-align:center;">
-0.0180431
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-0.21
-</td>
-<td style="text-align:center;">
-0.00014
-</td>
-<td style="text-align:center;">
-323.3
-</td>
-<td style="text-align:center;">
-0.0057410
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-0.43
-</td>
-<td style="text-align:center;">
-0.13071
-</td>
-<td style="text-align:center;">
-1.4
-</td>
-<td style="text-align:center;">
-0.0117554
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-18.93
-</td>
-<td style="text-align:center;">
-5.53653
-</td>
-<td style="text-align:center;">
-64.7
-</td>
-<td style="text-align:center;">
-0.5175100
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-44.46
-</td>
-<td style="text-align:center;">
-13.93227
-</td>
-<td style="text-align:center;">
-141.9
-</td>
-<td style="text-align:center;">
-1.2154515
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-419.21
-</td>
-<td style="text-align:center;">
-201.85385
-</td>
-<td style="text-align:center;">
-870.6
-</td>
-<td style="text-align:center;">
-11.4604008
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-5.35
-</td>
-<td style="text-align:center;">
-1.72633
-</td>
-<td style="text-align:center;">
-16.6
-</td>
-<td style="text-align:center;">
-0.1462588
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-5.72
-</td>
-<td style="text-align:center;">
-0.97506
-</td>
-<td style="text-align:center;">
-33.6
-</td>
-<td style="text-align:center;">
-0.1563739
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-821.37
-</td>
-<td style="text-align:center;">
-363.52021
-</td>
-<td style="text-align:center;">
-1855.9
-</td>
-<td style="text-align:center;">
-22.4546871
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-11.88
-</td>
-<td style="text-align:center;">
-3.34981
-</td>
-<td style="text-align:center;">
-42.1
-</td>
-<td style="text-align:center;">
-0.3247765
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-1328.49
-</td>
-<td style="text-align:center;">
-716.64914
-</td>
-<td style="text-align:center;">
-2462.7
-</td>
-<td style="text-align:center;">
-36.3183794
-</td>
-</tr>
-<tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="15">
-Woodland
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-15.73
-</td>
-<td style="text-align:center;">
-1.88462
-</td>
-<td style="text-align:center;">
-131
-</td>
-<td style="text-align:center;">
-0.0948945
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Bushbuck
-</td>
-<td style="text-align:center;">
-0.49
-</td>
-<td style="text-align:center;">
-0.00034
-</td>
-<td style="text-align:center;">
-713
-</td>
-<td style="text-align:center;">
-0.0029560
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-7.06
-</td>
-<td style="text-align:center;">
-2.12996
-</td>
-<td style="text-align:center;">
-23
-</td>
-<td style="text-align:center;">
-0.0425909
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-25.32
-</td>
-<td style="text-align:center;">
-7.40618
-</td>
-<td style="text-align:center;">
-87
-</td>
-<td style="text-align:center;">
-0.1527482
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-8.76
-</td>
-<td style="text-align:center;">
-1.09730
-</td>
-<td style="text-align:center;">
-70
-</td>
-<td style="text-align:center;">
-0.0528465
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-21.30
-</td>
-<td style="text-align:center;">
-5.54129
-</td>
-<td style="text-align:center;">
-82
-</td>
-<td style="text-align:center;">
-0.1284967
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-143.00
-</td>
-<td style="text-align:center;">
-45.18466
-</td>
-<td style="text-align:center;">
-453
-</td>
-<td style="text-align:center;">
-0.8626774
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-658.48
-</td>
-<td style="text-align:center;">
-390.95644
-</td>
-<td style="text-align:center;">
-1109
-</td>
-<td style="text-align:center;">
-3.9724185
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-934.94
-</td>
-<td style="text-align:center;">
-343.41110
-</td>
-<td style="text-align:center;">
-2545
-</td>
-<td style="text-align:center;">
-5.6402213
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-159.31
-</td>
-<td style="text-align:center;">
-87.78145
-</td>
-<td style="text-align:center;">
-289
-</td>
-<td style="text-align:center;">
-0.9610709
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-81.73
-</td>
-<td style="text-align:center;">
-30.83437
-</td>
-<td style="text-align:center;">
-217
-</td>
-<td style="text-align:center;">
-0.4930533
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-3.09
-</td>
-<td style="text-align:center;">
-0.24349
-</td>
-<td style="text-align:center;">
-39
-</td>
-<td style="text-align:center;">
-0.0186411
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-5640.56
-</td>
-<td style="text-align:center;">
-2321.33361
-</td>
-<td style="text-align:center;">
-13706
-</td>
-<td style="text-align:center;">
-34.0278591
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-133.88
-</td>
-<td style="text-align:center;">
-79.87869
-</td>
-<td style="text-align:center;">
-224
-</td>
-<td style="text-align:center;">
-0.8076591
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-7833.66
-</td>
-<td style="text-align:center;">
-4035.99393
-</td>
-<td style="text-align:center;">
-15205
-</td>
-<td style="text-align:center;">
-47.2581939
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="27">
-2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="12">
 Plains
@@ -5033,496 +6518,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="28">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="54">
+<td style="text-align:center;vertical-align: top !important;" rowspan="26">
 Aug
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="13">
-Plains
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-0.042
-</td>
-<td style="text-align:center;">
-0.0040
-</td>
-<td style="text-align:center;">
-0.45
-</td>
-<td style="text-align:center;">
-0.0011482
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-0.225
-</td>
-<td style="text-align:center;">
-0.0002
-</td>
-<td style="text-align:center;">
-255.67
-</td>
-<td style="text-align:center;">
-0.0061511
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-0.251
-</td>
-<td style="text-align:center;">
-0.0770
-</td>
-<td style="text-align:center;">
-0.82
-</td>
-<td style="text-align:center;">
-0.0068619
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-0.949
-</td>
-<td style="text-align:center;">
-0.2507
-</td>
-<td style="text-align:center;">
-3.59
-</td>
-<td style="text-align:center;">
-0.0259438
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-17.357
-</td>
-<td style="text-align:center;">
-6.3965
-</td>
-<td style="text-align:center;">
-47.10
-</td>
-<td style="text-align:center;">
-0.4745072
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-13.455
-</td>
-<td style="text-align:center;">
-3.2196
-</td>
-<td style="text-align:center;">
-56.23
-</td>
-<td style="text-align:center;">
-0.3678340
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-547.998
-</td>
-<td style="text-align:center;">
-300.2003
-</td>
-<td style="text-align:center;">
-1000.34
-</td>
-<td style="text-align:center;">
-14.9812187
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-3.368
-</td>
-<td style="text-align:center;">
-1.1399
-</td>
-<td style="text-align:center;">
-9.95
-</td>
-<td style="text-align:center;">
-0.0920747
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-5.920
-</td>
-<td style="text-align:center;">
-1.4410
-</td>
-<td style="text-align:center;">
-24.32
-</td>
-<td style="text-align:center;">
-0.1618415
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-0.485
-</td>
-<td style="text-align:center;">
-0.0523
-</td>
-<td style="text-align:center;">
-4.50
-</td>
-<td style="text-align:center;">
-0.0132590
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-511.071
-</td>
-<td style="text-align:center;">
-214.0062
-</td>
-<td style="text-align:center;">
-1220.49
-</td>
-<td style="text-align:center;">
-13.9717051
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-3.499
-</td>
-<td style="text-align:center;">
-0.6274
-</td>
-<td style="text-align:center;">
-19.52
-</td>
-<td style="text-align:center;">
-0.0956560
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-1104.621
-</td>
-<td style="text-align:center;">
-667.7175
-</td>
-<td style="text-align:center;">
-1827.40
-</td>
-<td style="text-align:center;">
-30.1982285
-</td>
-</tr>
-<tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="15">
-Woodland
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-23.0
-</td>
-<td style="text-align:center;">
-3.91870
-</td>
-<td style="text-align:center;">
-135
-</td>
-<td style="text-align:center;">
-0.1387523
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-3.3
-</td>
-<td style="text-align:center;">
-0.76172
-</td>
-<td style="text-align:center;">
-14
-</td>
-<td style="text-align:center;">
-0.0199079
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-26.0
-</td>
-<td style="text-align:center;">
-11.64351
-</td>
-<td style="text-align:center;">
-58
-</td>
-<td style="text-align:center;">
-0.1568504
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-3.1
-</td>
-<td style="text-align:center;">
-0.60245
-</td>
-<td style="text-align:center;">
-16
-</td>
-<td style="text-align:center;">
-0.0187014
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-1.4
-</td>
-<td style="text-align:center;">
-0.00062
-</td>
-<td style="text-align:center;">
-2956
-</td>
-<td style="text-align:center;">
-0.0084458
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-36.3
-</td>
-<td style="text-align:center;">
-13.36400
-</td>
-<td style="text-align:center;">
-98
-</td>
-<td style="text-align:center;">
-0.2189873
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-80.5
-</td>
-<td style="text-align:center;">
-26.86481
-</td>
-<td style="text-align:center;">
-241
-</td>
-<td style="text-align:center;">
-0.4856331
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-780.4
-</td>
-<td style="text-align:center;">
-422.30000
-</td>
-<td style="text-align:center;">
-1442
-</td>
-<td style="text-align:center;">
-4.7079264
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-669.9
-</td>
-<td style="text-align:center;">
-248.01353
-</td>
-<td style="text-align:center;">
-1810
-</td>
-<td style="text-align:center;">
-4.0413120
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-121.4
-</td>
-<td style="text-align:center;">
-66.74747
-</td>
-<td style="text-align:center;">
-221
-</td>
-<td style="text-align:center;">
-0.7323709
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-39.8
-</td>
-<td style="text-align:center;">
-14.20787
-</td>
-<td style="text-align:center;">
-112
-</td>
-<td style="text-align:center;">
-0.2401018
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-3.7
-</td>
-<td style="text-align:center;">
-0.44200
-</td>
-<td style="text-align:center;">
-30
-</td>
-<td style="text-align:center;">
-0.0223210
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-2209.3
-</td>
-<td style="text-align:center;">
-1210.30397
-</td>
-<td style="text-align:center;">
-4033
-</td>
-<td style="text-align:center;">
-13.3280648
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-200.8
-</td>
-<td style="text-align:center;">
-90.92731
-</td>
-<td style="text-align:center;">
-444
-</td>
-<td style="text-align:center;">
-1.2113680
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-4198.9
-</td>
-<td style="text-align:center;">
-1201.41836
-</td>
-<td style="text-align:center;">
-14675
-</td>
-<td style="text-align:center;">
-25.3307433
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="26">
-2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="12">
 Plains
@@ -5972,238 +6969,11 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="13">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="40">
+<td style="text-align:center;vertical-align: top !important;" rowspan="27">
 Sep
 </td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="26">
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
 Plains
-</td>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-0.15
-</td>
-<td style="text-align:center;">
-0.014436
-</td>
-<td style="text-align:center;">
-1.6
-</td>
-<td style="text-align:center;">
-0.0041007
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-0.52
-</td>
-<td style="text-align:center;">
-0.000378
-</td>
-<td style="text-align:center;">
-719.4
-</td>
-<td style="text-align:center;">
-0.0142158
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-0.20
-</td>
-<td style="text-align:center;">
-0.000067
-</td>
-<td style="text-align:center;">
-594.0
-</td>
-<td style="text-align:center;">
-0.0054676
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-2.04
-</td>
-<td style="text-align:center;">
-0.584343
-</td>
-<td style="text-align:center;">
-7.1
-</td>
-<td style="text-align:center;">
-0.0557697
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-11.03
-</td>
-<td style="text-align:center;">
-2.013946
-</td>
-<td style="text-align:center;">
-60.4
-</td>
-<td style="text-align:center;">
-0.3015391
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-15.26
-</td>
-<td style="text-align:center;">
-3.297355
-</td>
-<td style="text-align:center;">
-70.6
-</td>
-<td style="text-align:center;">
-0.4171793
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-342.03
-</td>
-<td style="text-align:center;">
-181.737375
-</td>
-<td style="text-align:center;">
-643.7
-</td>
-<td style="text-align:center;">
-9.3504470
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-1.54
-</td>
-<td style="text-align:center;">
-0.286831
-</td>
-<td style="text-align:center;">
-8.3
-</td>
-<td style="text-align:center;">
-0.0421007
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-5.28
-</td>
-<td style="text-align:center;">
-2.096047
-</td>
-<td style="text-align:center;">
-13.3
-</td>
-<td style="text-align:center;">
-0.1443451
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-0.29
-</td>
-<td style="text-align:center;">
-0.000200
-</td>
-<td style="text-align:center;">
-406.2
-</td>
-<td style="text-align:center;">
-0.0079280
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-926.30
-</td>
-<td style="text-align:center;">
-478.985494
-</td>
-<td style="text-align:center;">
-1791.3
-</td>
-<td style="text-align:center;">
-25.3232729
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-9.07
-</td>
-<td style="text-align:center;">
-2.012428
-</td>
-<td style="text-align:center;">
-40.8
-</td>
-<td style="text-align:center;">
-0.2479565
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-1313.71
-</td>
-<td style="text-align:center;">
-354.407629
-</td>
-<td style="text-align:center;">
-4869.6
-</td>
-<td style="text-align:center;">
-35.9143224
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="27">
-2018
 </td>
 <td style="text-align:center;">
 Coke Hartebeest
@@ -6555,7 +7325,7 @@ Thomson Gazelle
 471.97
 </td>
 <td style="text-align:center;">
-97.11507
+97.11509
 </td>
 <td style="text-align:center;">
 2294
@@ -6623,7 +7393,7 @@ Wildebeest
 1251.44
 </td>
 <td style="text-align:center;">
-185.34990
+185.34991
 </td>
 <td style="text-align:center;">
 8449
@@ -6640,7 +7410,7 @@ Zebra
 42.50
 </td>
 <td style="text-align:center;">
-7.78337
+7.78338
 </td>
 <td style="text-align:center;">
 232
@@ -6667,255 +7437,11 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="14">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="40">
+<td style="text-align:center;vertical-align: top !important;" rowspan="26">
 Oct
 </td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="27">
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
 Plains
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-1.41
-</td>
-<td style="text-align:center;">
-0.00635
-</td>
-<td style="text-align:center;">
-311.4
-</td>
-<td style="text-align:center;">
-0.0385467
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Bushbuck
-</td>
-<td style="text-align:center;">
-0.19
-</td>
-<td style="text-align:center;">
-0.00012
-</td>
-<td style="text-align:center;">
-283.1
-</td>
-<td style="text-align:center;">
-0.0051942
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-1.52
-</td>
-<td style="text-align:center;">
-0.16265
-</td>
-<td style="text-align:center;">
-14.1
-</td>
-<td style="text-align:center;">
-0.0415539
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-0.14
-</td>
-<td style="text-align:center;">
-0.00857
-</td>
-<td style="text-align:center;">
-2.3
-</td>
-<td style="text-align:center;">
-0.0038273
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-1.53
-</td>
-<td style="text-align:center;">
-0.37130
-</td>
-<td style="text-align:center;">
-6.3
-</td>
-<td style="text-align:center;">
-0.0418273
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-10.15
-</td>
-<td style="text-align:center;">
-3.48218
-</td>
-<td style="text-align:center;">
-29.6
-</td>
-<td style="text-align:center;">
-0.2774816
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-21.17
-</td>
-<td style="text-align:center;">
-4.32153
-</td>
-<td style="text-align:center;">
-103.7
-</td>
-<td style="text-align:center;">
-0.5787474
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-215.29
-</td>
-<td style="text-align:center;">
-112.86730
-</td>
-<td style="text-align:center;">
-410.6
-</td>
-<td style="text-align:center;">
-5.8856174
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-4.25
-</td>
-<td style="text-align:center;">
-1.08340
-</td>
-<td style="text-align:center;">
-16.7
-</td>
-<td style="text-align:center;">
-0.1161869
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-4.22
-</td>
-<td style="text-align:center;">
-1.00355
-</td>
-<td style="text-align:center;">
-17.8
-</td>
-<td style="text-align:center;">
-0.1153667
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Waterbuck
-</td>
-<td style="text-align:center;">
-2.69
-</td>
-<td style="text-align:center;">
-0.27546
-</td>
-<td style="text-align:center;">
-26.3
-</td>
-<td style="text-align:center;">
-0.0735395
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-217.67
-</td>
-<td style="text-align:center;">
-74.22225
-</td>
-<td style="text-align:center;">
-638.4
-</td>
-<td style="text-align:center;">
-5.9506821
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-25.46
-</td>
-<td style="text-align:center;">
-6.78972
-</td>
-<td style="text-align:center;">
-95.5
-</td>
-<td style="text-align:center;">
-0.6960278
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-505.68
-</td>
-<td style="text-align:center;">
-213.61928
-</td>
-<td style="text-align:center;">
-1197.0
-</td>
-<td style="text-align:center;">
-13.8243254
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="26">
-2018
 </td>
 <td style="text-align:center;">
 Coke Hartebeest
@@ -7138,7 +7664,7 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="26">
+<td style="text-align:center;vertical-align: top !important;" rowspan="13">
 Woodland
 </td>
 <td style="text-align:center;">
@@ -7362,235 +7888,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="13">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="36">
+<td style="text-align:center;vertical-align: top !important;" rowspan="23">
 Nov
-</td>
-<td style="text-align:center;">
-Buffalo
-</td>
-<td style="text-align:center;">
-60
-</td>
-<td style="text-align:center;">
-9.1
-</td>
-<td style="text-align:center;">
-388
-</td>
-<td style="text-align:center;">
-0.3619626
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Coke Hartebeest
-</td>
-<td style="text-align:center;">
-12
-</td>
-<td style="text-align:center;">
-1.7
-</td>
-<td style="text-align:center;">
-79
-</td>
-<td style="text-align:center;">
-0.0723925
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Dik Dik
-</td>
-<td style="text-align:center;">
-39
-</td>
-<td style="text-align:center;">
-14.5
-</td>
-<td style="text-align:center;">
-104
-</td>
-<td style="text-align:center;">
-0.2352757
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Elephant
-</td>
-<td style="text-align:center;">
-30
-</td>
-<td style="text-align:center;">
-3.2
-</td>
-<td style="text-align:center;">
-285
-</td>
-<td style="text-align:center;">
-0.1809813
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-21
-</td>
-<td style="text-align:center;">
-9.8
-</td>
-<td style="text-align:center;">
-44
-</td>
-<td style="text-align:center;">
-0.1266869
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-46
-</td>
-<td style="text-align:center;">
-16.8
-</td>
-<td style="text-align:center;">
-125
-</td>
-<td style="text-align:center;">
-0.2775046
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-557
-</td>
-<td style="text-align:center;">
-311.8
-</td>
-<td style="text-align:center;">
-993
-</td>
-<td style="text-align:center;">
-3.3602191
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-236
-</td>
-<td style="text-align:center;">
-132.1
-</td>
-<td style="text-align:center;">
-420
-</td>
-<td style="text-align:center;">
-1.4237194
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-89
-</td>
-<td style="text-align:center;">
-27.9
-</td>
-<td style="text-align:center;">
-281
-</td>
-<td style="text-align:center;">
-0.5369111
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-31
-</td>
-<td style="text-align:center;">
-15.9
-</td>
-<td style="text-align:center;">
-61
-</td>
-<td style="text-align:center;">
-0.1870140
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-616
-</td>
-<td style="text-align:center;">
-238.5
-</td>
-<td style="text-align:center;">
-1594
-</td>
-<td style="text-align:center;">
-3.7161490
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-57
-</td>
-<td style="text-align:center;">
-28.4
-</td>
-<td style="text-align:center;">
-115
-</td>
-<td style="text-align:center;">
-0.3438644
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-1792
-</td>
-<td style="text-align:center;">
-1234.2
-</td>
-<td style="text-align:center;">
-2603
-</td>
-<td style="text-align:center;">
-10.8106152
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="23">
-2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="12">
 Plains
@@ -7989,326 +8288,8 @@ Total
 </td>
 </tr>
 <tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="18">
-2017
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="41">
+<td style="text-align:center;vertical-align: top !important;" rowspan="23">
 Dec
-</td>
-<td style="text-align:center;vertical-align: top !important;" rowspan="8">
-Plains
-</td>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-4.6
-</td>
-<td style="text-align:center;">
-0.90
-</td>
-<td style="text-align:center;">
-23.3
-</td>
-<td style="text-align:center;">
-0.1257552
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-8.5
-</td>
-<td style="text-align:center;">
-1.79
-</td>
-<td style="text-align:center;">
-40.5
-</td>
-<td style="text-align:center;">
-0.2323738
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-105.9
-</td>
-<td style="text-align:center;">
-61.73
-</td>
-<td style="text-align:center;">
-181.6
-</td>
-<td style="text-align:center;">
-2.8951037
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-1.3
-</td>
-<td style="text-align:center;">
-0.34
-</td>
-<td style="text-align:center;">
-5.3
-</td>
-<td style="text-align:center;">
-0.0355395
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-1.1
-</td>
-<td style="text-align:center;">
-0.31
-</td>
-<td style="text-align:center;">
-4.1
-</td>
-<td style="text-align:center;">
-0.0300719
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-30.8
-</td>
-<td style="text-align:center;">
-13.46
-</td>
-<td style="text-align:center;">
-70.3
-</td>
-<td style="text-align:center;">
-0.8420132
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-12.4
-</td>
-<td style="text-align:center;">
-1.87
-</td>
-<td style="text-align:center;">
-81.7
-</td>
-<td style="text-align:center;">
-0.3389923
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-164.6
-</td>
-<td style="text-align:center;">
-100.59
-</td>
-<td style="text-align:center;">
-269.2
-</td>
-<td style="text-align:center;">
-4.4998496
-</td>
-</tr>
-<tr>
-<td style="text-align:center;vertical-align: top !important;" rowspan="10">
-Woodland
-</td>
-<td style="text-align:center;">
-Eland
-</td>
-<td style="text-align:center;">
-5.8
-</td>
-<td style="text-align:center;">
-0.011
-</td>
-<td style="text-align:center;">
-2986
-</td>
-<td style="text-align:center;">
-0.0349897
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Giraffe
-</td>
-<td style="text-align:center;">
-5.9
-</td>
-<td style="text-align:center;">
-1.561
-</td>
-<td style="text-align:center;">
-22
-</td>
-<td style="text-align:center;">
-0.0355930
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Grant Gazelle
-</td>
-<td style="text-align:center;">
-36.0
-</td>
-<td style="text-align:center;">
-4.527
-</td>
-<td style="text-align:center;">
-287
-</td>
-<td style="text-align:center;">
-0.2171775
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Impala
-</td>
-<td style="text-align:center;">
-56.1
-</td>
-<td style="text-align:center;">
-13.552
-</td>
-<td style="text-align:center;">
-232
-</td>
-<td style="text-align:center;">
-0.3384350
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Thomson Gazelle
-</td>
-<td style="text-align:center;">
-144.8
-</td>
-<td style="text-align:center;">
-32.988
-</td>
-<td style="text-align:center;">
-635
-</td>
-<td style="text-align:center;">
-0.8735363
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Topi
-</td>
-<td style="text-align:center;">
-6.8
-</td>
-<td style="text-align:center;">
-1.743
-</td>
-<td style="text-align:center;">
-27
-</td>
-<td style="text-align:center;">
-0.0410224
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Warthog
-</td>
-<td style="text-align:center;">
-19.5
-</td>
-<td style="text-align:center;">
-3.268
-</td>
-<td style="text-align:center;">
-116
-</td>
-<td style="text-align:center;">
-0.1176378
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Wildebeest
-</td>
-<td style="text-align:center;">
-456.8
-</td>
-<td style="text-align:center;">
-74.609
-</td>
-<td style="text-align:center;">
-2797
-</td>
-<td style="text-align:center;">
-2.7557416
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Zebra
-</td>
-<td style="text-align:center;">
-114.1
-</td>
-<td style="text-align:center;">
-22.030
-</td>
-<td style="text-align:center;">
-591
-</td>
-<td style="text-align:center;">
-0.6883321
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-Total
-</td>
-<td style="text-align:center;">
-845.8
-</td>
-<td style="text-align:center;">
-161.063
-</td>
-<td style="text-align:center;">
-4442
-</td>
-<td style="text-align:center;">
-5.1024656
-</td>
-</tr>
-<tr>
-<td style="text-align:center;font-weight: bold;vertical-align: top !important;" rowspan="23">
-2018
 </td>
 <td style="text-align:center;vertical-align: top !important;" rowspan="12">
 Plains
@@ -8710,12 +8691,8 @@ Total
 </table>
 </div>
 </div>
-<div id="discussion" class="section level1">
-<h1>Discussion</h1>
-<p>tbd</p>
-</div>
 <div id="references" class="section level1">
-<h1>References</h1>
+<h1><span class="header-section-number">7</span> References</h1>
 </div>
 <div class="footnotes">
 <hr />

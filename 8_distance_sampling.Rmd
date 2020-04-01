@@ -1,8 +1,11 @@
 ---
 title: "Distance Sampling"
+output: 
+  html_document:
+    number_sections: true
 ---
 
-# Introduction - detecting rare species in multi-species survey
+# Introduction
 
 This vignette is based upon a vignette by Erix Rexstad at the CREEM, St Andrews University[^1]. The underlying data for the analysis presented is part of an ongoing survey within the Naboisho conservancy within the greater Mara ecosystem, and is led by Professor Stewart Thompson[^2]. The project uses *distance sampling* techniques to record observations across 9 different transects within the conservancy. The overall aim of the project is to provide an evidence based approach for the ecological outcomes of conservancy partnerships between indigenous land owners and private investors.
 
@@ -20,7 +23,9 @@ Where $n$ = number of species detected, and $P$ is the average probability of de
 
 ## Multi-species surveys
 
-The Naboisho data is an example of a multi-species survey. <more stuff here>
+The Naboisho data is an example of a multi-species survey. Multispecies wildlife monitoring across large geographical regions is important for effective conservation planning in response to expected impacts from climate change and land use. This does mean the procesing of the data set is more complicated than it might be for a single species survey, as multiple detection functions must be calculated. The naboisho survey comprises observations from ten woodland and plains transects over four years of field work. Plains and woddlands transect types are known as *strata*. Different stratum exhibit different detectability functions, sowe need to fit specific detection functions accordingly.
+
+Species observed within the Naboisho conservancy are typical of a large savannah ecosystem and includes large carnoves and ungulates. Some of the species observed, such as *Dik Dik* or *Lion*, are quite rare. As such there is often insufficient detections to fit a detection function from data for a rare species. But it is often true that the presence of rare species is a function of more common species. As such we can exploit this correlation an treat *Species* as a covariate in modelling the detection function. This vignette sets out to demonstrate how we can estimate abundance and density across a multi-species survey, useing the `Distance` package.
 
 ```{r message=FALSE, warning=FALSE}
 # Load some libraries to get started
@@ -38,6 +43,9 @@ setwd(wd)
 
 # Load underlying survey data
 clean_obs <- read.csv("clean_obs.csv", stringsAsFactors = F)
+
+# Set units of measure
+convunit <- convert_units("meter", "kilometer", "square kilometre")
 ```
 
 # Clean the data
@@ -68,8 +76,8 @@ data_clean <- clean_obs %>%
     Region.Label == "Plains"   ~ as.character(Plains))) %>%
   # Add in region area for each observation stratum
   mutate(Area = case_when(
-    Region.Label == "Woodland" ~ as.numeric(165.763 * 1000),         
-    Region.Label == "Plains"   ~ as.numeric(36.579  * 1000))) %>% 
+    Region.Label == "Woodland" ~ as.numeric(165.763),         
+    Region.Label == "Plains"   ~ as.numeric(36.579))) %>% 
   # Create a new column for the date
   mutate(Year = lubridate::dmy(as.character(Date)) %>% lubridate::year()) %>%
   # Add a new column for the month of the year
@@ -109,7 +117,7 @@ data_clean <- data_clean %>%
 head(ds_params)
 ```
 
-# Generating datasets for each analysis period
+## Generating datasets for analysis
 
 We can now use `ds_params` together with the `purrr::map` function to subset our data set of all observations to create a subset for each row within `ds_params`.
 
@@ -127,17 +135,17 @@ ds_data <- pmap_df(
     Year         == ..2,
     Month        == ..3)) %>%
   # Add effort column
-  group_by(Sample.Label) %>%       
+  group_by(Sample.Label) %>%
+  # Each transect is 2km
   mutate(Effort = length(unique(Date)) * 2) %>%
   ungroup() %>%
   # Nest the output data
   group_by(Region.Label,Year,Month) %>% nest()
 ```
 
+# Species detectability  
 
-# Calculating species detectability  
-
-```{r calc_ds, message=FALSE, warning=FALSE}
+```{r calc_ds, eval=FALSE, message=FALSE, warning=FALSE}
 # Generate a distance model for each dataset
 ds_data <- ds_data %>%
   mutate(
@@ -150,19 +158,19 @@ ds_data <- ds_data %>%
           data = as.data.frame(.) ,
           # Use a half-normal fit
           key="hn",
-          # Convert distances (m) to km
-          #convert.units = 0.001,
+          # Convert to correct UoM
+          convert.units = convunit,
           # Use species observed as covariate
           formula = ~Species),
         # Retrun NULL if fit fails
         otherwise = NULL)))
 ```
 
-# Calculating species abundance
+# Species abundance
 
-Now we can calculate the abundance of individual species within the overall dataset, for each calculation period.
+Now we can calculate the abundance of individual species within the overall dataset, for each calculation period. Density estimates for each species can be produced by using the `dht2` function that contains the argument *strat_formula* used to specific the levels of stratum-specific estimates requested. 
 
-```{r calc_abun, message=FALSE, warning=FALSE}
+```{r calc_abun, eval=FALSE, message=FALSE, warning=FALSE}
 
 # Function to generate species abundance
 # The function stratifies by species
@@ -171,6 +179,7 @@ dht2_poss <- function (.x, .y) {
       ddf = .y,
       flatfile = as.data.frame(.x),
       strat_formula = ~Species, 
+      convert_units = convunit,
       stratification = "object")
 }
                      
@@ -185,14 +194,18 @@ ds_data <- ds_data %>%
     possibly(~dht2_poss(.x,.y), 
              # Return NULL if failure
              otherwise = NULL)))
+```
 
+```{r load_data, message=FALSE, warning=FALSE, include=FALSE}
+# Load data
+ds_data <- readRDS("distance_data")
 # Examine final data structure
 head(ds_data)
 ```
 
 # Results
 
-Output a detailed results table
+The results of the modelling can be seen below across all months.
 
 ```{r output_results, message=FALSE, warning=FALSE, fig.align='centre'}
 # Create a table of results that we're interested in
@@ -200,8 +213,11 @@ tab <- ds_data %>% unnest(abun_model) %>%
   dplyr::select(Year, Month, Region.Label, Species, Abundance, LCI, UCI) %>%
   # group by Year, Month and strata
   group_by(Year, Month, Region.Label) %>%
+  # Sort the data
+  arrange(Year, Month) %>%
   # Set precision on doubles
   mutate_if(is.double, format, digits=2, scientific = FALSE) %>%
+  # Calculate species densities
   mutate(Density = case_when(
     Region.Label == "Woodland" ~ as.numeric(Abundance) / 165.763,
     Region.Label == "Plains"   ~ as.numeric(Abundance) / 36.579
@@ -214,11 +230,6 @@ kableExtra::kable(tab, align = "c", col.names = c("","", names(tab)[3:8])) %>%
   collapse_rows(columns = 1:3, valign = "top") %>%
   scroll_box(width = "800px", height = "500px")
 ```
-
-# Discussion
-
-tbd
-
 # References
 
 [^1]: Covariate modeling with rare species, Rexstad, E. http://examples.distancesampling.org/Distance-spec-covar/species-covariate-distill.html
