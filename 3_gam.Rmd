@@ -5,7 +5,7 @@ output:
     number_sections: true
 ---
 
-## Introduction
+# Introduction
 
 The GLM relates the mean of the response variable to a linear combination of covariates. The response variable is assumed to be conditionally distributed according to a distribution within the exponential family (bionomial, poisson, gamma etc). The Generalised Additive Model (GAM) a popular ecology modelling approach, that relaxes the need for the response variable to be characterised by a particular distribution, and instead allows the the relationship between response variable and covariats to be described by the linear combination of smooth curves. GAMs are of the form:
 
@@ -33,7 +33,7 @@ library(lubridate)
 # colourblind-friendly colourschemes
 library(viridis)
 ```
-## The data
+# The data
 
 Let's load the survey data and take a quick peak at its format and structure:
 
@@ -101,7 +101,7 @@ gannets <- gannets %>%
          )
 ```
 
-## Gannet density in space and time
+# Gannet density in space and time
 
 We can now undertake some further data exploration and look at how surveyed gannet density varies in space and time. The first plot below shows how observed gannet density varies by year:
 
@@ -163,11 +163,11 @@ gannets %>%
 
 We can see that in 2003 surveying started earleir in the year. It seems that there is a time of day effect that changes as the breeding season progresses.
 
-## Creating a GAM for Gannet abundance
+# A GAM for Gannet abundance
 
 We would like to build a model to predict gannet abundance in time and space. Our initial data exploration has shown that gannet abundance varies in a non-linear fashion across days, months and years. Below we will iteratively build up a model and each step attempt to evaluate the overall model fit.
 
-### Model 1 - Incorporating a year effect and offset variable
+## A year effect and offset variable
 
 ```{r m1}
 # Create first gam for gannet abundance
@@ -268,7 +268,6 @@ anova(m3)
 ```
 
 We can visiualise the two smooths in the model that are deemed significant by the anova test:
-
 
 ```{r viz, message=FALSE, warning=FALSE, fig.align='center', fig.width=10}
 # Plot X,Y smooth
