@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Phalaropus lobatus - Migration tracking</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Computational Ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
+    <li>
+      <a href="4_sdm.html">Distribution Modelling</a>
+    </li>
+    <li>
+      <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+    <li>
+      <a href="6_sam_naboisho.html">Geostatistics</a>
+    </li>
+    <li>
+      <a href="7_movement_BA055.html">Movement Modelling</a>
+    </li>
+    <li>
+      <a href="8_distance_sampling.html">Distance Sampling</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Phalaropus lobatus - Migration tracking</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (&lt;2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope <em>Phalaropus lobatus</em>. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indiesl a round trip of some 20,000km.</p>
+<p>This vignette makes extensive use of the code within the manual <em>Light-Level Geolocator Analyses: A user’s guide</em> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
+<pre class="r"><code># Clear all
+rm(list = ls())  
+
+# Load librarieis
+library(GeoLocTools)
+library(GeoLight)
+library(TwGeos)
+library(SGAT)
+library(MASS)
+library(dplyr)
+library(raster)
+library(maptools)
+library(FLightR)
+library(ggmap)</code></pre>
+<p>The data collected uses a geolocator made by Migrate Technology Ltd logger. The configuration of the geolocator was as follows:</p>
+<ul>
+<li>MODE: 3 (full range light, temperature, wet/dry and conductivity recorded)</li>
+<li>LIGHT: Sampled every minute with max light recorded every 5mins.</li>
+<li>TEMPERATURE: Sampled every 5mins with max and min recorded every 4hrs.</li>
+<li>WET/DRY and CONDUCTIVITY: Sampled every 30secs with number of samples wet recorded every hr (capped at 7mins wet per hour), max conductivity recorded every 4hrs.</li>
+<li>Max record length = 15 months. Total battery life upto 23 months. Logger is currently 14 months old.</li>
+<li>Programmed: 07/07/2016 22:13:14. Start of logging (DD/MM/YYYY HH:MM:SS): 07/07/2016 22:13:14</li>
+<li>Age at start of logging (secs): 4488620, approx 2 months</li>
+<li>End of logging (DD/MM/YYYY HH:MM:SS): 01/07/2017 08:02:17</li>
+<li>Age at end of logging (secs): 35454822, approx 14 months</li>
+<li>Timer (DDDDD:HH:MM:SS): 00358:09:43:22</li>
+<li>Drift (secs): 341. Memory not full.</li>
+<li>Pointers: 64826,123696,3158064,3158064,0,0,61% light mem used,70% wet/dry/temp mem used</li>
+<li>Tcals (Ax<sup>3+Bx</sup>2+Cx+D): -35407.051,64980.930,-40521.832,8621.896</li>
+<li>Approx 0.5’C resolution. Conductivity &gt;63 for ‘wets’ count. Light range 4, ambient. XT.</li>
+</ul>
+<p>Let’s load up the raw data from BA055’s journey.</p>
+<pre class="r"><code>raw &lt;- read.csv(&quot;data_analysis_files/geoloc_data/Phalarope.csv&quot;)
+
+# Create datasets for geo-location and additional measurements
+d.lux &lt;- raw %&gt;% 
+  # Select omly data related too light levels
+  dplyr::filter(sensor.type == &quot;solar-geolocator-raw&quot;)%&gt;%
+  # Convert data too POSIX format
+  mutate(Date = as.POSIXct(.$Date, tz = &quot;UTC&quot;)) %&gt;%
+  # Select only only one track (there are two in the file)
+  filter(tag.local.identifier == &quot;BA055&quot;) %&gt;%
+  # Log transfrom light intensity
+  mutate(Light = log(.$Light)) %&gt;%
+  # Selecy only those columns required
+  dplyr::select(Date, Light)
+
+head(d.lux)</code></pre>
+<pre><code>##                  Date    Light
+## 1 2016-07-08 10:08:14 4.659725
+## 2 2016-07-08 10:13:14 4.761849
+## 3 2016-07-08 10:18:14 2.692056
+## 4 2016-07-08 10:23:14 3.911303
+## 5 2016-07-08 10:28:14 2.525008
+## 6 2016-07-08 10:33:14 2.324347</code></pre>
+<p>We now have the lux information by date and time. Now we need to calibrate the data.</p>
+<pre class="r"><code># BA055&#39;s departure/capture point
+lon.calib &lt;- 177.05
+lat.calib &lt;- 62.55
+
+# Calibration times - prior to migration
+tm.calib &lt;- as.POSIXct(c(&quot;2016-07-08&quot;, &quot;2016-07-22&quot;), tz= &quot;UTC&quot;)
+# Days on track
+tm.track &lt;- as.POSIXct(c(&quot;2016-07-23&quot;, &quot;2017-06-10&quot;), tz= &quot;UTC&quot;)</code></pre>
+</div>
+<div id="calculating-twilight-times" class="section level1">
+<h1>Calculating Twilight times</h1>
+<p>Now we can calculate twilight times.</p>
+<pre class="r"><code># Light level threshold between night and day
+threshold &lt;- 2
+# adjusts the y-axis to put night (dark shades) in the middle
+offset &lt;- 4
+# maximum light level (log transformed)
+lmax &lt;- 12
+
+# Interactive process that cannot be executed in rmarkdown. 
+# Can define minimum dark period. Here it is set at 4 hours (240 minutes)
+
+### The function preprocessLight opens two interactive plots and you have to go through 4 different steps: 
+
+### -1. Define the desired period with left click on the left boundary and right clock on the right boundary. Press &quot;a&quot;     
+###     to go to the next step. 
+### -2. Define seeds (one or multible) - a position during the night that shows clear sunrise/sunset boundaries. You can        
+###     click on plot 1 to zoom into a region that will be shown in plot 2 (seeds need to be defined in plot 2). Press 
+###     &quot;a&quot; to go to the next step. 
+### -3. Add non-defined twilights if necessary. Press &quot;a&quot; to go to the next step. 
+### -4. You can go through each twilight using the forward and backward arrows or click on specific twilight times. The 
+###     selected twilight times will be shown in the second plot. You can change the twilight time by clickinga at the 
+###     desired position and press &quot;a&quot;. Press &quot;q&quot; to close plots and return to R.
+### See ?preprocessLight for other functions
+
+#twl &lt;- preprocessLight(d.lux, 
+#                       threshold, 
+#                       offset = offset, 
+#                       zlim = c(0, lmax), 
+#                       #dark.min = 240,
+#                       gr.Device = &quot;x11&quot;)
+
+#write.csv(twl,&quot;BA055v2_twl.csv&quot;)
+
+# Load BA055 track twilight data
+twl &lt;- read.csv(&quot;BA055v2_twl.csv&quot;)
+
+# Converts twilights into appropriate format
+twl$Twilight &lt;- as.POSIXct(strptime(twl$Twilight, format=&quot;%Y-%m-%d %H:%M:%S&quot;), tz = &quot;UTC&quot;)
+
+# Account for storing maximum values for each 5 minute period. This step will depend on tag type. 
+#twl &lt;- twilightAdjust(twl, 150)
+
+# Show results of defining twilights against raw light data
+lightImage(d.lux, offset = offset, zlim = c(0,lmax))
+tsimagePoints(twl$Twilight, 
+              offset = offset, 
+              pch = 16, 
+              cex = 0.5,
+              # Sunrise is blue, sunset is red
+              col = ifelse(twl$Rise, &quot;dodgerblue&quot;, &quot;firebrick&quot;))</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/calc_twilight-1.png" width="672" /></p>
+<p>There are some sunrises and sunsets that have been misclassified, so we can use the <code>twlightEdit</code> function to move these to where they should be.</p>
+<pre class="r"><code>twl &lt;- twilightEdit(twilights = twl,
+                    offset = offset,
+                    window = 4,           # two days before and two days after
+                    outlier.mins = 25,    # difference in mins
+                    stationary.mins = 25, # are the other surrounding twilights within 25 mins of one another
+                    plot = TRUE)</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/twilight_edit-1.png" width="672" /></p>
+</div>
+<div id="calibration" class="section level1">
+<h1>Calibration</h1>
+<p>Geolocators sample light levels at regular intervals and calibration is needed to establish the relationship between the observed and the expected light levels for each device. This relationship is depicted by the calibration parameters (slopes), calculated using the data recorded in known (calibration) geographic positions, e.g. where the animal was tagged, recaptured or observed.</p>
+<p>Below we show the recorded light levels upto a yellow vertical dashed line - we use this timeframe for calibrating the geolocator. These are observations after the bird has been tagged but before it has left the tagging location on its annual migration. In theory the bird returned to a similar location for breeding, but the data re not well formed, so we are unable to use this for a second calibration. This will also mean that the a return flight path cannot be fully calculated. This can be clearly seen on the right hand side of the plot below.</p>
+<pre class="r"><code># Subset the twilight data with calibration periods
+d.calib &lt;- twl %&gt;%
+  # Claibrate using dates before migration
+  filter(Twilight &gt;= tm.calib[1]) %&gt;%
+  filter(Twilight &lt;= tm.calib[2]) %&gt;%
+  # And those dates not removed during pre-porcessing
+  filter(!Deleted)
+
+# Let&#39;s visualise the calibration dates on the light image
+lightImage( tagdata = d.lux,
+            offset = offset,     
+            zlim = c(0, 8))
+
+# Plot the twilight bands
+tsimagePoints(twl$Twilight, offset = offset, pch = 16, cex = 0.5,
+              # Sunrise is blue, sunset is red
+              col = ifelse(twl$Rise, &quot;dodgerblue&quot;, &quot;firebrick&quot;))
+
+# Plot the calibration period between vertical oragne lines
+abline(v = tm.calib, lwd = 2, lty = 2, col = &quot;orange&quot;)</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/determine_zenith-1.png" width="672" /></p>
+<pre class="r"><code># Generate the calibration model from the filtered twilight data
+#calib &lt;- thresholdCalibration(
+  # Twilight times during calibration period
+  #d.calib$Twilight, 
+  # Sunset or sunrise
+  #d.calib$Rise, 
+  # BA055 departure location
+  #lon.calib, lat.calib, 
+  #method = &quot;gamma&quot;)
+
+# Generate parameters of the error distribution
+#zenith  &lt;- calib[1]
+#zenith0 &lt;- calib[2]
+#alpha &lt;- calib[3:4]</code></pre>
+<p>The <em>threshold</em> calibration method is mainly used to derive positions by defining sunrise and sunset times from the light intensity pattern for each recorded day. This method requires calibration: a predefined sun elevation angle for estimating latitude by fitting the recorded day⁄night lengths to theoretical values across latitudes. Therewith, almost constant shading can be corrected for by finding the appropriate sun elevation angle.</p>
+<div id="hills-ekstrom-calibration" class="section level2">
+<h2>Hills-Ekstrom calibration</h2>
+<p>There is an alternative approach to calibration using the Hill-Ekstrom<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> theory to estimate the sun zenith. This approach proposes that the zenith angle should lead to the lowest variance in latitude estimates (i.e. flattest) during stationary periods. The Hill-Ekstrom calibration bases on an increasing error range in latitudes with an increasing mismatch between light level threshold and the used sun angle. This error is strongly amplified with proximity to the equinox times due to decreasing slope of day length variation with latitude.</p>
+<pre class="r"><code># Set dates for calibration to be where the sd is minimised
+startDate &lt;- &quot;2016-09-30&quot; #tm.track[1]
+endDate   &lt;- &quot;2016-11-30&quot; #tm.track[2]
+  
+start = min(which(as.Date(twl$Twilight) == startDate))
+end = max(which(as.Date(twl$Twilight) == endDate))
+
+zenith_he &lt;- findHEZenith(twl, tol=0.01, range=c(start,end))</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/HE_zenith_calib-1.png" width="672" /> The top panel shows the entire migration path (latitude at each date) using different zenith angles with the black line indicating the latitude estimates with the smallest variation within the specified calibration range (in between the two blue dashed lines). We can see that the standard deviation of the estimate for zenith is minimised at around 94.5 (lower panel).</p>
+<pre class="r"><code>#convert to geolight format
+#geo_twl &lt;- export2GeoLight(twl)
+# this is just to find places where birds have been for a long time
+#cL &lt;- changeLight(twl=geo_twl, quantile=0.8, summary = F, days = 10, plot = T)
+# merge site helps to put sites together that are separated by single outliers.
+#mS &lt;- mergeSites(twl = geo_twl, site = cL$site, degElevation = 90-zenith0, distThreshold = 500)
+
+#specify which site is the stationary one
+#site           &lt;- mS$site[mS$site&gt;0] # get rid of movement periods
+#stationarySite &lt;- which(table(site) == max(table(site))) # find the site where bird is the longest
+
+#find the dates that the bird arrives and leaves this stationary site
+#start &lt;- min(which(mS$site == stationarySite))
+#end   &lt;- max(which(mS$site == stationarySite))
+
+#(zenith_sd &lt;- findHEZenith(twl, tol=0.01, range=c(start,end)))</code></pre>
+<p>There isn’t really that much difference (c0.5) between the two methods. Let’s go with 94.75 for z0.</p>
+<pre class="r"><code>#zenith0 &lt;- 94.75</code></pre>
+</div>
+</div>
+<div id="movement-model" class="section level1">
+<h1>Movement model</h1>
+<p>We need to provide a mean and standard deviation for a gamma distribution of flight speeds that get applied to each day of the analysis period. We typically want short (near zero) distance daily flights to be common and long distance daily flights to be relatively rare.</p>
+<pre class="r"><code># Species movement model
+# changed beta to fit slower moving birds
+beta  &lt;- c(2.2, 0.06)
+matplot(0:100, dgamma(0:100, beta[1], beta[2]),
+        type = &quot;l&quot;, col = &quot;orange&quot;,lty = 1,lwd = 2,ylab = &quot;Density&quot;, xlab = &quot;km/h&quot;)</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/movement_model-1.png" width="672" /></p>
+</div>
+<div id="plot-initial-track" class="section level1">
+<h1>Plot initial track</h1>
+<p>Now we can visualise an initial track for BA055, prior to performing a more sophisticated analysis of the flight path.</p>
+<pre class="r"><code>#  Creates path from simple threshold estimates. 
+# Varying the &quot;tol&quot; value will change the duration of period surrounding the equinoxes that latitudes will not be estimated from light-level 
+# data. Instead latitudes will be estimated in a linear progression from the first twilight before the equinox period until the first twilight
+# after the equinox ### period
+path &lt;- thresholdPath(twl$Twilight, 
+                      twl$Rise, 
+                      zenith = zenith_he, 
+                      tol = 0.1, 
+                      unfold = TRUE)
+
+x0 &lt;- path$x
+z0 &lt;- trackMidpts(x0)
+
+
+### Plots estimated longitudes from light-level data against time, adding a line indicating the longitude from 
+### deployment site for reference
+opar &lt;- par(mfrow = c(1, 1), mar = c(2,4,1,1)+0.1) 
+
+plot(x0, type = &quot;n&quot;, xlab = &quot;&quot;, ylab = &quot;&quot;)
+### Loads in basic world map
+data(wrld_simpl)
+plot(wrld_simpl, col = &quot;grey95&quot;, add = T)
+
+points(path$x, pch=19, col=&quot;cornflowerblue&quot;, type = &quot;o&quot;)
+points(lon.calib, lat.calib, pch = 16, cex = 2.5, col = &quot;firebrick&quot;)
+box()
+
+abline(h = lon.calib)
+abline(v = lat.calib)</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/plot_track-1.png" width="960" /></p>
+</div>
+<div id="flight-r" class="section level1">
+<h1>Flight R</h1>
+<p>Now that we have a basic flight track, we can process this data further to generate a track that is based on an algorithm that uses <em>particle filter</em> techniques to provide a flight path with increased accuracy and less noise. The <code>FlightR</code> package provides such an approach to the <em>filtering problem</em>. This consists of estimating the internal states in a dynamical process (the flight path) when partial observations are made, and random perturbations are present in the geolocator data (due to weather) as well as in the dynamical system. First we create the appropriate data structure for the algorithm to run.</p>
+<div id="calibration-1" class="section level2">
+<h2>Calibration</h2>
+<p>We can use the <code>FlightR</code> package to to calibrate via a technique known as <em>template fit</em><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estiate the suns angle, which in turn gives a geospatial location.</p>
+<pre class="r"><code># Set-up calibration period
+Calibration.periods&lt;-data.frame(
+        calibration.start=as.POSIXct(&quot;2016-07-04&quot;),
+        calibration.stop =as.POSIXct(&quot;2016-07-22&quot;),
+        lon=177.05, 
+        lat=62.55) 
+
+print(Calibration.periods)
+
+# Create calibration object
+Calibration &lt;- make.calibration(tags.data, 
+                                Calibration.periods,
+                                plot.each = F,
+                                plot.final = F)</code></pre>
+</div>
+<div id="assign-spatial-extent" class="section level2">
+<h2>Assign spatial extent</h2>
+<p>Before we run the <code>FlightR</code> model, we need to make an estimate as to where we expect the tracked bird will fly, and then assign a spaital grid, within which a model will assign the probability that the bird was present.</p>
+<pre class="r"><code># Assign spatial extent
+Grid&lt;-make.grid(
+  # Assign overall bounding box
+  # Use preliminary track from above
+  left=100, bottom=-20, right=190, top=70,
+  # Can fly over water
+  distance.from.land.allowed.to.use=c(-Inf, Inf),
+  # Cannot stay further than 30km in land
+  distance.from.land.allowed.to.stay=c(-30, Inf))</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/assign_extent-1.png" width="672" /></p>
+<p>In the above map, yellow shows where we think BA055 will stay/rest and the grey is where the bird may fly.</p>
+</div>
+<div id="prepare-model-run" class="section level2">
+<h2>Prepare model run</h2>
+<p>We now combine the various objects we’ve created:</p>
+<ul>
+<li>Detected twilight events - <code>tags.data</code></li>
+<li>Spatial extent - <code>Grid</code></li>
+<li>Initial location - <code>Calibration.periods</code></li>
+<li>Calibration parameters - <code>Calibration</code></li>
+</ul>
+<p>And compile a <code>prerun.object</code>. This is then used subsequently to drive the full flight path simulation.</p>
+<pre class="r"><code># Prepare the model for execution
+# Takes around 15 minutes to run!
+all.in &lt;- make.prerun.object(
+  # Twilight data
+  Proc.data = tags.data, 
+  # Spatial extent
+  Grid = Grid, 
+  # Release location
+  start=c(lon.calib, lat.calib),
+  # Calibration object
+  Calibration=Calibration, 
+  # Prior for mean distance travelled (km) between twilights
+  M.mean=300)
+
+# Save pre run results
+saveRDS(all.in, &quot;BA055_FlightRCalib.RData&quot;)</code></pre>
+</div>
+<div id="particle-filter-run" class="section level2">
+<h2>Particle filter run</h2>
+<p>Now we are ready to execute a full model run.</p>
+<pre class="r"><code># ~ 45 min run time
+Result&lt;-run.particle.filter(
+  # Pre run object results
+  all.in, 
+  # Dedicate all threads but 1
+  threads=-1,
+  # Number of particles in run
+  nParticles=1e6, 
+  # The bird returned to the same location
+  known.last=T,
+  # What is the precision of last location
+  precision.sd=25, 
+  # Ignore outlieers
+  check.outliers=F,
+  # Maximum distance flown between twilights
+  b = 300,
+  # Plot results,
+  plot = T)
+
+# Save the results of the model run
+saveRDS(Result, file=&quot;Result.BA055.RData&quot;)</code></pre>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia.</p>
+<pre class="r"><code>plot_lon_lat(Result)</code></pre>
+<p><img src="7_movement_BA055v2_files/figure-html/flight_path-1.png" width="672" /></p>
+<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging.</p>
+<pre class="r"><code>map.FLightR.ggmap(Result = Result, 
+                  seasonal.donut.location = &quot;bottomright&quot;)</code></pre>
+<p><img src="BA055_path_ggmap" width="100%" /></p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Tong Mu , Pavel S. Tomkovich, Egor Y. Loktionov, Evgeny E. Syroechkovskiy, David S. Wilcove: Migratory routes of Red-necked Phalaropes Phalaropus lobatus breeding in southern Chukotka revealed by geolocators.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Lisovski, S., Bauer, S., Briedis, M., Davidson, S.C., Dhanjal-Adams, K.L., Hallworth, M.T., Karagicheva, J., Meier, C.M., Merkel, B., Ouwehand, J., Pedersen, L., Rakhimberdiev, E., Roberto-Charron, A., Seavy, N.E., Sumner, M.D., Taylor, C.M., Wotherspoon, S.J. &amp; E.S. Bridge (2019) Light-Level Geolocator Analyses: A user’s guide. Journal of Animal Ecology.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Hill, C. &amp; Braun, M.J. (2001) Geolocation by light level - the next step: Latitude. In: Electronic Tagging and Tracking in Marine Fisheries (eds J.R. Sibert &amp; J. Nielsen), pp. 315-330. Kluwer Academic Publishers, The Netherlands.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>Ekstrom, P. (2007). Error measures for template-fit geolocation based on light. Deep Sea Research Part II: Topical Studies in Oceanography, 54, 392–403.<a href="#fnref4">↩</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

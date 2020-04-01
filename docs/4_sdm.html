@@ -369,10 +369,19 @@ div.tocify {
       <a href="3_gam.html">Generalised Additive Models</a>
     </li>
     <li>
-      <a href="4_sdm.html">Species Distribution Modelling</a>
+      <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
       <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+    <li>
+      <a href="6_sam_naboisho.html">Geostatistics</a>
+    </li>
+    <li>
+      <a href="7_movement_BA055.html">Movement Modelling</a>
+    </li>
+    <li>
+      <a href="8_distance_sampling.html">Distance Sampling</a>
     </li>
   </ul>
 </li>
@@ -403,7 +412,8 @@ library(viridis)
 
 # Clear environment and set working directory
 rm(list = ls())  </code></pre>
-<p>We can use the Global Biodiversity Information Facility (GBIF) to gather presence records for the migratory hoverfly <em>Volucella zonaria</em>, also known as the hornet mimic hoverfly. In Great Britain, it was only known from two specimens prior to 1940, so was regarded as rare. Since then, it has become increasingly widespread in many parts of the South and South East England, often in association with parks and gardens, where adults are usually seen visiting flowers. Elsewhere in England, only a few scattered records exist.</p>
+<p>We can use the Global Biodiversity Information Facility (GBIF) to gather presence records for the migratory hoverfly <em>Volucella zonaria</em>, also known as the hornet mimic hoverfly. In Great Britain, it was only known from two specimens prior to 1940, so was regarded as rare. Since then, it has become increasingly widespread in many parts of the South and South East England, often in association with parks and gardens, where adults are usually seen visiting flowers. Elsewhere across England, only a few scattered records exist.</p>
+<p>The observation records were retrieved from the GBIF API, and the data cleanded as follows:</p>
 <pre class="r"><code># load the data from a query to GBIF, for V. Zonaria
 gbif_response &lt;- read_rds(&quot;~/Documents/GitHub/ComputationalEcology/data_analysis_files/clim_data/gbif_volucella_zonaria.rds&quot;)
 
@@ -424,9 +434,9 @@ zonaria_clean &lt;- gbif_response$data %&gt;%
     # let&#39;s take data from 2000 to 2020
     decade %in% c(2010,2020)) %&gt;%
   # retain only relevant variables
-  dplyr::select(x, y, decade) %&gt;% arrange(decade)</code></pre>
+  dplyr::select(x, y, decade,scientificName) %&gt;% arrange(decade)</code></pre>
 <div id="covariates" class="section level1">
-<h1>Covariates</h1>
+<h1><span class="header-section-number">1</span> Covariates</h1>
 <p>Now we need to grab some environmental data. For this vignette we will use the worldclim database as this is directly available via the <code>raster</code> package. We can download 19 bioclimatic variables at 10’ resolution. They are coded as follows:</p>
 <ul>
 <li>BIO1 = Annual Mean Temperature</li>
@@ -449,8 +459,7 @@ zonaria_clean &lt;- gbif_response$data %&gt;%
 <li>BIO18 = Precipitation of Warmest Quarter</li>
 <li>BIO19 = Precipitation of Coldest Quarter</li>
 </ul>
-<p>We’ll also to use landcover classification for the UK (from 2015).</p>
-<p>Let’s download data for the current bioclim and UK lancover classification rasters:</p>
+<p>Let’s download data for the current bioclim a rasters:</p>
 <pre class="r"><code># Load UK background mask
 bg &lt;- raster(&quot;data_analysis_files/UK_bg.grd&quot;)
 
@@ -462,58 +471,70 @@ ext_uk &lt;- c(-12, 3, 48, 62)
 
 # Get climate data for current date
 filepath = &quot;~/Documents/GitHub/ComputationalEcology/data_analysis_files/clim_data/&quot;
-bio_curr &lt;- getData(&#39;worldclim&#39;, var=&#39;bio&#39;, download=F, lon=-5, lat=55, res=5, path=filepath)
+bio_curr &lt;- raster::getData(&#39;worldclim&#39;, var=&#39;bio&#39;, download=F, lon=-5, lat=55, res=5, path=filepath)
 
 # Crop and reproject current climate
 bio_curr &lt;- crop(bio_curr, ext_uk)
 bio_curr &lt;- projectRaster(bio_curr, bg)
 bio_curr &lt;- resample(bio_curr, bg)
-bio_curr &lt;- mask(bio_curr, bg)
+bio_curr &lt;- mask(bio_curr, bg)</code></pre>
+<div id="autocorrelation" class="section level2">
+<h2><span class="header-section-number">1.1</span> Autocorrelation</h2>
+<p>Using adjacent cells in building a model can cause problems with spatial autocorrelation. We can therefore, thin the observations using the package <code>spThin</code>, as shown below. We set a minimum spatial distance between observations of 10km. The plot below shows the retained spatially thinned <em>V. zonaria</em> observations.</p>
+<pre class="r"><code># Load library
+library(spThin)
+# Generate thinned data
+thinned_zonaria &lt;- thin(
+  # Observtion data to thin
+  zonaria_clean,
+  # Longitude and Latitude data
+  lat.col = &quot;y&quot;, long.col = &quot;x&quot;, 
+  # Column that reperesents species
+  spec.col = &quot;scientificName&quot;, 
+  # Minimum distance (in km) that records should be separated by 
+  thin.par = 10, 
+  # The process is random, so repeat three times
+  reps=10,
+  # We dont wish to see or write the output
+  locs.thinned.list.return = T,
+  write.files = F, 
+  write.log.file = F)</code></pre>
+<pre><code>## ********************************************** 
+##  Beginning Spatial Thinning.
+##  Script Started at: Mon Mar 30 11:15:19 2020
+## lat.long.thin.count
+## 89 90 91 92 
+##  1  3  4  2 
+## [1] &quot;Maximum number of records after thinning: 92&quot;
+## [1] &quot;Number of data.frames with max records: 2&quot;
+## [1] &quot;No files written for this run.&quot;</code></pre>
+<pre class="r"><code># Select sample with largest number of thinned 0observations
+sample_index &lt;- which.max(sapply(thinned_zonaria,nrow))
+thinned_zonaria &lt;- data.frame(x = thinned_zonaria[[sample_index]]$Longitude, 
+                           y = thinned_zonaria[[sample_index]]$Latitude) %&gt;%
+  mutate(obs = &quot;thinned&quot;)
 
-# Future climate data
-bio_fut &lt;- getData(&#39;CMIP5&#39;, var=&#39;bio&#39;, download=F, res=5, rcp=45, model=&#39;MC&#39;, year=50, path=filepath)
-bio_fut &lt;- crop(bio_fut, ext_uk)
-
-# Crop and reproject future climate
-bio_fut &lt;- crop(bio_fut, ext_uk)
-bio_fut &lt;- projectRaster(bio_fut, bg)
-bio_fut &lt;- resample(bio_fut, bg)
-bio_fut &lt;- mask(bio_fut, bg)
-
-# Make variable names the same for both datasets
-names(bio_fut) &lt;- names(bio_curr)
-
-# Load UK Landcover percentage classification at 1km
-uk_lcm &lt;- stack(&quot;data_analysis_files/lcm/LCM2015_GB_1km_percent_cover_target_class_WGS84.tif&quot;)
-
-# Join uk landcover and current bioclim rasters
-curr_clim_resampled &lt;- resample(uk_lcm, bio_curr)
-curr_clim_stacked &lt;- stack(curr_clim_resampled, bio_curr)
-
-# Join uk landcover and future bioclim rasters
-fut_clim_resampled &lt;- resample(uk_lcm, bio_fut)
-fut_clim_stacked &lt;- stack(fut_clim_resampled, bio_fut)</code></pre>
-<p>Let’s plot our GBIF observations for V. zoanria</p>
-<pre class="r"><code>bg_df &lt;- as(bg, &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
+# Make dataframe of background raster
+bg_df &lt;- as(bg, &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
   as.data.frame()
 
+# Name the dataframe columns
 colnames(bg_df) &lt;- c(&quot;value&quot;, &quot;x&quot;, &quot;y&quot;)
 
-ggplot() +
-  geom_tile(data= bg_df, aes(x=x, y=y)) +
-  coord_equal() +
-  geom_point(data=zonaria_clean, 
-             aes(x=x, y=y), 
-             colour =&quot;red&quot;, 
+# Generate a plot of observations a cross the UK
+rbind(thinned_zonaria, zonaria_clean[1:2] %&gt;% mutate(obs= &quot;full&quot;)) %&gt;%
+  ggplot() +
+  geom_raster(data=bg_df, aes(x=x, y=y)) +
+  geom_point(aes(x=x, y=y, colour = obs), 
              size = 0.5) +
-  theme_bw()</code></pre>
-<p><img src="4_sdm_files/figure-html/plot_obs-1.png" width="672" /></p>
+  theme_bw() +
+  facet_wrap(~obs)</code></pre>
+<p><img src="4_sdm_files/figure-html/thin_obs-1.png" width="672" /></p>
+</div>
 <div id="bioclim-data" class="section level2">
-<h2>Bioclim data</h2>
+<h2><span class="header-section-number">1.2</span> Bioclim data</h2>
 <p>We can plot the current bioclim data - all 19 covariates:</p>
-<pre class="r"><code># Plot the bioclim covariates - we&#39;ll use ggplot, as raster plot function not as nice output
-
-# Function to generate individual plots
+<pre class="r"><code># Function to generate individual plots
 plot_bioclim &lt;- function(df, name) {
   ggplot(data = df, aes(x=x, y=y, fill = value)) + 
   geom_tile() +
@@ -547,19 +568,21 @@ gridExtra::grid.arrange(grobs = nested_bioclim_plots$plots,
                         margin
                         )</code></pre>
 <p><img src="4_sdm_files/figure-html/plot_uk_bioclim-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>For each bioclim and uk landcover variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each location.</p>
+<p>For each bioclim variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each observation to give an overall dataset from which we can build our species distribution model for V. zonaria.</p>
 <pre class="r"><code>df_presence &lt;- zonaria_clean[1:2] %&gt;%
   # Extract bioclim + lcm variables using long/lat
-  raster::extract(curr_clim_stacked, .) %&gt;%
+  raster::extract(bio_curr, .) %&gt;%
   # Add extracted variables to long/lat
   cbind(zonaria_clean) %&gt;%
   # Mark observation data as presence records
   mutate(presence = 1) %&gt;%
-  # Drop decade, we dont need it
-  dplyr::select(-decade)
+  # Drop unecessary columns
+  dplyr::select(-decade, -scientificName)
   
 # Function to pick raster cells at random from bioclim layers
 raster_random_sample &lt;- function(r_covars, n_samples, xy_coords) {
+  # Set seed for repeatable results
+  set.seed(12345)
   raster::sampleRandom(
     x = r_covars, 
     size = n_samples,
@@ -568,7 +591,7 @@ raster_random_sample &lt;- function(r_covars, n_samples, xy_coords) {
   }
 
 # Sample background points (psedo absent?) from covariate raster 
-df_absence &lt;- raster_random_sample(curr_clim_stacked, 500, T) %&gt;%
+df_absence &lt;- raster_random_sample(bio_curr, 100, T) %&gt;%
   as.data.frame() %&gt;%
   # Mark as background data
   mutate(presence = 0)
@@ -578,16 +601,32 @@ df_zonaria &lt;- rbind(df_presence, df_absence)</code></pre>
 </div>
 </div>
 <div id="variable-selection" class="section level1">
-<h1>Variable selection</h1>
+<h1><span class="header-section-number">2</span> Variable selection</h1>
 <p>In order to avoid collinearity we should remove covariates with absolute correlation of 0.8 or higher. We can achieve this by calculating a correlation matrix.</p>
 <pre class="r"><code># Generate correlation matrix with covariates as correlates
 cor_mat &lt;- cor(df_zonaria %&gt;% dplyr::select(-x,-y,-presence), method=&quot;spearman&quot;)
 # Subset covariates that are highly correlated
-highlyCorrelated &lt;- findCorrelation(cor_mat, cutoff=0.75)
+highlyCorrelated &lt;- findCorrelation(cor_mat, cutoff=0.8)
 # Generate column names to remove
 cols_to_remove &lt;- names(df_zonaria[highlyCorrelated])
 # Remove highly correlated variables from df
-df_zonaria &lt;- df_zonaria %&gt;% dplyr::select(-cols_to_remove)</code></pre>
+df_zonaria &lt;- df_zonaria %&gt;% dplyr::select(-cols_to_remove)
+# What covarites are weekly correlated
+head(df_zonaria)</code></pre>
+<pre><code>##       bio2     bio3     bio4     bio5     bio8     bio9    bio11    bio15
+## 1 64.48101 32.00000 4799.870 206.8308 75.69390 61.83747 39.77803 13.91587
+## 2 64.48101 32.00000 4799.870 206.8308 75.69390 61.83747 39.77803 13.91587
+## 3 61.46156 31.77255 4687.255 205.8329 80.00000 62.14391 43.53844 15.31099
+## 4 61.46156 31.77255 4687.255 205.8329 80.00000 62.14391 43.53844 15.31099
+## 5 72.06501 34.06501 4812.766 207.2257 78.24089 58.93499 34.00000 13.29069
+## 6 72.06501 34.06501 4812.766 207.2257 78.24089 58.93499 34.00000 13.29069
+##      bio18       x        y presence
+## 1 162.2590 1.32073 52.59618        1
+## 2 162.2590 1.32073 52.59618        1
+## 3 168.0000 1.63029 52.76698        1
+## 4 168.0000 1.63029 52.76698        1
+## 5 147.0461 0.75289 52.01723        1
+## 6 147.0461 0.75289 52.01723        1</code></pre>
 <p>Now we have joined our environmental and observation data together into one dataset, we can begin to build a species distribution model. First we need to create a categorical response variable as we want to model presence v absence in space:</p>
 <pre class="r"><code># last pre-processing step
 df_modelling &lt;- df_zonaria %&gt;%
@@ -598,171 +637,164 @@ df_modelling &lt;- df_zonaria %&gt;%
     as.factor()) %&gt;%
   # drop all observations with NA variables
   na.omit()</code></pre>
+<p>Before we undertake any machine learning, we need to split the data into training and test sets. We give 60% of the data over to training with the remainder used to test the model fit:</p>
+<pre class="r"><code># for reproducibility
+set.seed(12345)
+# Create index for splitting
+inTrain  &lt;- createDataPartition(y = df_modelling$presence, p = 0.6, list = FALSE)
+# Create training dataset
+training &lt;- df_modelling[inTrain,]
+# Create testing dataset
+testing  &lt;- df_modelling[-inTrain,]</code></pre>
 </div>
-<div id="covariate-importance" class="section level1">
-<h1>Covariate importance</h1>
-<p>Before we fit the a machine learning model, we should look at the variabele importance. We can do this using the <code>caret</code> package, which has a function to evaluate covariate importance.</p>
-<pre class="r"><code># Use Recursive Feature Elimintation (RFE) to determine significant covariates 
-set.seed(100)
-
-# Select the grouping of variables to test
-subsets &lt;- c(1:5, 10, 15, 20, length(df_modelling))
-
-# Define the control using a random forest selction function
-ctrl &lt;- rfeControl(functions = rfFuncs,
-                   method = &quot;repeatedcv&quot;,
-                   repeats = 3,
-                   verbose = FALSE)
-
-results &lt;- rfe(x=df_modelling %&gt;% dplyr::select(-c(&quot;x&quot;,&quot;y&quot;,&quot;presence&quot;)), 
-               y=df_modelling$presence,
-               sizes = subsets,
-               rfeControl = ctrl)
-
-# Print summart of results
-print(results)</code></pre>
-<pre><code>## 
-## Recursive feature selection
-## 
-## Outer resampling method: Cross-Validated (10 fold, repeated 3 times) 
-## 
-## Resampling performance over subset size:
-## 
-##  Variables Accuracy  Kappa AccuracySD KappaSD Selected
-##          1   0.8311 0.6629    0.04170 0.08310         
-##          2   0.8658 0.7320    0.03253 0.06494         
-##          3   0.8856 0.7714    0.03108 0.06207         
-##          4   0.8842 0.7686    0.03412 0.06825         
-##          5   0.8853 0.7706    0.02905 0.05810         
-##         10   0.8941 0.7882    0.03402 0.06816         
-##         15   0.9026 0.8052    0.03490 0.06989         
-##         20   0.9023 0.8045    0.02871 0.05745         
-##         24   0.9050 0.8100    0.02848 0.05702        *
-## 
-## The top 5 variables (out of 24):
-##    bio4, LCM2015_GB_1km_percent_cover_target_class_WGS84.20, bio3, LCM2015_GB_1km_percent_cover_target_class_WGS84.6, bio2</code></pre>
-<pre class="r"><code># Plot the results
-plot(results, type=c(&quot;g&quot;, &quot;o&quot;))</code></pre>
-<p><img src="4_sdm_files/figure-html/feature_selection-1.png" width="672" /></p>
-</div>
-<div id="fit-a-random-forest-ml-model" class="section level1">
-<h1>Fit a Random Forest ML model</h1>
-<p>Looks like we can get most of the way with the top five variables, so let’s use the first five most significant variables in our model. We’ll fit the model using a random forest.</p>
+<div id="random-forest" class="section level1">
+<h1><span class="header-section-number">3</span> Random Forest</h1>
+<p>Now we have removed the most highly correalted variables, we have nine <code>bio_clim</code> variables to as covarites to build a model fit. We’ll fit the model using a random forest. A Random Forest is a machine larning classifier that builds a number <em>decision trees</em>. The idea is to build a forest of uncorrelated decision, conditioned on our covariates. The resulting forest has an decision structure that can accurately classify our decision model; in this case presence or absence at a location, given a set of <code>bio_clim</code> covariates.</p>
 <pre class="r"><code>library(randomForest)
-
-# take the top five variables from the feature importance
-opt_vars &lt;- results$optVariables[1:5]
-
-# Recut the modelling data
-df_modelling &lt;- cbind(df_modelling[opt_vars], df_modelling %&gt;% dplyr::select(x,y,presence))
 
 # Use five fold cross validation, repeated twice
 tunecontrol &lt;- trainControl(
-  method = &#39;repeatedcv&#39;,
+  # Use 5-fold cross validation
+  method = &#39;cv&#39;,
   number = 5,
-  repeats = 2,
+  # Repeated cv 3 times
+  repeats = 3,
+  # Use a grid for hyper-parameters
   search = &quot;grid&quot;)
 
 # Create tuning parameters as grid
 tunegrid &lt;- expand.grid(.mtry=c(3:9))
 
-# for reproducibility
+# for reproducibility 
 set.seed(12345)
 
 # actual model build
 model_fit &lt;- train(
+  # Our formular for classifications
   presence ~ .,
-  data = df_modelling,
+  # Data to train the RF classifier
+  data = training,
+  # Train using a Random Forest
   method = &quot;rf&quot;,
+  # Return an accuracy metrix
   metric = &quot;Accuracy&quot;,
+  # Run the model using 
   tuneGrid = tunegrid,
-  trControl = tunecontrol)
+  trControl = tunecontrol,
+   # Normalise the covariate data
+  preProcess = c(&quot;center&quot;, &quot;scale&quot;)
+  )
 
 print(model_fit)</code></pre>
 <pre><code>## Random Forest 
 ## 
-## 979 samples
-##   7 predictor
+## 348 samples
+##  11 predictor
 ##   2 classes: &#39;absence&#39;, &#39;presence&#39; 
 ## 
-## No pre-processing
-## Resampling: Cross-Validated (5 fold, repeated 2 times) 
-## Summary of sample sizes: 784, 783, 783, 783, 783, 783, ... 
+## Pre-processing: centered (11), scaled (11) 
+## Resampling: Cross-Validated (5 fold) 
+## Summary of sample sizes: 279, 279, 278, 278, 278 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##   3     0.9055050  0.8111109
-##   4     0.9070434  0.8142075
-##   5     0.9055076  0.8111353
-##   6     0.9055076  0.8111469
-##   7     0.9039770  0.8081041
-##   8     0.9019309  0.8040253
-##   9     0.9049948  0.8101494
+##   3     0.9338302  0.7305669
+##   4     0.9338302  0.7305669
+##   5     0.9338716  0.7279421
+##   6     0.9395859  0.7546974
+##   7     0.9367288  0.7427430
+##   8     0.9424845  0.7686002
+##   9     0.9338716  0.7331589
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 4.</code></pre>
+## The final value used for the model was mtry = 8.</code></pre>
 <pre class="r"><code>plot(model_fit)</code></pre>
-<p><img src="4_sdm_files/figure-html/model_fit-1.png" width="672" /></p>
+<p><img src="4_sdm_files/figure-html/model_fit-1.png" width="672" /> # Confusion matrix</p>
+<p>We can assess how good model predictions by generating a confusion matrix. This matrix shows a cross-tabulation of the observed and predicted classes, as well as a number of metrics that provide an inisght into how good the model predictions were compared to a reference data set. The referece dataset in our case was the reserved <em>training</em> data.</p>
+<pre class="r"><code># Make prediction
+pred &lt;- predict(model_fit, testing)
+# Generate confusion matrix
+confusionMatrix(
+  # Predicted classification results
+  data = pred, 
+  # Reference data - use partioned test data
+  reference = testing$presence, 
+  # Definition of positive result
+  positive = &quot;presence&quot;)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction absence presence
+##   absence       25        8
+##   presence      15      183
+##                                           
+##                Accuracy : 0.9004          
+##                  95% CI : (0.8544, 0.9358)
+##     No Information Rate : 0.8268          
+##     P-Value [Acc &gt; NIR] : 0.001174        
+##                                           
+##                   Kappa : 0.6265          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.210903        
+##                                           
+##             Sensitivity : 0.9581          
+##             Specificity : 0.6250          
+##          Pos Pred Value : 0.9242          
+##          Neg Pred Value : 0.7576          
+##              Prevalence : 0.8268          
+##          Detection Rate : 0.7922          
+##    Detection Prevalence : 0.8571          
+##       Balanced Accuracy : 0.7916          
+##                                           
+##        &#39;Positive&#39; Class : presence        
+## </code></pre>
+<p>Some definitions:</p>
+<ul>
+<li>Accuracy - overall probability that a response is correctly classified. Accuracy = Sensitivity × Prevalence + Specificity × (1 − Prevalence)</li>
+<li>Sensitivity - true positive rate of the <em>positive</em> class. How well did the model detect presence?</li>
+<li>Specificity - true negative rate. How well did the model detect absence?</li>
+<li>Positive Predictive Value - probability that V. Zonaria is present when the model returns a presence</li>
+<li>Negative Predictive Value - probability that V. Zonaria is absent when the model returns an absence</li>
+</ul>
+<p>We can see the accuracy is around 91%. So the model is looking good.</p>
 </div>
-<div id="make-a-prediction" class="section level1">
-<h1>Make a prediction</h1>
+<div id="plot-prediction" class="section level1">
+<h1><span class="header-section-number">4</span> Plot prediction</h1>
 <p>Now we can now make a prediction for the current species distribution range for V. zonaria, using the bioclim covariates.</p>
-<pre class="r"><code># Generate species distribution df given raster of environmental variables and sdm
-predict_dist &lt;- function(
-  # Raster containing all covariates
-  r_covar, 
-  # Model fit
-  sdm)
-  # Subset of covariates required by model fit
-  #opt_covars)
-  {
-     # Generate distribution data from raster to run model on
-     dist_dat &lt;- data.frame(rasterToPoints(r_covar)) %&gt;% 
-       dplyr::select(opt_vars,x,y) %&gt;%
-       na.omit()
+<pre class="r"><code># Generate distribution data from raster to run model on
+dist_dat &lt;- data.frame(rasterToPoints(bio_curr)) %&gt;% 
+  # Select variables required for prediction
+  dplyr::select(head(names(training), -1)) %&gt;%
+  na.omit()
+
+# Set seed for repeatable results
+set.seed(12345)
+
+# Create a probability of presence/absence raster
+r_pred &lt;- rasterFromXYZ(
+  cbind(
+  # Coordinates to make prediction from
+  dist_dat %&gt;% dplyr::select(x,y),
+
+  # Predict with RF species distribution model 
+    predict(model_fit, 
+    # Use covariates to run model against
+    dist_dat, 
+    # Type of response variable
+    type=&#39;prob&#39;)))
      
-     # Set seed for repeatable results
-     set.seed(123)
-     # Create a probability of presence/absence raster
-     r_pred &lt;- rasterFromXYZ(
-       cbind(
-       # Coordinates to make prediction from
-       dist_dat %&gt;% dplyr::select(x,y),
-       # Predict with RF species distribution model 
-       predict(model_fit, 
-               # Use covariates to run model against
-               dist_dat, 
-               # Type of response variable
-               type=&#39;prob&#39;)))
-     # Create spatial dataframe for plotting
-     df_prob_presence &lt;- as(r_pred[[2]], &quot;SpatialPixelsDataFrame&quot;) %&gt;% 
-            as.data.frame()
-     
-  # Return probability of presence raster
-  return(df_prob_presence)
-  }
-
-# Generate sdm for current climate vars
-curr_plot &lt;- predict_dist(curr_clim_stacked, model_fit) %&gt;% 
-  mutate(plot_type = &quot;2020 range&quot;)
-
-# Generate sdm under future climate vars
-fut_plot &lt;- predict_dist(fut_clim_stacked, model_fit) %&gt;% 
-  mutate(plot_type = &quot;2050 range&quot;)
-
-# Combine all data
-all_plots &lt;- rbind(curr_plot,fut_plot)
+# Create spatial dataframe for plotting
+df_prob_presence &lt;- as(r_pred[[2]], &quot;SpatialPixelsDataFrame&quot;) %&gt;% as.data.frame()
 
 # Plot scenarios
-all_plots %&gt;% 
+df_prob_presence %&gt;% 
 ggplot() + 
-  geom_tile(aes(x=x, y=y, fill=presence)) +
+  geom_raster(aes(x=x, y=y, fill=presence)) +
   coord_equal() +
   scale_fill_viridis() +
-  theme_bw() +
-  facet_wrap(~plot_type)</code></pre>
-<p><img src="4_sdm_files/figure-html/predict_and_plot-1.png" width="864" /></p>
-<p>We see the 2020 range is laregely confied to south of the Lake District. A future climate change scenario does not appear significantly different in that there is no significant range expansion north.</p>
+  theme_bw()</code></pre>
+<p><img src="4_sdm_files/figure-html/predict_and_plot-1.png" width="960" /></p>
+<p>We see the range fo V.zonaira is largely confined to south of Liverpool, with a random dot around Glasgow.</p>
 </div>
 
 
