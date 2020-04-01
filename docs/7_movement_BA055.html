@@ -404,7 +404,7 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (&lt;2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope <em>Phalaropus lobatus</em>. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indiesl a round trip of some 20,000km.</p>
+<p>Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (&lt;2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope <em>Phalaropus lobatus</em>. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km.</p>
 <p>This vignette makes extensive use of the code within the manual <em>Light-Level Geolocator Analyses: A user’s guide</em> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
 <pre class="r"><code># Clear all
 rm(list = ls())  
@@ -585,23 +585,6 @@ end = max(which(as.Date(twl$Twilight) == endDate))
 
 zenith_he &lt;- findHEZenith(twl, tol=0.01, range=c(start,end))</code></pre>
 <p><img src="7_movement_BA055_files/figure-html/HE_zenith_calib-1.png" width="672" /> The top panel shows the entire migration path (latitude at each date) using different zenith angles with the black line indicating the latitude estimates with the smallest variation within the specified calibration range (in between the two blue dashed lines). We can see that the standard deviation of the estimate for zenith is minimised at around 94.5 (lower panel).</p>
-<pre class="r"><code>#convert to geolight format
-#geo_twl &lt;- export2GeoLight(twl)
-# this is just to find places where birds have been for a long time
-#cL &lt;- changeLight(twl=geo_twl, quantile=0.8, summary = F, days = 10, plot = T)
-# merge site helps to put sites together that are separated by single outliers.
-#mS &lt;- mergeSites(twl = geo_twl, site = cL$site, degElevation = 90-zenith0, distThreshold = 500)
-
-#specify which site is the stationary one
-#site           &lt;- mS$site[mS$site&gt;0] # get rid of movement periods
-#stationarySite &lt;- which(table(site) == max(table(site))) # find the site where bird is the longest
-
-#find the dates that the bird arrives and leaves this stationary site
-#start &lt;- min(which(mS$site == stationarySite))
-#end   &lt;- max(which(mS$site == stationarySite))
-
-#(zenith_sd &lt;- findHEZenith(twl, tol=0.01, range=c(start,end)))</code></pre>
-<p>There isn’t really that much difference (c0.5) between the two methods. Let’s go with 94.75 for z0.</p>
 <pre class="r"><code>#zenith0 &lt;- 94.75</code></pre>
 </div>
 </div>
@@ -652,6 +635,23 @@ abline(v = lat.calib)</code></pre>
 <div id="flight-r" class="section level1">
 <h1><span class="header-section-number">6</span> Flight R</h1>
 <p>Now that we have a basic flight track, we can process this data further to generate a track that is based on an algorithm that uses <em>particle filter</em> techniques to provide a flight path with increased accuracy and less noise. The <code>FlightR</code> package provides such an approach to the <em>filtering problem</em>. This consists of estimating the internal states in a dynamical process (the flight path) when partial observations are made, and random perturbations are present in the geolocator data (due to weather) as well as in the dynamical system. First we create the appropriate data structure for the algorithm to run.</p>
+<pre class="r"><code># Create dataframe of raw light and datetime records
+raw_4_TAGS &lt;- data.frame(
+  # Correct date time format
+  datetime &lt;- as.POSIXct(raw$Date,tz=&quot;UTC&quot;),
+  # Raw light data
+  light    &lt;- raw$Light)
+
+# Create FlightR file of flight format
+FlightR.data &lt;- twGeos2TAGS(raw = raw_4_TAGS, 
+                            twl = twl,
+                            threshold = 2, 
+                            filename = &quot;tages_phal.csv&quot;)
+
+# Load and process tags format file
+tags_csv &lt;- read_csv(&quot;Documents/GitHub/ComputationalEcology/tages_phal.csv&quot;)
+tags_csv &lt;- tags_csv %&gt;% na.omit()
+#write_csv(tags_csv,&quot;tags_clean.csv&quot;)</code></pre>
 <div id="calibration-1" class="section level2">
 <h2><span class="header-section-number">6.1</span> Calibration</h2>
 <p>We can use the <code>FlightR</code> package to to calibrate via a technique known as <em>template fit</em><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estiate the suns angle, which in turn gives a geospatial location.</p>
@@ -742,7 +742,7 @@ saveRDS(Result, file=&quot;Result.BA055.RData&quot;)</code></pre>
 <p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>, where the warm tropical water provides significant foraging grounds fo the over wintering birds.</p>
 <pre class="r"><code>plot_lon_lat(Result)</code></pre>
 <p><img src="7_movement_BA055_files/figure-html/flight_path-1.png" width="672" /></p>
-<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represtns the most probably latitude and logitude at each twilight.</p>
+<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represents the most probably latitude and logitude at each twilight. Not, the coloured doughnut is a key for the month of the year.</p>
 <pre class="r"><code>map.FLightR.ggmap(Result = Result, 
                   seasonal.donut.location = &quot;bottomright&quot;)</code></pre>
 <p><img src="BA055_path_ggmap" width="100%" /></p>

@@ -7,7 +7,7 @@ output:
 
 # Introduction
 
-Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (<2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope *Phalaropus lobatus*. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here[^1]. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indiesl a round trip of some 20,000km. 
+Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (<2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope *Phalaropus lobatus*. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here[^1]. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km. 
 
 This vignette makes extensive use of the code within the manual *Light-Level Geolocator Analyses: A user’s guide* [^2].
 
@@ -211,29 +211,6 @@ zenith_he <- findHEZenith(twl, tol=0.01, range=c(start,end))
 ```
 The top panel shows the entire migration path (latitude at each date) using different zenith angles with the black line indicating the latitude estimates with the smallest variation within the specified calibration range (in between the two blue dashed lines). We can see that the standard deviation of the estimate for zenith is minimised at around 94.5 (lower panel). 
 
-```{r find_stationary_sites}
-
-#convert to geolight format
-#geo_twl <- export2GeoLight(twl)
-# this is just to find places where birds have been for a long time
-#cL <- changeLight(twl=geo_twl, quantile=0.8, summary = F, days = 10, plot = T)
-# merge site helps to put sites together that are separated by single outliers.
-#mS <- mergeSites(twl = geo_twl, site = cL$site, degElevation = 90-zenith0, distThreshold = 500)
-
-#specify which site is the stationary one
-#site           <- mS$site[mS$site>0] # get rid of movement periods
-#stationarySite <- which(table(site) == max(table(site))) # find the site where bird is the longest
-
-#find the dates that the bird arrives and leaves this stationary site
-#start <- min(which(mS$site == stationarySite))
-#end   <- max(which(mS$site == stationarySite))
-
-#(zenith_sd <- findHEZenith(twl, tol=0.01, range=c(start,end)))
-
-```
-
-There isn't really that much difference (c0.5) between the two methods. Let's go with 94.75 for z0.
-
 ```{r z0}
 #zenith0 <- 94.75
 ```
@@ -291,16 +268,13 @@ abline(v = lat.calib)
 
 Now that we have a basic flight track, we can process this data further to generate a track that is based on an algorithm that uses *particle filter* techniques to provide a flight path with increased accuracy and less noise. The `FlightR` package provides such an approach to the *filtering problem*. This consists of estimating the internal states in a dynamical process (the flight path) when partial observations are made, and random perturbations are present in the geolocator data (due to weather) as well as in the dynamical system. First we create the appropriate data structure for the algorithm to run.
 
-```{r FLightR_data, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r FLightR_data, eval=FALSE, message=FALSE, warning=FALSE}
 # Create dataframe of raw light and datetime records
 raw_4_TAGS <- data.frame(
   # Correct date time format
   datetime <- as.POSIXct(raw$Date,tz="UTC"),
   # Raw light data
   light    <- raw$Light)
-
-# Generate correct format necessary for twilight data
-#twl_gl <- export2GeoLight(twl)
 
 # Create FlightR file of flight format
 FlightR.data <- twGeos2TAGS(raw = raw_4_TAGS, 
@@ -436,7 +410,7 @@ Now we can look at how the longitude and latitude of BA055 flight path changes o
 plot_lon_lat(Result)
 ```
 
-Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represtns the most probably latitude and logitude at each twilight.
+Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represents the most probably latitude and logitude at each twilight. Not, the coloured doughnut is a key for the month of the year.
 
 ```{r ggmap_plot, eval=FALSE, message=FALSE, warning=FALSE}
 map.FLightR.ggmap(Result = Result, 

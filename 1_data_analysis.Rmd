@@ -1,8 +1,9 @@
 ---
 title: "A Protocol for Data Exploration"
-
+output: 
+  html_document:
+    number_sections: true
 ---
-
 
 # Introduction
 Undertaking a systematic data exploration prior to applying statistical analysis techniques to experimental data can help improve the statistical validity of results and associated conclusons. Key to this is a protocol for ensuring the scientist does not discover a false covariate effect (*type I error*) or mistakenly dismiss a model with valid covariate effects (*type II error*).
