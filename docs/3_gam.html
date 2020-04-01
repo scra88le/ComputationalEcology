@@ -369,10 +369,19 @@ div.tocify {
       <a href="3_gam.html">Generalised Additive Models</a>
     </li>
     <li>
-      <a href="4_sdm.html">Species Distribution Modelling</a>
+      <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
       <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+    <li>
+      <a href="6_sam_naboisho.html">Geostatistics</a>
+    </li>
+    <li>
+      <a href="7_movement_BA055.html">Movement Modelling</a>
+    </li>
+    <li>
+      <a href="8_distance_sampling.html">Distance Sampling</a>
     </li>
   </ul>
 </li>
@@ -394,12 +403,12 @@ div.tocify {
 
 
 <div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<h2><span class="header-section-number">0.1</span> Introduction</h2>
 <p>The GLM relates the mean of the response variable to a linear combination of covariates. The response variable is assumed to be conditionally distributed according to a distribution within the exponential family (bionomial, poisson, gamma etc). The Generalised Additive Model (GAM) a popular ecology modelling approach, that relaxes the need for the response variable to be characterised by a particular distribution, and instead allows the the relationship between response variable and covariats to be described by the linear combination of smooth curves. GAMs are of the form:</p>
 <p><span class="math display">\[\mathop{\mathbb{E}}(Y) = g^{-1} \left( \beta_0 + \sum^J_{j=1}f_j(x_j) \right) \]</span> , where <span class="math inline">\(\mathop{\mathbb{E}}\)</span> is the expected value of the response variable, <span class="math inline">\(Y\)</span>, <span class="math inline">\(g\)</span> is the link function and distribution. <span class="math inline">\(f_j\)</span> is the smooth function of covariate <span class="math inline">\(x_j\)</span> and <span class="math inline">\(\beta_0\)</span> is the intercept. The smooth functions are the workhorse of the GAM, and are typically <em>spline</em> functions, but there are many other forms, dependeing on the application.</p>
 </div>
 <div id="the-northern-gannet-morus-bassanus" class="section level2">
-<h2>The Northern Gannet <em>Morus bassanus</em></h2>
+<h2><span class="header-section-number">0.2</span> The Northern Gannet <em>Morus bassanus</em></h2>
 <p>This vignette makes use of data collected by Camphuysen (2011) <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, who undertook a survey of the feeding range of gannets nesting on Bass Rock, a colony found in the Firth of Forth, from onboard fishery research vessels in June and July from 1991 to 2004. Gannet counts were undertaken when the survey ship was fishing. A total of 9,972 km<span class="math inline">\(^2\)</span> were surveyed, travelling a distance of 33,601 km, and 44,818 Gannets were observed during these surveys. A correction factor for detectability was not applied, with the assumption that all individual Gannets, either swimming or in flight, were detected within a 300m wide strip transect (counts were discontinued in rough conditions, e.g. above wind force 6 on the Beaufort scale).</p>
 <p>The underlying question is to determine when and where gannet feed in the vicinity of the Bass Rock colony. We will use a GAM in an attempt to answer this question, and the approach adopted makes extensive reference to Zuur (2012) <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
 <pre class="r"><code># Clear all
@@ -415,7 +424,7 @@ library(lubridate)
 library(viridis)</code></pre>
 </div>
 <div id="the-data" class="section level2">
-<h2>The data</h2>
+<h2><span class="header-section-number">0.3</span> The data</h2>
 <p>Let’s load the survey data and take a quick peak at its format and structure:</p>
 <pre class="r"><code># Read tab delimited file
 gannets &lt;- read.table(&quot;data_analysis_files/Gannets2.txt&quot;, sep = &quot;\t&quot;, header = TRUE)
@@ -662,10 +671,10 @@ skim(gannets)</code></pre>
 <p>We can see that there are no missing data, and that <code>Gannets_in_transect</code> looks like the response variable. Each records represents the number of gannets observed in a transect, and with <code>Area_survyedkm2</code> we know the number of gannet per km2. If each strip transect is 300m wide, we can establish the transect length if needed.</p>
 </div>
 <div id="data-analysis" class="section level1">
-<h1>Data analysis</h1>
+<h1><span class="header-section-number">1</span> Data analysis</h1>
 <p>Before we proceed with modelling, let’s do some basic data analysis to make sure everything is in order.</p>
 <div id="visualisng-transects" class="section level2">
-<h2>Visualisng transects</h2>
+<h2><span class="header-section-number">1.1</span> Visualisng transects</h2>
 <p>In order to see if the area sampled by year is the same, we can plot the transects by year:</p>
 <pre class="r"><code>gannets %&gt;%
   # Create an sf geometry for each record
@@ -706,7 +715,7 @@ gannets &lt;- gannets %&gt;%
          )</code></pre>
 </div>
 <div id="gannet-density-in-space-and-time" class="section level2">
-<h2>Gannet density in space and time</h2>
+<h2><span class="header-section-number">1.2</span> Gannet density in space and time</h2>
 <p>We can now undertake some further data exploration and look at how surveyed gannet density varies in space and time. The first plot below shows how observed gannet density varies by year:</p>
 <pre class="r"><code># First calculate gannet density per transect
 gannets &lt;- gannets %&gt;%
@@ -757,10 +766,10 @@ gannets %&gt;%
 <p>We can see that in 2003 surveying started earleir in the year. It seems that there is a time of day effect that changes as the breeding season progresses.</p>
 </div>
 <div id="creating-a-gam-for-gannet-abundance" class="section level2">
-<h2>Creating a GAM for Gannet abundance</h2>
+<h2><span class="header-section-number">1.3</span> Creating a GAM for Gannet abundance</h2>
 <p>We would like to build a model to predict gannet abundance in time and space. Our initial data exploration has shown that gannet abundance varies in a non-linear fashion across days, months and years. Below we will iteratively build up a model and each step attempt to evaluate the overall model fit.</p>
 <div id="model-1---incorporating-a-year-effect-and-offset-variable" class="section level3">
-<h3>Model 1 - Incorporating a year effect and offset variable</h3>
+<h3><span class="header-section-number">1.3.1</span> Model 1 - Incorporating a year effect and offset variable</h3>
 <pre class="r"><code># Create first gam for gannet abundance
 m1 &lt;- gam(
   # Set the model equation: abundnce is driven by a smooth of year plus 
@@ -967,7 +976,7 @@ vis.gam(m3,
 </div>
 </div>
 <div id="make-a-prediction-and-plot-it-in-space-and-time" class="section level1">
-<h1>Make a prediction and plot it in space and time</h1>
+<h1><span class="header-section-number">2</span> Make a prediction and plot it in space and time</h1>
 <p>To map fitted values, we first create a <code>data.frame</code> of covariates required by the model. Then we use the <code>predict</code> function to generate a set of values. In the example below we will fit a model to give abundance of gannets within 1km squares. First we need to create the data to use when predicting the overall response.</p>
 <pre class="r"><code># Create dataframe containing all data
 m3_data &lt;- expand.grid(
@@ -1007,7 +1016,7 @@ m3_data %&gt;%
 <p>As of 2015, the colony size is thought to be around 150,000 birds on Bass Rock<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. So the final abundance estimate for 2002, seems consitent with this. Note we did not accoutn for detectability in the above. It was assumed that everything present was observed within the 300m wide transect.</p>
 </div>
 <div id="references" class="section level1">
-<h1>References</h1>
+<h1><span class="header-section-number">3</span> References</h1>
 </div>
 <div class="footnotes">
 <hr />

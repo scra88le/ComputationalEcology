@@ -1,5 +1,8 @@
 ---
 title: "Generalised Linear Models (GLMs)"
+output: 
+  html_document:
+    number_sections: true
 ---
 
 # Introduction

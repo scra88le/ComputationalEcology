@@ -403,11 +403,11 @@ div.tocify {
 
 
 <div id="introduction" class="section level1">
-<h1>Introduction</h1>
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <p>In classical linear regression model we make predictions of the <em>expected value</em> of a response variable as a function of the linear sum of covariates (also known as independent, explanatory or predictor variables). Generalised Linear Modelling (GLM) relaxes the constraintthat ordinary linear regression has, in that the response variable does not have to be normally distributed.</p>
 <p>Why is the GLM useful for ecology problems? Often in ecology the response variable is in the form of a count of species presence or absence, and in general the response variable exhibits a mean-variance relationship that is not normally distributed.</p>
 <div id="three-key-properties-of-the-glm" class="section level2">
-<h2>Three key properties of the GLM</h2>
+<h2><span class="header-section-number">1.1</span> Three key properties of the GLM</h2>
 <ol style="list-style-type: decimal">
 <li>In a GLM it is assumed that the response variable (and residual errors) is from a distribution in the exponential family. The distributions from the exponential family and their relevance comprise:</li>
 </ol>
@@ -425,7 +425,7 @@ div.tocify {
 <p>Let’s start by loading the relevant libraries and some data.</p>
 </div>
 <div id="the-doubs-dataset" class="section level2">
-<h2>The Doubs dataset</h2>
+<h2><span class="header-section-number">1.2</span> The Doubs dataset</h2>
 <p>As in the Data Analysis vignette we will be using the doubs<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> dataset inorder to create a GLM. Here the response is count data (species abundance) for river fish species across 30 sites. From our brief discussion above this means the data are likely to be drawn from a <code>Poisson</code> distribution. The covariates are a number of environment measurements of water chemistry and physical characteristics, at each of the 30 sites.</p>
 <pre class="r"><code>#Let&#39;s load the data
 data(doubs)
@@ -1129,7 +1129,7 @@ anova(ruru_model, test=&quot;LRT&quot;)</code></pre>
 <p>We can see that the <code>dfs</code> and <code>pho</code> treatments seem to have a significant effect on the abundance of Ruru. From eyeballing the feature plot above we can see that there is a linear relationship between Ruru abundance and the distance from the source, and an inverse linear relationship between phosphorus concentration and Ruru abundnace. So the analysis of deviance results appear to make sense.</p>
 </div>
 <div id="stepwise-regression-and-aic" class="section level2">
-<h2>Stepwise regression and AIC</h2>
+<h2><span class="header-section-number">1.3</span> Stepwise regression and AIC</h2>
 <p>We can perform a stepwise regression whereby we fit a model with increasingly smaller subsets of covariates for the given response variable, and select the best model-fit according to the AIC results of the model. The basic idea of Akaike’s Information Criteria (AIC) is to penalize the inclusion of additional variables to a model. In general, the lower the AIC, the better the model. Our initial model fit gave an AIC of 109.</p>
 <pre class="r"><code># Step through combinations
 step_ruru &lt;- step(glm(species$Ruru~., data=environ, family=poisson))</code></pre>
@@ -1283,7 +1283,7 @@ summary(step_ruru)</code></pre>
 </div>
 </div>
 <div id="a-general-modelling-protocol" class="section level1">
-<h1>A general modelling protocol</h1>
+<h1><span class="header-section-number">2</span> A general modelling protocol</h1>
 <p>A general protcol for how to proceed with predictive modelling, for both statistical regression and machine learning techinuqes, is presented below. When using a technique to fit covariates to response data, there are four key steps. In this vignette we will focus on the GLM, but the approach is equally valid for other modelling methods too. The four steps are:</p>
 <ol style="list-style-type: decimal">
 <li>Split the available data into training and modelling data sets.</li>
@@ -1293,10 +1293,10 @@ summary(step_ruru)</code></pre>
 </ol>
 </div>
 <div id="caret" class="section level1">
-<h1>Caret</h1>
+<h1><span class="header-section-number">3</span> Caret</h1>
 <p>We are going to use the r package <code>caret</code> to fit a model. The package is highly flexible and can be used to fit many different types of regression and machine learning models. We start by looking at the relationship between each predictor variable and the response. First we split our data into train and test subsets. Each subset will be further split later on using a method known as k-fold cross validation. This involves splitting a dataset into k-subsets. Each subset is held out while the model is trained on all other subsets. This process is completed until accuracy is determined for each instance in the dataset, and an overall accuracy estimate is provided.</p>
 <div id="covariate-selection" class="section level2">
-<h2>Covariate selection</h2>
+<h2><span class="header-section-number">3.1</span> Covariate selection</h2>
 <p>As we explored in the data analysis vignette, we should remove those covarits that have an absolute correlation of 80% or higher. We can establish this by calculating a correlation matrix and then selecting only those covariates with minimal collinearity, as follows:</p>
 <pre class="r"><code># Generate covariate correlation matrix
 cor_mat &lt;- cor(environ, method=&quot;spearman&quot;)
@@ -1320,7 +1320,7 @@ head(df_model)</code></pre>
 <p>So now we have six covariates (and we started with 11) that have minimal collinearity.</p>
 </div>
 <div id="splitting-data" class="section level2">
-<h2>Splitting data</h2>
+<h2><span class="header-section-number">3.2</span> Splitting data</h2>
 <p>We begin by splitting the data into train and testing sets. We give 60% of the data values over to training with the remainder used to test the model fit:</p>
 <pre class="r"><code># Create index for splitting
 inTrain  &lt;- createDataPartition(y = df_model$abun, p = 0.6, list = FALSE)
@@ -1330,7 +1330,7 @@ training &lt;- df_model[inTrain,]
 testing  &lt;- df_model[-inTrain,]</code></pre>
 </div>
 <div id="model-training" class="section level2">
-<h2>Model training</h2>
+<h2><span class="header-section-number">3.3</span> Model training</h2>
 <p>Now we can proceed to fitting a GLM using the optimum features (covariates) that we have selected. We will use the <code>train</code> function within caret to do this as follows:</p>
 <pre class="r"><code># For reproducibilty
 set.seed(12345)
@@ -1350,7 +1350,7 @@ glm_fit &lt;- train(
 <p>The <code>train</code> function can be tuned to implement <em>k-fold cross validation</em>. This involves splitting the dataset into k-subsets. Each subset is then <em>held out</em> while the model is trained on all other subsets. This process is repeated on all subsets and an overall accuracy estimate is provided. In the example above we implemented 5-fold cross validation.</p>
 </div>
 <div id="model-accuracy" class="section level2">
-<h2>Model accuracy</h2>
+<h2><span class="header-section-number">3.4</span> Model accuracy</h2>
 <p>Now we have successfully trained our GLM using caret, we can look at the model accuracy.</p>
 <pre class="r"><code># How did the model perform
 glm_fit</code></pre>
@@ -1364,8 +1364,8 @@ glm_fit</code></pre>
 ## Summary of sample sizes: 15, 15, 15, 16, 15 
 ## Resampling results:
 ## 
-##   RMSE     Rsquared   MAE     
-##   2.37982  0.3231971  2.092942</code></pre>
+##   RMSE      Rsquared   MAE     
+##   3.681873  0.6456929  2.608131</code></pre>
 <pre class="r"><code># Show model fit details and covariate significance
 summary(glm_fit)</code></pre>
 <pre><code>## 
@@ -1374,27 +1374,27 @@ summary(glm_fit)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.9667  -1.3041  -0.4638   0.4053   3.1758  
+## -1.5904  -1.2316  -0.5274   0.3897   3.0385  
 ## 
 ## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)  0.376621   0.227002   1.659   0.0971 .
-## slo         -1.050561   0.414297  -2.536   0.0112 *
-## pH          -0.316612   0.230890  -1.371   0.1703  
-## har         -0.007819   0.325637  -0.024   0.9808  
-## pho         -0.491686   0.494224  -0.995   0.3198  
-## nit          0.316155   0.312479   1.012   0.3117  
-## bdo         -0.075267   0.405498  -0.186   0.8527  
+##             Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)   0.3383     0.2289   1.478  0.13941   
+## slo          -0.8599     0.3021  -2.846  0.00443 **
+## pH            0.1750     0.2365   0.740  0.45935   
+## har          -0.1095     0.2765  -0.396  0.69219   
+## pho          -1.0896     0.6063  -1.797  0.07229 . 
+## nit           0.6144     0.2497   2.461  0.01387 * 
+## bdo           0.5187     0.4356   1.191  0.23374   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
 ##     Null deviance: 53.647  on 18  degrees of freedom
-## Residual deviance: 31.166  on 12  degrees of freedom
-## AIC: 78.542
+## Residual deviance: 26.972  on 12  degrees of freedom
+## AIC: 74.349
 ## 
-## Number of Fisher Scoring iterations: 6</code></pre>
+## Number of Fisher Scoring iterations: 7</code></pre>
 <pre class="r"><code># What are the important of the covariates in them model?
 varImp(glm_fit) %&gt;% plot()</code></pre>
 <p><img src="2_glm_files/figure-html/covar_fit-1.png" width="672" /></p>
@@ -1407,7 +1407,7 @@ varImp(glm_fit) %&gt;% plot()</code></pre>
 <p>The chart shows the relative importance of each covariate within the model. We can see that <code>pH</code> doesn’t seem to have an effect on the response variable in this model, with <code>pho</code> and <code>nit</code> having the most significant effect. This is also confirmed by looking at the model summary. The model summary also shows that our AIC has improved considerably too 76 and that the overdispersion of this model is significantly improved on the previous version.</p>
 </div>
 <div id="prediction-accuracy" class="section level2">
-<h2>Prediction accuracy</h2>
+<h2><span class="header-section-number">3.5</span> Prediction accuracy</h2>
 <p>In order to assess how well the model makes predictions, we can make a prediction using the test data and the model fit.</p>
 <pre class="r"><code># how accurate was the trained model on the test data set?
 # Make a prediction on the test data set
@@ -1420,15 +1420,15 @@ data.frame(
   MAE = MAE(pred, testing$abun)
 )</code></pre>
 <pre><code>##          R2     RMSE      MAE
-## 1 0.5009573 1.518637 1.125635</code></pre>
+## 1 0.1943634 4.597369 3.144024</code></pre>
 </div>
 </div>
 <div id="discussion" class="section level1">
-<h1>Discussion</h1>
-<p>GLMs are a simple way of generating statistical predictions from species abundance data, given a set of associated covariates. Our final model for modelling Ruru abundance gave an improved residual deviance and AIC over the initial model, that contained all covariate data. As we will see in later vignettes, the <code>caret</code> package provides a generalised framework within which we can try many different modelling approaches in order to investigate ecological phenomena.</p>
+<h1><span class="header-section-number">4</span> Discussion</h1>
+<p>GLMs are a relatively easy way of generating statistical predictions from species abundance data, given a set of associated covariates. Our final model for modelling Ruru abundance gave an improved residual deviance and AIC over the initial model, that contained all covariate data. As we will see in later vignettes, the <code>caret</code> package provides a generalised framework within which we can try many different modelling approaches in order to investigate ecological phenomena.</p>
 </div>
 <div id="references" class="section level1">
-<h1>References</h1>
+<h1><span class="header-section-number">5</span> References</h1>
 </div>
 <div class="footnotes">
 <hr />

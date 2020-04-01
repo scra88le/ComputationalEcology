@@ -1,5 +1,8 @@
 ---
 title: "Generalised Additive Models"
+output: 
+  html_document:
+    number_sections: true
 ---
 
 ## Introduction
