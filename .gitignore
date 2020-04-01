@@ -1,9 +1,10 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
 .Ruserdata
 *.zip
 *.tif
 *.fastq
 *.gz
+*.csv
 
