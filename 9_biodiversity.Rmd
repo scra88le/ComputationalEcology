@@ -1,0 +1,259 @@
+---
+title: "Biodiversity Mapping"
+output: 
+  html_document:
+    number_sections: true
+---
+
+The Global Biodiversity Information Facility (GBIF) allows scientists to record and share species occurence information from around the world. Four our study here we will download all occurence records based on the following criteria:
+
+* within the administrative boundaries of Oxford City
+* all records between 2014 to 2019
+* all human observtions (not museum specimens)
+* three taxa from the classes Aves, Mammalisa and Insecta
+
+It is likely that the GBIF data will exhibit sampling bias in a number of ways. In general, people are more interested in birds than plants!
+
+```{r load_libs, message=FALSE, warning=FALSE}
+# Load libraries
+library(tidyverse)
+library(rgbif)
+library(sf)
+library(osmdata)
+library(reshape2)
+
+# Clear environment
+rm(list = ls())  
+```
+
+First we need to obtain a shapefile for Oxford City, our study area. We can use `osmdata` from the Open Streetmap foundation to achieve this.
+
+```{r osm_oxford}
+# Get bounding box for Oxford
+bb <- getbb('Oxford, U.K.')
+# Query OSM for sf data
+q <- opq(bbox = bb) %>%
+  add_osm_feature(key = 'boundary', value = 'administrative') %>%
+  osmdata_sf()
+
+# Convert Oxford polygon to WKT text so that we can query GBIF
+ox_WKT <- st_as_text(q$osm_multipolygons$geometry[q$osm_multipolygons$name=="Oxford"])
+```
+
+Now we have our spatial query set-up we can query GBIF.
+
+```{r query_gbif, eval=FALSE, message=FALSE, warning=FALSE}
+
+# Setup taxon search keys
+# Aves: classKey = 212
+# Mammalia: classKey = 359
+# Insecta: classKey = 216
+
+classKey <- c(212,359,216)
+
+# Query Oxford species groups
+ox_sp <- map(
+  .x = classKey,
+  ~ occ_search(geometry = ox_WKT, 
+                    geom_big = "bbox",
+                    classKey = .x,
+                    basisOfRecord = 'HUMAN_OBSERVATION',
+                    year = '2014, 2019',
+                    limit = 10000,
+                    hasCoordinate=TRUE,
+                    fields = c("scientificName", "speciesKey", "year","decimalLatitude","decimalLongitude", "classKey" ))) %>%
+  rbind()
+```
+
+```{r load_gbif_data, include=FALSE}
+ox_sp <- readRDS("oxford_occ_data")
+```
+
+
+Now we can manipulate the query from GBIF into a data structure useful for subsequent processing. We have three groups of data in the GBIF object `ox_sp`, each is grouped by  classKey.
+
+```{r gbif_wrangle}
+# Combine retuned GBIF list queries into a single dataframe 
+oxf_sp_df <- ox_sp %>% map_df( ~pluck(.x, "data"))
+head(oxf_sp_df)
+```
+
+We need to generate a grid over the Oxford survey area. This will be used to calculate a biodiversity index for each cell within the grid.
+
+```{r create_grid}
+# Create a 
+ox_poly <- st_as_sf(q$osm_multipolygons %>% filter(name=="Oxford")) %>%
+  # Transform coordinates to planar
+  st_transform(27700)
+
+# Make a grid of Oxford city
+grid_sf <- st_make_grid(
+  # Oxford City boundary
+  ox_poly, 
+  # Cell width in m
+  cellsize = 400, 
+  # Cells are hexagons
+  square = F)
+
+# Plot it
+plot(grid_sf, main = "400m wide grid cells covering Oxford City")
+
+```
+
+Now let's map species locations to a grid cell.
+
+```{r map_species_cell}
+# Creat sf locatons for species locations in GBIF object 
+ox_sp_sf <- oxf_sp_df %>% st_as_sf(coords=c("decimalLongitude","decimalLatitude"),
+                                    # Set crs to WGS84
+                                    crs = 4326) %>%
+  # Reproject to plannar coordinates
+  st_transform(27700)
+
+# Add a cell id to the Oxford grid
+grid_sf <- grid_sf %>%
+  st_sf() %>%
+  mutate(cell_id = row_number())
+
+# Generate intersection
+intersect <- st_intersects(
+  # sf list of species occurences
+  ox_sp_sf, 
+  # sf grid of Oxford
+  grid_sf, 
+  # map points to gridcell
+  prepared = T) %>%
+  # return dataframe
+  as.data.frame()
+
+# update column names
+names(intersect) <- c("spec_no", "cell_id")
+
+# Create a single table mapping species occurences to cells
+grid_species_df <- ox_sp_sf %>% 
+  # Create dataframe from result
+  as.data.frame %>% 
+  # Join with grid/coordinate intersection
+  cbind(intersect) %>% 
+  # We don't need column spec_no
+  dplyr::select(-spec_no) %>%
+  # Group and arrange by grid cell ID
+  group_by(cell_id) %>%
+  arrange(cell_id)
+
+# Plot histogram for each taxa
+grid_species_df %>% 
+  # Count by cell_id
+  ggplot(aes(x=cell_id)) + 
+  # Set histogram bin size
+  geom_histogram(binwidth=10) + 
+  # More Aves taxa records
+  facet_wrap(~classKey, scales = "free_y") +
+  ggtitle("Histogram of grid cells, by taxa (different y scales)") +
+  theme_bw() 
+  
+
+```
+
+For each taxa, Calculate the Shannon index for each grid cell
+
+```{r calc_shannon, message=FALSE, warning=FALSE}
+# Load vegan to generate shannon index
+library(vegan)
+
+
+# Function to count the number of species for each grid cell
+n_species_cell <- function(df) {
+  
+  df %>% 
+  group_by(cell_id,speciesKey) %>% 
+  # Count a given species within a cell
+  tally() %>%
+  # We need to ungroup to complete
+  ungroup() %>%
+  # For cells with now species, fill with zeros
+  complete(cell_id = 1:nrow(grid_sf), fill=list(n=0))
+}
+
+# Count species count grid for each taxa
+results <-grid_species_df %>% 
+  # Nest by class key
+  nest(-classKey) %>%
+  # Calculate count by speces and store in separate column
+  mutate(n_species_cell = map(data, ~n_species_cell(.x)))
+
+# Function to Create a table of cells by species occurence counts
+cell_diversity <- function(df) 
+  df %>% 
+  pivot_wider(
+    id_cols = c("cell_id", "speciesKey"),
+    names_from = speciesKey, 
+    values_from = n, 
+    values_fill = list(n=0)) %>%
+  # We can remove cell_id once we have a complete table
+  dplyr::select(-cell_id) %>%
+  # Calculate shannon diversity for each cell
+  diversity("shannon") %>% as.data.frame()
+
+# Calculate shannon diversity in each cell per taxa
+results <- results %>%
+  mutate(cell_diversity = map(n_species_cell, ~cell_diversity(.x)))
+
+# Add cell shannon diversity to the grid cell sfc
+out <- results %>% 
+  pluck("cell_diversity") %>% 
+  as.data.frame()
+
+# Name the columns  with their classKey
+names(out) <- c("Insecta", "Mammalia", "Aves")
+
+# melt data to create one spatial dataset for diversity by grid cell
+diversity_grid_sf <- out %>% 
+  # Add cell_is as index
+  mutate(cell_id = row_number()) %>%
+  # melt data with cell_id as index var
+  melt(id.vars = "cell_id", measure.vars = c("Insecta","Mammalia","Aves")) %>%
+  # join with sf grid polygons
+  full_join(grid_sf) %>%
+  # Convert dataframe to simple feature collection for plotting
+  st_as_sf()
+```
+
+We can add a Google background map of Oxford to see where the biodiversity hotspots are.
+
+```{r Ox_map, eval=FALSE, message=FALSE, warning=FALSE}
+library(ggmap)
+register_google(key="AIzaSyAuAjumyCQH5nrFoUyKnOMdtCYUBRMiZtQ", write = T)
+ox_basemap <- get_map(bb)
+```
+
+```{r load_base_map}
+ox_basemap <- readRDS("oxford_basemap")
+```
+Now we have a Google basemap, let's visualise this.
+
+```{r plot_all, fig.width=10, message=FALSE, warning=FALSE}
+library(ggmap)
+library(viridis)
+
+# Create map objects and nest in data frame  
+d_plots <- diversity_grid_sf %>% 
+  nest(-variable) %>%
+  mutate(plot = map2(data, 
+                     variable, 
+                     ~ ggmap(ox_basemap) +
+                       # Overlay grid data
+                       geom_sf(data = .x, 
+                       aes(fill=value, geometry = geometry), 
+                       inherit.aes = F,
+                       alpha = 0.5) +
+                       # Title of plot
+                       ggtitle(.y) +
+                       scale_fill_viridis() +
+                       # Convert grid data to WGS84
+                       coord_sf(crs=st_crs(4326))))
+
+print(d_plots$plot)
+```
+
+
