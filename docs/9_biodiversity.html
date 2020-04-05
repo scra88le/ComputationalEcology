@@ -383,6 +383,9 @@ div.tocify {
     <li>
       <a href="8_distance_sampling.html">Distance Sampling</a>
     </li>
+    <li>
+      <a href="9_biodiversity.html">Spatial Biodiversity</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -402,21 +405,28 @@ div.tocify {
 </div>
 
 
-<p>The Global Biodiversity Information Facility (GBIF) allows scientists to record and share species occurence information from around the world</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
-## ✓ tibble  2.1.3     ✓ dplyr   0.8.3
-## ✓ tidyr   1.0.0     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(rgbif)
-library(sf)</code></pre>
-<pre><code>## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0</code></pre>
-<pre class="r"><code>library(osmdata)</code></pre>
-<pre><code>## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright</code></pre>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>The Global Biodiversity Information Facility (GBIF) allows scientists to record and share species occurence information from around the world. Four our study here we will download all occurence records based on the following criteria:</p>
+<ul>
+<li>within the administrative boundaries of Oxford City</li>
+<li>all records between 2014 to 2019</li>
+<li>all human observtions (not museum specimens)</li>
+<li>three taxa from the classes Aves, Mammalisa and Insecta</li>
+</ul>
+<p>It is likely that the GBIF data will exhibit sampling bias in a number of ways. In general, people are more interested in birds than plants!</p>
+<pre class="r"><code># Load libraries
+library(tidyverse)
+library(rgbif)
+library(sf)
+library(osmdata)
+library(reshape2)
+
+# Clear environment
+rm(list = ls())  </code></pre>
+</div>
+<div id="oxford-city-study-area" class="section level1">
+<h1><span class="header-section-number">2</span> Oxford City study area</h1>
 <p>First we need to obtain a shapefile for Oxford City, our study area. We can use <code>osmdata</code> from the Open Streetmap foundation to achieve this.</p>
 <pre class="r"><code># Get bounding box for Oxford
 bb &lt;- getbb(&#39;Oxford, U.K.&#39;)
@@ -427,19 +437,59 @@ q &lt;- opq(bbox = bb) %&gt;%
 
 # Convert Oxford polygon to WKT text so that we can query GBIF
 ox_WKT &lt;- st_as_text(q$osm_multipolygons$geometry[q$osm_multipolygons$name==&quot;Oxford&quot;])</code></pre>
+<div id="accessing-gbif-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Accessing GBIF data</h2>
 <p>Now we have our spatial query set-up we can query GBIF.</p>
-<pre class="r"><code># Return oxford species
-ox_sp &lt;- occ_search(geometry = ox_WKT, 
+<pre class="r"><code># Setup taxon search keys
+# Aves: classKey = 212
+# Mammalia: classKey = 359
+# Insecta: classKey = 216
+
+classKey &lt;- c(212,359,216)
+
+# Query Oxford species groups
+ox_sp &lt;- map(
+  .x = classKey,
+  ~ occ_search(geometry = ox_WKT, 
                     geom_big = &quot;bbox&quot;,
-                    # Select all animalia
-                    kingdomKey = 1,
+                    classKey = .x,
                     basisOfRecord = &#39;HUMAN_OBSERVATION&#39;,
                     year = &#39;2014, 2019&#39;,
                     limit = 10000,
                     hasCoordinate=TRUE,
-                    fields = c(&quot;scientificName&quot;, &quot;speciesKey&quot;, &quot;year&quot;,&quot;decimalLatitude&quot;,&quot;decimalLongitude&quot; ))</code></pre>
-<pre class="r"><code>ox_sp &lt;- readRDS(&quot;oxford_occ_data&quot;)</code></pre>
-<p>We need to generate a grid over the Oxford survey area, as we will calculate a biodiversity index for each cell within the grid.</p>
+                    fields = c(&quot;scientificName&quot;, &quot;speciesKey&quot;, &quot;year&quot;,&quot;decimalLatitude&quot;,&quot;decimalLongitude&quot;, &quot;classKey&quot; ))) %&gt;%
+  rbind()</code></pre>
+</div>
+<div id="gbif-results" class="section level2">
+<h2><span class="header-section-number">2.2</span> GBIF results</h2>
+<p>Now we can manipulate the query from GBIF into a data structure useful for subsequent processing. We have three groups of data in the GBIF object <code>ox_sp</code>, each is grouped by classKey.</p>
+<pre class="r"><code># Combine retuned GBIF list queries into a single dataframe 
+oxf_sp_df &lt;- ox_sp %&gt;% map_df( ~pluck(.x, &quot;data&quot;))
+
+# Let&#39;s look at the data
+head(oxf_sp_df)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   classKey speciesKey scientificName decimalLongitude decimalLatitude  year
+##      &lt;int&gt;      &lt;int&gt; &lt;chr&gt;                     &lt;dbl&gt;           &lt;dbl&gt; &lt;int&gt;
+## 1      212    2490719 Turdus merula…            -1.25            51.8  2019
+## 2      212    2492462 Erithacus rub…            -1.25            51.8  2019
+## 3      212    2487603 Certhia famil…            -1.26            51.8  2019
+## 4      212    5231763 Prunella modu…            -1.25            51.8  2019
+## 5      212    5229493 Garrulus glan…            -1.25            51.8  2019
+## 6      212    2475532 Alcedo atthis…            -1.24            51.8  2019</code></pre>
+<pre class="r"><code>#How many observations do we have per taxa?
+oxf_sp_df %&gt;% count(classKey) </code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   classKey     n
+##      &lt;int&gt; &lt;int&gt;
+## 1      212  9481
+## 2      216   806
+## 3      359   313</code></pre>
+</div>
+</div>
+<div id="spatial-grid" class="section level1">
+<h1><span class="header-section-number">3</span> Spatial Grid</h1>
+<p>We need to generate a grid over the Oxford survey area. This will be used to calculate a biodiversity index for each cell within the grid.</p>
 <pre class="r"><code># Create a 
 ox_poly &lt;- st_as_sf(q$osm_multipolygons %&gt;% filter(name==&quot;Oxford&quot;)) %&gt;%
   # Transform coordinates to planar
@@ -455,17 +505,20 @@ grid_sf &lt;- st_make_grid(
   square = F)
 
 # Plot it
-plot(grid_sf)</code></pre>
+plot(grid_sf, main = &quot;400m wide grid cells covering Oxford City&quot;)</code></pre>
 <p><img src="9_biodiversity_files/figure-html/create_grid-1.png" width="672" /></p>
+</div>
+<div id="spatial-analysis" class="section level1">
+<h1><span class="header-section-number">4</span> Spatial Analysis</h1>
 <p>Now let’s map species locations to a grid cell.</p>
 <pre class="r"><code># Creat sf locatons for species locations in GBIF object 
-ox_sp_sf &lt;- ox_sp$data %&gt;% st_as_sf(coords=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;),
+ox_sp_sf &lt;- oxf_sp_df %&gt;% st_as_sf(coords=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;),
                                     # Set crs to WGS84
                                     crs = 4326) %&gt;%
   # Reproject to plannar coordinates
   st_transform(27700)
 
-# Add a vell id to the Oxford grid
+# Add a cell id to the Oxford grid
 grid_sf &lt;- grid_sf %&gt;%
   st_sf() %&gt;%
   mutate(cell_id = row_number())
@@ -486,23 +539,39 @@ names(intersect) &lt;- c(&quot;spec_no&quot;, &quot;cell_id&quot;)
 
 # Create a single table mapping species occurences to cells
 grid_species_df &lt;- ox_sp_sf %&gt;% 
+  # Create dataframe from result
   as.data.frame %&gt;% 
+  # Join with grid/coordinate intersection
   cbind(intersect) %&gt;% 
+  # We don&#39;t need column spec_no
   dplyr::select(-spec_no) %&gt;%
+  # Group and arrange by grid cell ID
   group_by(cell_id) %&gt;%
   arrange(cell_id)
 
-# Plot histogram to see if there is abundance diversity between cells
-grid_species_df$cell_id %&gt;% hist(breaks=100)</code></pre>
+# Plot histogram for each taxa
+grid_species_df %&gt;% 
+  # Count by cell_id
+  ggplot(aes(x=cell_id)) + 
+  # Set histogram bin size
+  geom_histogram(binwidth=10) + 
+  # More Aves taxa records
+  facet_wrap(~classKey, scales = &quot;free_y&quot;) +
+  ggtitle(&quot;Histogram of grid cells, by taxa (different y scales)&quot;) +
+  theme_bw() </code></pre>
 <p><img src="9_biodiversity_files/figure-html/map_species_cell-1.png" width="672" /></p>
-<p>Calculate the Shannon index for each grid cell</p>
+</div>
+<div id="spatial-biodiversity" class="section level1">
+<h1><span class="header-section-number">5</span> Spatial Biodiversity</h1>
+<p>For each taxa, Calculate the Shannon index for each grid cell</p>
 <pre class="r"><code># Load vegan to generate shannon index
-library(vegan)</code></pre>
-<pre><code>## Loading required package: permute</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## This is vegan 2.5-4</code></pre>
-<pre class="r"><code># For each species within a grid cell, count them
-n_species_cell &lt;- grid_species_df %&gt;% 
+library(vegan)
+
+
+# Function to count the number of species for each grid cell
+n_species_cell &lt;- function(df) {
+  
+  df %&gt;% 
   group_by(cell_id,speciesKey) %&gt;% 
   # Count a given species within a cell
   tally() %&gt;%
@@ -510,9 +579,18 @@ n_species_cell &lt;- grid_species_df %&gt;%
   ungroup() %&gt;%
   # For cells with now species, fill with zeros
   complete(cell_id = 1:nrow(grid_sf), fill=list(n=0))
+}
 
-# Create a table of cells by species occurence counts
-cell_diversity &lt;- n_species_cell %&gt;% 
+# Count species count grid for each taxa
+results &lt;-grid_species_df %&gt;% 
+  # Nest by class key
+  nest(-classKey) %&gt;%
+  # Calculate count by speces and store in separate column
+  mutate(n_species_cell = map(data, ~n_species_cell(.x)))
+
+# Function to Create a table of cells by species occurence counts
+cell_diversity &lt;- function(df) 
+  df %&gt;% 
   pivot_wider(
     id_cols = c(&quot;cell_id&quot;, &quot;speciesKey&quot;),
     names_from = speciesKey, 
@@ -523,42 +601,86 @@ cell_diversity &lt;- n_species_cell %&gt;%
   # Calculate shannon diversity for each cell
   diversity(&quot;shannon&quot;) %&gt;% as.data.frame()
 
-# Add cell shannon diversity to the grid cell sfc
-grid_sf &lt;- grid_sf %&gt;%
-  cbind(shannon = cell_diversity$.)</code></pre>
-<p>Now let’s plot the spatial biodiversity</p>
-<pre class="r"><code>#plot(grid_sf[&quot;shannon&quot;],
-#     main = &quot;Oxford City Biodiversity&quot;)
+# Calculate shannon diversity in each cell per taxa
+results &lt;- results %&gt;%
+  mutate(cell_diversity = map(n_species_cell, ~cell_diversity(.x)))
 
-library(tmap)
-tm_shape(grid_sf) + tm_polygons(col = &quot;shannon&quot;, 
-                                style = &quot;jenks&quot;, 
-                                title = &quot;Shannon index&quot;) +
-  tm_style(&quot;albatross&quot;) +
-  tm_compass(type = &quot;8star&quot;, position = c(&quot;right&quot;,&quot;top&quot;)) +
-  tm_scale_bar(breaks = c(0,0.5,5))</code></pre>
-<p><img src="9_biodiversity_files/figure-html/plot_spatial_shannon-1.png" width="672" /></p>
-<p>We can add a background map of Oxford to see where the biodiversity hotspots are.</p>
+# Add cell shannon diversity to the grid cell sfc
+out &lt;- results %&gt;% 
+  pluck(&quot;cell_diversity&quot;) %&gt;% 
+  as.data.frame()
+
+# Name the columns  with their classKey
+names(out) &lt;- c(&quot;Insecta&quot;, &quot;Mammalia&quot;, &quot;Aves&quot;)
+
+# melt data to create one spatial dataset for diversity by grid cell
+diversity_grid_sf &lt;- out %&gt;% 
+  # Add cell_is as index
+  mutate(cell_id = row_number()) %&gt;%
+  # melt data with cell_id as index var
+  melt(id.vars = &quot;cell_id&quot;, measure.vars = c(&quot;Insecta&quot;,&quot;Mammalia&quot;,&quot;Aves&quot;)) %&gt;%
+  # join with sf grid polygons
+  full_join(grid_sf) %&gt;%
+  # Convert dataframe to simple feature collection for plotting
+  st_as_sf()</code></pre>
+</div>
+<div id="plot-results" class="section level1">
+<h1><span class="header-section-number">6</span> Plot Results</h1>
+<p>We can add a Google background map of Oxford to see where the biodiversity hotspots are.</p>
 <pre class="r"><code>library(ggmap)
-register_google(key=&quot;AIzaSyAuAjumyCQH5nrFoUyKnOMdtCYUBRMiZtQ&quot;, write = T)
+register_google(key=&quot;****&quot;, write = T)
 ox_basemap &lt;- get_map(bb)</code></pre>
 <pre class="r"><code>ox_basemap &lt;- readRDS(&quot;oxford_basemap&quot;)</code></pre>
 <p>Now we have a Google basemap, let’s visualise this.</p>
-<pre class="r"><code>library(ggmap)</code></pre>
-<pre><code>## Google&#39;s Terms of Service: https://cloud.google.com/maps-platform/terms/.</code></pre>
-<pre><code>## Please cite ggmap if you use it! See citation(&quot;ggmap&quot;) for details.</code></pre>
-<pre class="r"><code># Plot basemap
-ggmap(ox_basemap) +
-  # Overlay grid data
-  geom_sf(data = grid_sf, 
-          aes(fill=shannon), 
-          inherit.aes = F,
-          alpha = 0.5) +
-  scale_fill_continuous(low = &quot;grey&quot;, high = &quot;red&quot;) +
-  # Convert grid data to WGS84
-  coord_sf(crs=st_crs(4326))</code></pre>
-<pre><code>## Coordinate system already present. Adding new coordinate system, which will replace the existing one.</code></pre>
+<pre class="r"><code>library(ggmap)
+library(viridis)
+
+# Create map objects and nest in data frame  
+diversity_grid_sf &lt;- diversity_grid_sf %&gt;% 
+  nest(-variable) %&gt;%
+  mutate(plot = map2(data, 
+                     variable, 
+                     ~ ggmap(ox_basemap) +
+                       # Overlay grid data
+                       geom_sf(data = .x, 
+                       # Fill with Shannon index for each grid cell         
+                       aes(fill=value, geometry = geometry), 
+                       inherit.aes = F,
+                       alpha = 0.5) +
+                       # Title of plot
+                       ggtitle(.y) +
+                       scale_fill_viridis() +
+                       # Convert grid data to WGS84
+                       coord_sf(crs=st_crs(4326))))
+
+# Now plots and data are nicely stored together
+head(diversity_grid_sf)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   variable data               plot  
+##   &lt;fct&gt;    &lt;list&gt;             &lt;list&gt;
+## 1 Insecta  &lt;tibble [378 × 3]&gt; &lt;gg&gt;  
+## 2 Mammalia &lt;tibble [378 × 3]&gt; &lt;gg&gt;  
+## 3 Aves     &lt;tibble [378 × 3]&gt; &lt;gg&gt;</code></pre>
+<pre class="r"><code># Plot the results
+print(diversity_grid_sf$plot)</code></pre>
+<pre><code>## [[1]]</code></pre>
 <p><img src="9_biodiversity_files/figure-html/plot_all-1.png" width="960" /></p>
+<pre><code>## 
+## [[2]]</code></pre>
+<p><img src="9_biodiversity_files/figure-html/plot_all-2.png" width="960" /></p>
+<pre><code>## 
+## [[3]]</code></pre>
+<p><img src="9_biodiversity_files/figure-html/plot_all-3.png" width="960" /></p>
+</div>
+<div id="discussion" class="section level1">
+<h1><span class="header-section-number">7</span> Discussion</h1>
+<p>We can see some interesting results here. As this is not a controlled and randomised set of data, clearly there is significant sampling bias. That being the case, each taxa class clearly show some interesting results when the spatial Shannon diversity is plotted as above:</p>
+<ul>
+<li>Insecta - there seems to be a hotspot in the north of Port Meadow. Presumably as this is an ancient wet meadow without any significant human development there maybe noticeable insect diversity here. We can see from the map that most sampling has not been within built up areas.</li>
+<li>Mammalia - it seems there are two biodiversity hotspots for mammals in the data analysed. One at the eastern end of Oxford golf course, and the second along <em>Mesopotamia way</em> that runs along the River Cherwell.</li>
+<li>Aves - this class had by far the largets number of records, and shows a relatively high density in the centre of the city. There is a diversity hot spot next to the <em>Thames</em> on Port Meadow and alos an area near <em>Ifley Meadows</em> (a local nature reserve). As these are both sites with the Thames running through them, the higher diversity could be due to the inclusion of water fowl?</li>
+</ul>
+</div>
 
 
 

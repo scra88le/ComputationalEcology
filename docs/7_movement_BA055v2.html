@@ -739,10 +739,10 @@ saveRDS(Result, file=&quot;Result.BA055.RData&quot;)</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia.</p>
+<p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>, where the warm tropical water provides significant foraging grounds fo the over wintering birds.</p>
 <pre class="r"><code>plot_lon_lat(Result)</code></pre>
 <p><img src="7_movement_BA055v2_files/figure-html/flight_path-1.png" width="672" /></p>
-<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging.</p>
+<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represtns the most probably latitude and logitude at each twilight.</p>
 <pre class="r"><code>map.FLightR.ggmap(Result = Result, 
                   seasonal.donut.location = &quot;bottomright&quot;)</code></pre>
 <p><img src="BA055_path_ggmap" width="100%" /></p>
@@ -758,6 +758,7 @@ saveRDS(Result, file=&quot;Result.BA055.RData&quot;)</code></pre>
 <li id="fn2"><p>Lisovski, S., Bauer, S., Briedis, M., Davidson, S.C., Dhanjal-Adams, K.L., Hallworth, M.T., Karagicheva, J., Meier, C.M., Merkel, B., Ouwehand, J., Pedersen, L., Rakhimberdiev, E., Roberto-Charron, A., Seavy, N.E., Sumner, M.D., Taylor, C.M., Wotherspoon, S.J. &amp; E.S. Bridge (2019) Light-Level Geolocator Analyses: A user’s guide. Journal of Animal Ecology.<a href="#fnref2">↩</a></p></li>
 <li id="fn3"><p>Hill, C. &amp; Braun, M.J. (2001) Geolocation by light level - the next step: Latitude. In: Electronic Tagging and Tracking in Marine Fisheries (eds J.R. Sibert &amp; J. Nielsen), pp. 315-330. Kluwer Academic Publishers, The Netherlands.<a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>Ekstrom, P. (2007). Error measures for template-fit geolocation based on light. Deep Sea Research Part II: Topical Studies in Oceanography, 54, 392–403.<a href="#fnref4">↩</a></p></li>
+<li id="fn5"></li>
 </ol>
 </div>
 

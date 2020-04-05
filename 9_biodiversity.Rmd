@@ -5,6 +5,8 @@ output:
     number_sections: true
 ---
 
+# Introduction
+
 The Global Biodiversity Information Facility (GBIF) allows scientists to record and share species occurence information from around the world. Four our study here we will download all occurence records based on the following criteria:
 
 * within the administrative boundaries of Oxford City
@@ -26,6 +28,8 @@ library(reshape2)
 rm(list = ls())  
 ```
 
+# Oxford City study area
+
 First we need to obtain a shapefile for Oxford City, our study area. We can use `osmdata` from the Open Streetmap foundation to achieve this.
 
 ```{r osm_oxford}
@@ -39,6 +43,8 @@ q <- opq(bbox = bb) %>%
 # Convert Oxford polygon to WKT text so that we can query GBIF
 ox_WKT <- st_as_text(q$osm_multipolygons$geometry[q$osm_multipolygons$name=="Oxford"])
 ```
+
+## Accessing GBIF data
 
 Now we have our spatial query set-up we can query GBIF.
 
@@ -69,14 +75,22 @@ ox_sp <- map(
 ox_sp <- readRDS("oxford_occ_data")
 ```
 
+## GBIF results
 
 Now we can manipulate the query from GBIF into a data structure useful for subsequent processing. We have three groups of data in the GBIF object `ox_sp`, each is grouped by  classKey.
 
 ```{r gbif_wrangle}
 # Combine retuned GBIF list queries into a single dataframe 
 oxf_sp_df <- ox_sp %>% map_df( ~pluck(.x, "data"))
+
+# Let's look at the data
 head(oxf_sp_df)
+
+#How many observations do we have per taxa?
+oxf_sp_df %>% count(classKey) 
 ```
+
+# Spatial Grid
 
 We need to generate a grid over the Oxford survey area. This will be used to calculate a biodiversity index for each cell within the grid.
 
@@ -99,6 +113,8 @@ grid_sf <- st_make_grid(
 plot(grid_sf, main = "400m wide grid cells covering Oxford City")
 
 ```
+
+# Spatial Analysis
 
 Now let's map species locations to a grid cell.
 
@@ -151,9 +167,9 @@ grid_species_df %>%
   facet_wrap(~classKey, scales = "free_y") +
   ggtitle("Histogram of grid cells, by taxa (different y scales)") +
   theme_bw() 
-  
-
 ```
+
+# Spatial Biodiversity
 
 For each taxa, Calculate the Shannon index for each grid cell
 
@@ -219,11 +235,13 @@ diversity_grid_sf <- out %>%
   st_as_sf()
 ```
 
+# Plot Results
+
 We can add a Google background map of Oxford to see where the biodiversity hotspots are.
 
 ```{r Ox_map, eval=FALSE, message=FALSE, warning=FALSE}
 library(ggmap)
-register_google(key="AIzaSyAuAjumyCQH5nrFoUyKnOMdtCYUBRMiZtQ", write = T)
+register_google(key="****", write = T)
 ox_basemap <- get_map(bb)
 ```
 
@@ -232,18 +250,19 @@ ox_basemap <- readRDS("oxford_basemap")
 ```
 Now we have a Google basemap, let's visualise this.
 
-```{r plot_all, fig.width=10, message=FALSE, warning=FALSE}
+```{r plot_all, fig.width=10, message=FALSE, warning=FALSE, fig.width=10, fig.asp=1.1}
 library(ggmap)
 library(viridis)
 
 # Create map objects and nest in data frame  
-d_plots <- diversity_grid_sf %>% 
+diversity_grid_sf <- diversity_grid_sf %>% 
   nest(-variable) %>%
   mutate(plot = map2(data, 
                      variable, 
                      ~ ggmap(ox_basemap) +
                        # Overlay grid data
                        geom_sf(data = .x, 
+                       # Fill with Shannon index for each grid cell         
                        aes(fill=value, geometry = geometry), 
                        inherit.aes = F,
                        alpha = 0.5) +
@@ -253,7 +272,18 @@ d_plots <- diversity_grid_sf %>%
                        # Convert grid data to WGS84
                        coord_sf(crs=st_crs(4326))))
 
-print(d_plots$plot)
+# Now plots and data are nicely stored together
+head(diversity_grid_sf)
+
+# Plot the results
+print(diversity_grid_sf$plot)
 ```
 
+# Discussion
+
+We can see some interesting results here. As this is not a controlled and randomised set of data, clearly there is significant sampling bias. That being the case, each taxa class clearly show some interesting results when the spatial Shannon diversity is plotted as above:
+
+* Insecta - there seems to be a hotspot in the north of Port Meadow. Presumably as this is an ancient wet meadow without any significant human development there maybe noticeable insect diversity here. We can see from the map that most sampling has not been within built up areas.
+* Mammalia - it seems there are two biodiversity hotspots for mammals in the data analysed. One at the eastern end of Oxford golf course, and the second along *Mesopotamia way* that runs along the River Cherwell.
+* Aves - this class had by far the largets number of records, and shows a relatively high density in the centre of the city. There is a diversity hot spot next to the *Thames* on Port Meadow and alos an area near *Ifley Meadows* (a local nature reserve). As these are both sites with the Thames running through them, the higher diversity could be due to the inclusion of water fowl?
 
