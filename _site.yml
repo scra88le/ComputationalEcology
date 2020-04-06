@@ -18,7 +18,7 @@ navbar:
         - text: "Distribution Modelling"
           hreft: 4_sdm.html
         - text: "Environmental DNA"
-          hreft: 5_eDNA.html
+          hreft: 5_eDNA_singlefile.html
         - text: "Geostatistics"
           hreft: 6_sam_naboisho.html
         - text: "Movement Modelling"  

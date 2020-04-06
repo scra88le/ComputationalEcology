@@ -372,7 +372,7 @@ div.tocify {
       <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
-      <a href="5_eDNA.html">Environmental DNA</a>
+      <a href="5_eDNA_singlefile.html">Environmental DNA</a>
     </li>
     <li>
       <a href="6_sam_naboisho.html">Geostatistics</a>
@@ -458,11 +458,11 @@ plotQualityProfile(fnR1)</code></pre>
 <p>The next thing we want to do is “dereplicate” the filtered fastq files. During dereplication, we condense the data by collapsing together all reads that encode the same sequence, which significantly reduces later computation times.</p>
 <pre class="r"><code># Derep forward reads
 derepF1 &lt;- derepFastq(filtF1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file5733cf1be91.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573707de284.fastq.gz</code></pre>
 <pre><code>## Encountered 15108 unique sequences from 28738 total sequences read.</code></pre>
 <pre class="r"><code># Derep reverse reads
 derepR1 &lt;- derepFastq(filtR1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573231640d9.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file57358a281ce.fastq.gz</code></pre>
 <pre><code>## Encountered 17850 unique sequences from 28738 total sequences read.</code></pre>
 </div>
 <div id="learn-the-error-rates" class="section level1">
