@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Environmental DNA analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Computational Ecology</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Vignettes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="2_glm.html">Generalised Linear Models</a>
+    </li>
+    <li>
+      <a href="3_gam.html">Generalised Additive Models</a>
+    </li>
+    <li>
+      <a href="4_sdm.html">Distribution Modelling</a>
+    </li>
+    <li>
+      <a href="5_eDNA.html">Environmental DNA</a>
+    </li>
+    <li>
+      <a href="6_sam_naboisho.html">Geostatistics</a>
+    </li>
+    <li>
+      <a href="7_movement_BA055.html">Movement Modelling</a>
+    </li>
+    <li>
+      <a href="8_distance_sampling.html">Distance Sampling</a>
+    </li>
+    <li>
+      <a href="9_biodiversity.html">Spatial Biodiversity</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Environmental DNA analysis</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<pre class="r"><code># Load libraries
+library(dada2)
+packageVersion(&quot;dada2&quot;)</code></pre>
+<pre><code>## [1] &#39;1.14.0&#39;</code></pre>
+</div>
+<div id="load-sample-files" class="section level1">
+<h1>Load sample files</h1>
+<pre class="r"><code>fnF1 &lt;- &quot;data_analysis_files/edna_data/fastq_raw_reads/MiSeq/SRR9041213_1.fastq&quot;
+fnR1 &lt;- &quot;data_analysis_files/edna_data/fastq_raw_reads/MiSeq/SRR9041213_2.fastq&quot;
+filtF1 &lt;- tempfile(fileext=&quot;.fastq.gz&quot;)
+filtR1 &lt;- tempfile(fileext=&quot;.fastq.gz&quot;)</code></pre>
+</div>
+<div id="inspect-read-quality-profiles" class="section level1">
+<h1>Inspect read quality profiles</h1>
+<p>Visualise the quality profiles of the forward reads for the first two fastq files:</p>
+<pre class="r"><code># Plot forward read quality
+plotQualityProfile(fnF1)</code></pre>
+<p><img src="5_eDNA_singlefile_files/figure-html/qual_prof_fwd_reads-1.png" width="960" /></p>
+<pre class="r"><code># Plot reverse read qualuty
+plotQualityProfile(fnR1)</code></pre>
+<p><img src="5_eDNA_singlefile_files/figure-html/qual_prof_fwd_reads-2.png" width="960" /></p>
+<p>How should we interpret the plots?</p>
+<p>The x axis shows each base position - there are 300 nucleotides in the chart above.</p>
+<ul>
+<li>The grey scale is a heat map for the quality score at each base position.</li>
+<li>The mean quality score at each position is shown by the green line.</li>
+<li>The quartiles of the quality score distribution by the orange lines.</li>
+<li>The red line shows the scaled proportion of reads that extend to at least that position.</li>
+</ul>
+<p>The quality seems to be ok to around 290, so we will trim the last 75 nucleotides from the forward reads.</p>
+<p>The reverse reads do not look as good qualoty as the forward reads; there is a significant reduction of quality starting around halfway along the read (around nucleotide 240), so we will trim here.</p>
+<div id="computing-power" class="section level2">
+<h2>Computing power</h2>
+<p>The study in question produced nearly 100 fastq files, which had a size of 1GB, compressed. Therefore as computing resource was not sufficient to process all of the files, this vignette outlined an approach using just the first two files. Using a server with 16 threads and 16GB of memory on the <em>Amazon Web Services</em> meant the most computationally intensive step (assigning taxonomy using a reference database) took around 20 minutes of wall time. To process the entire set files would require a more powerful server and several hours of wall time to complete.</p>
+</div>
+</div>
+<div id="filter-and-trim" class="section level1">
+<h1>Filter and trim</h1>
+<p>Now we can parameterise the filtering and trimming of the fastq files (both forward and reverse), and then store the results in a compressed format. A standard set of filtering parameters will be used together the trim lengths we determined from the quality plots.</p>
+<pre class="r"><code>out &lt;- filterAndTrim(fwd=fnF1, filt=filtF1, rev=fnR1, filt.rev=filtR1,
+                  trimLeft = 10, truncLen=c(290, 240), 
+                  maxN=2, maxEE=2,
+                  compress=TRUE, verbose=TRUE)</code></pre>
+<pre><code>## Read in 66387 paired-sequences, output 28738 (43.3%) filtered paired-sequences.</code></pre>
+</div>
+<div id="dereplicate" class="section level1">
+<h1>Dereplicate</h1>
+<p>The next thing we want to do is “dereplicate” the filtered fastq files. During dereplication, we condense the data by collapsing together all reads that encode the same sequence, which significantly reduces later computation times.</p>
+<pre class="r"><code># Derep forward reads
+derepF1 &lt;- derepFastq(filtF1, verbose=TRUE)</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file5733cf1be91.fastq.gz</code></pre>
+<pre><code>## Encountered 15108 unique sequences from 28738 total sequences read.</code></pre>
+<pre class="r"><code># Derep reverse reads
+derepR1 &lt;- derepFastq(filtR1, verbose=TRUE)</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573231640d9.fastq.gz</code></pre>
+<pre><code>## Encountered 17850 unique sequences from 28738 total sequences read.</code></pre>
+</div>
+<div id="learn-the-error-rates" class="section level1">
+<h1>Learn the error rates</h1>
+<p>Every amplicon dataset has a different set of error rates. The DADA2 algorithm uses a parametric error model to learn the error rates.</p>
+<pre class="r"><code># Learn forward error rates
+errF &lt;- learnErrors(derepF1, multithread=TRUE)</code></pre>
+<pre><code>## 8046640 total bases in 28738 reads from 1 samples will be used for learning the error rates.</code></pre>
+<pre class="r"><code># Learn reverse error rates
+errR &lt;- learnErrors(derepR1, multithread=TRUE)</code></pre>
+<pre><code>## 6609740 total bases in 28738 reads from 1 samples will be used for learning the error rates.</code></pre>
+<p>We can visualise the error rates as follows:</p>
+<pre class="r"><code># Visualise the forward error rates
+plotErrors(errF, nominalQ=TRUE)</code></pre>
+<p><img src="5_eDNA_singlefile_files/figure-html/vis_error_rates-1.png" width="672" /></p>
+<pre class="r"><code># Visualise the reverse error rates
+plotErrors(errR, nominalQ=TRUE)</code></pre>
+<p><img src="5_eDNA_singlefile_files/figure-html/vis_error_rates-2.png" width="672" /></p>
+<p>The plots show the error rate for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. In generate, the error rates appear to drop with increased quality.</p>
+</div>
+<div id="sample-inference" class="section level1">
+<h1>Sample inference</h1>
+<p>We can now apply the core <em>DADA2</em> inference algorithm (inc. ref), to the filtered and trimmed data.</p>
+<pre class="r"><code># Apply sample inference to forward data
+dadaF1 &lt;- dada(derepF1, err=errF, multithread=TRUE)</code></pre>
+<pre><code>## Sample 1 - 28738 reads in 15108 unique sequences.</code></pre>
+<pre class="r"><code># Apply sample inference to reverse data
+dadaR1 &lt;- dada(derepR1, err=errR, multithread=TRUE)</code></pre>
+<pre><code>## Sample 1 - 28738 reads in 17850 unique sequences.</code></pre>
+<pre class="r"><code>print(dadaF1)</code></pre>
+<pre><code>## dada-class: object describing DADA2 denoising results
+## 320 sequence variants were inferred from 15108 input unique sequences.
+## Key parameters: OMEGA_A = 1e-40, OMEGA_C = 1e-40, BAND_SIZE = 16</code></pre>
+<p>The core DADA2 algorithm corrects Illumina-sequenced amplicon errors, and can resolve variants by as little as one nucleotide<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
+</div>
+<div id="merge-paired-reads" class="section level1">
+<h1>Merge paired reads</h1>
+<p>We can now merge the forward and reverse reads together to obtain the full denoised sequences. Merging is performed by aligning the denoised forward reads with the reverse-complement of the corresponding denoised reverse reads, and then constructing the merged “contig” sequences. By default, merged sequences are only output if the forward and reverse reads overlap by at least 12 bases, and are identical to each other in the overlap region.</p>
+<p>Paired reads that did not exactly overlap are removed by <code>mergePairs</code>, further reducing spurious output.</p>
+<pre class="r"><code># Merge pairs
+merger1 &lt;- mergePairs(dadaF1, derepF1, dadaR1, derepR1, verbose=TRUE)</code></pre>
+<pre><code>## 24607 paired-reads (in 213 unique pairings) successfully merged out of 27591 (in 797 pairings) input.</code></pre>
+<pre class="r"><code># Inspect the merger data.frame from the first sample
+head(merger1[[1]])</code></pre>
+<pre><code>## [1] &quot;AAGATTAAGCCATGCATGTCTAAGTATAAACTGCTTATACTGTGAAACTGCGAATGGCTCATTAAATCAGTTATAGTTTATTTGATGGTACCTACTACACGGATAACCGTAGTAATTCTAGAGCTAATACGTGCGTAAATCCCGACTCCTGGAAGGGACGTATTTATTAGATTTAAGGCCAACCGAGCTTGCTCGTCTCATGGTGAATCATGATAACTTTACGAATCGCATGGCCTTGCGCCGGCGATGTTTCATTCAAATTTCTGCCCTATCAATTGGCGATGGTAGGATAGAGGCCTACCATGGTGGTAACGGGTGACGGGGAATTAGGGTTCGATTCCGGAGAGGGAGCCTGAGAAACGGCTACCACATCCAAGGAA&quot;  
+## [2] &quot;AAGATTAAGCCATGCATGTCTAAGTATAACCATTATACAGGAAAACTGCGAACGGCTCATTATATCAGTTATTGTTTCTTTGATAGTCCCTTACTACTTGGATACCTGTAGTAATTCTAGAGCTAATACATGCATCAATACCCGACTTCTGGAAGGGTAGTATTTATTAGGTTTAAACCAACACCCCTCGGGGTTGCTTTGGTGATTCATAATAACTTATCGGATCGCATGGCTCCACGCCGGCGATGGATCATTCAAGTTTCTGCCCTATCAGTTTTGGTTGGGAGTGTATTGGACTCCCAAGACTTTGACGGGTAACGAATTGTTAGGGCAAGATTTCGGAGAGGGAGCCTGAGAGACGGCTACCACATCCAAGGAA&quot;   
+## [3] &quot;AAGATTAAGCCATGCATGTCTAAGTATAACCATTATACAGGAAAACTGCGAACGGCTCATTATATCAGTTATTGTTTCTTTGATAGTCCCTTACTACTTGGATACCTGTAGTAATTCTAGAGCTAATACATGCATCAATACCCGACTGTTCGCGGAAGGGTAGTATTTATTAGGTATAGACCAACCGTCTTCGGACGTGCTTTGGTGATTCATAATAACTTATCGGATCGCATGGCTCCATGCCGGCGATGGATCATTCAAGTTTCTGCCCTATCAGCTTTGGATGGTAGTGTATTGGACTACCATGGCTTTAACGGGTAACGAATTGTTAGGGCAAGATTTCGGAGAGGGAGCCTGAGAGACGGCTACCACATCCAAGGAA&quot;
+## [4] &quot;AAGATTAAGCCATGCATGTCTAAGTATAACCATTATACAGGAAAACTGCGAACGGCTCATTATATCAGTTATTGTTTCTTTGATAGTCCCTTACTACTTGGATACCTGTAGTAATTCTAGAGCTAATACATGCATCAATACCCGACTTCTGGAAGGGTAGTATTTATTAGGTTTAAACCAACACCCCTCGGGGTTGCTTTGGTGATTCATAATAACTTATCGGATCGCATGGCTCCATGCCGGCGATGGATCATTCAAGTTTCTGCCCTATCAGTTTTGGTTGGGAGTGTATTGGACTCCCAAGACTTTGACGGGTAACGAATTGTTAGGGCAAGATTTCGGAGAGGGAGCCTGAGAGACGGCTACCACATCCAAGGAA&quot;   
+## [5] &quot;AAGATTAAGCCATGCATGTCTAAGTATAACCATTATACAGGAAAACTGCGAACGGCTCATTATATCAGTTATTGTTTCTTTGATAGTCCCTTACTACTTGGATACCTGTAGTAATTCTAGAGCTAATACATGCATCAATACCCGACTTCTGGAAGGGTAGTATTTATTAGGTATAGACCAACACCCTTCGGGGTTGCTTTGGTGATTCATAATAACTAATCGGATCGCATGGCTCCATGCCGGCGATGGATCATTCAAGTTTCTGCCCTATCAGTTTTGGTTGGGAGTGTATTGGACTCCCAAGACTTTGACGGGTAACGAATTGTTAGGGCAAGATTTCGGAGAGGGAGCCTGAGAGACGGCTACCACATCCAAGGAA&quot;   
+## [6] &quot;AAGATTAAGCCATGCACGTCTAAGTATAAGCGATTATACTGTGAAACTGCGAATGGCTCATTATATCAGTTATAGTTTATTTGATGGTCCTTGCTACTTGGATAACCGTAGTAATTCTAGAGCTAATACATGCATAAATCCCCGACTGCTTGGAAGGGGTGTATTTATTAGATGGAAACCAATTCGGGGCAACCCGGTTCATGGTGATTCATAATAACTTTCGGATCGACAGCAATGTCGATGCATCATTCAAGTTTCTGCCCTATCAGTTGTGGATGGTAGGGTATTGGCCTACCATGACTTTAACGGGTAACGGAGAATTAGGGTTCGATTCCGGAGAGGGAGCCTGAGAAATGGCTACCACATCCAAGGAA&quot;</code></pre>
+</div>
+<div id="sequence-table" class="section level1">
+<h1>Sequence table</h1>
+<p>We can now construct an amplicon sequence variant table (ASV) table, a higher-resolution version of the OTU table produced by traditional methods. The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants.</p>
+<pre class="r"><code># Generate sequence table
+seqtab &lt;- makeSequenceTable(merger1)
+# Sequence table dimensions
+dim(seqtab)</code></pre>
+<pre><code>## [1]   1 213</code></pre>
+<pre class="r"><code># Inspect distribution of sequence lengths
+table(nchar(getSequences(seqtab)))</code></pre>
+<pre><code>## 
+## 311 329 339 340 346 350 352 353 356 357 362 363 365 366 367 368 369 370 
+##   1   1   2   2   1   1   1   1   1   1   1   5   3   3   1   4   6   9 
+## 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 
+##   4   1   5  12   5   1   5   5  31  14  15  27  11   8  10   1   2   1 
+## 389 391 392 395 397 399 410 429 
+##   4   1   1   1   1   1   1   1</code></pre>
+<p>The table contains 213 ASVs from processing the two initial fastq amplicon files.</p>
+</div>
+<div id="remove-chimeras" class="section level1">
+<h1>Remove chimeras</h1>
+<pre class="r"><code>merger1.nochim &lt;- removeBimeraDenovo(merger1, multithread=FALSE, verbose=TRUE)</code></pre>
+<pre><code>## Identified 30 bimeras out of 213 input sequences.</code></pre>
+<div id="pipeline-tracking" class="section level2">
+<h2>Pipeline tracking</h2>
+<p>We can track the number of reads that made it through each step in the pipeline:</p>
+<pre class="r"><code>getN &lt;- function(x) sum(getUniques(x))
+track &lt;- cbind(out, 
+               getN(dadaF1), 
+               getN(dadaR1), 
+               getN(merger1), 
+               getN(merger1.nochim))
+# If processing a single sample, remove the sapply calls: e.g. replace sapply(dadaFs, getN) with getN(dadaFs)
+colnames(track) &lt;- c(&quot;input&quot;, &quot;filtered&quot;, &quot;denoisedF&quot;, &quot;denoisedR&quot;, &quot;merged&quot;, &quot;nonchim&quot;)
+track</code></pre>
+<pre><code>##                    input filtered denoisedF denoisedR merged nonchim
+## SRR9041213_1.fastq 66387    28738     28042     28132  24607   23419</code></pre>
+<p>Doesn’t look to hot! Maybe we truncated too much towards the start?</p>
+</div>
+</div>
+<div id="assign-taxonomy" class="section level1">
+<h1>Assign taxonomy</h1>
+<p>Now we have our ASVs we can use the function <code>assignTaxonomy</code> to classify the against a reference database. This function uses a naive Bayesian classfier<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> to match ASVs against a set of sequences within a reference taxonomic database. For the assignment given below we use the SILVA species-level training set<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> that contains species typically found within microbiomes. This is clustered at 99% similarity.</p>
+<pre class="r"><code>taxa &lt;- assignTaxonomy(
+  # Sequences to be assigned
+  merger1.nochim, 
+  # Reference fasta database - 18S ribosomal DNA
+  &quot;data_analysis_files/edna_data/silva/silva_132.18s.99_rep_set.dada2.fa.gz&quot;, 
+  # Make multithreaded
+  multithread=TRUE,
+  # Print status
+  verbose = TRUE
+  )</code></pre>
+<p>Now let’s look at the results of the taxonomic assignment.</p>
+<pre class="r"><code>library(dplyr)
+# Removing sequence rownames for display only
+taxa_df &lt;- unname(taxa) %&gt;% as.data.frame()
+names(taxa_df) &lt;- c(&#39;Kingdom&#39;,&#39;Phylum&#39;,&#39;Class&#39;,&#39;Order&#39;,&#39;Family&#39;,&#39;Genus&#39;,&#39;Species&#39;)
+# First few rows of results
+head(taxa_df)</code></pre>
+<pre><code>##     Kingdom         Phylum          Class       Order          Family
+## 1 Eukaryota Archaeplastida Chloroplastida Chlorophyta Chlorodendrales
+## 2 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
+## 3 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
+## 4 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
+## 5 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
+## 6 Eukaryota            SAR  Stramenopiles  Ochrophyta   Chrysophyceae
+##           Genus                         Species              NA
+## 1   Tetraselmis                            &lt;NA&gt;            &lt;NA&gt;
+## 2    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 3 Thalassiosira                            &lt;NA&gt;            &lt;NA&gt;
+## 4    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 5    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 6    uncultured uncultured_freshwater_eukaryote AB622299.1.1685</code></pre>
+<p>As the reference database was for <em>Eurkarytes</em> all of our assign results are eukaryota. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>High-throughput environmental DNA analysis informs a biological assessment of an urban stream<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJA, Holmes SP (2016). “DADA2: High-resolution sample inference from Illumina amplicon data.” <em>Nature Methods</em>, <em>13</em>, 581-583. doi: 10.1038/nmeth.3869 (URL: <a href="https://doi.org/10.1038/nmeth.3869" class="uri">https://doi.org/10.1038/nmeth.3869</a>).<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Qiong Wang, Naıve Bayesian Classifier for Rapid Assignment of rRNA Sequences into the New Bacterial Taxonomy (2007). APPLIED AND ENVIRONMENTAL MICROBIOLOGY, Aug. 2007, p. 5261–5267. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950982/" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1950982/</a><a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>Morien, Evan, &amp; Parfrey, Laura W. (2018). SILVA v128 and v132 dada2 formatted 18s ‘train sets’ (Version 1.0) [Data set]. Zenodo. <a href="http://doi.org/10.5281/zenodo.1447330" class="uri">http://doi.org/10.5281/zenodo.1447330</a><a href="#fnref4">↩</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
