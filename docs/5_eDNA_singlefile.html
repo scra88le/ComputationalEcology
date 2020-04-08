@@ -458,11 +458,11 @@ plotQualityProfile(fnR1)</code></pre>
 <p>The next thing we want to do is “dereplicate” the filtered fastq files. During dereplication, we condense the data by collapsing together all reads that encode the same sequence, which significantly reduces later computation times.</p>
 <pre class="r"><code># Derep forward reads
 derepF1 &lt;- derepFastq(filtF1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573707de284.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573646710fa.fastq.gz</code></pre>
 <pre><code>## Encountered 15108 unique sequences from 28738 total sequences read.</code></pre>
 <pre class="r"><code># Derep reverse reads
 derepR1 &lt;- derepFastq(filtR1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file57358a281ce.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file5732a8bc095.fastq.gz</code></pre>
 <pre><code>## Encountered 17850 unique sequences from 28738 total sequences read.</code></pre>
 </div>
 <div id="learn-the-error-rates" class="section level1">
@@ -588,7 +588,16 @@ head(taxa_df)</code></pre>
 ## 4    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
 ## 5    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
 ## 6    uncultured uncultured_freshwater_eukaryote AB622299.1.1685</code></pre>
+<pre class="r"><code># Plot</code></pre>
 <p>As the reference database was for <em>Eurkarytes</em> all of our assign results are eukaryota. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.</p>
+<p>We can plot a chart to show the distribution of taxa at the <em>Class</em> order. Stramenopiles are clearly the must prevelant class that was resolved. This class are algae, ranging from multicellular kelp to unicellular diatoms, which are a primary component of plankton.</p>
+<pre class="r"><code>taxa_df[1:7] %&gt;% 
+  na.omit() %&gt;%
+  ggplot(aes(Class)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bw()</code></pre>
+<p><img src="5_eDNA_singlefile_files/figure-html/plot_taxa-1.png" width="672" /></p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>

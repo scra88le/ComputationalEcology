@@ -195,10 +195,22 @@ taxa_df <- unname(taxa) %>% as.data.frame()
 names(taxa_df) <- c('Kingdom','Phylum','Class','Order','Family','Genus','Species')
 # First few rows of results
 head(taxa_df)
+# Plot
 ```
 
 As the reference database was for *Eurkarytes* all of our assign results are eukaryota. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.
 
+We can plot a chart to show the distribution of taxa at the *Class* order. Stramenopiles are clearly the must prevelant class that was resolved. This class are algae, ranging from multicellular kelp to  unicellular diatoms, which are a primary component of plankton.  
+
+```{r plot_taxa}
+taxa_df[1:7] %>% 
+  na.omit() %>%
+  ggplot(aes(Class)) +
+    geom_bar() +
+    coord_flip() +
+    theme_bw()
+
+```
 
 # References
 
