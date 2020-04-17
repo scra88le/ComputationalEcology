@@ -208,7 +208,8 @@ taxa_df[1:7] %>%
   ggplot(aes(Class)) +
     geom_bar() +
     coord_flip() +
-    theme_bw()
+    theme_bw() +
+    ggtitle("Distribution of class taxa")
 
 ```
 

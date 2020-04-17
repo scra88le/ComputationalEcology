@@ -6,23 +6,24 @@ output:
 ---
 
 # Introduction
-Undertaking a systematic data exploration prior to applying statistical analysis techniques to experimental data can help improve the statistical validity of results and associated conclusons. Key to this is a protocol for ensuring the scientist does not discover a false covariate effect (*type I error*) or mistakenly dismiss a model with valid covariate effects (*type II error*).
+Undertaking a systematic data exploration prior to applying statistical analysis techniques to experimental data, can help improve the statistical validity of results and associated conclusons. Key to this is a protocol for ensuring the scientist does not discover a false covariate effect (*type I error*) or mistakenly dismiss a model with valid covariate effects (*type II error*).
 
-The aim of this first vignette is to provide a protocol for data exploration that identifies potential problems before any in depth statistical modelling is undertaken. The approach outlined makes extensive use of the material discussed in[^1]. Datasets are sourced from the Internet or researchers at Oxford Brookes University.
+The aim of this first vignette is to provide a protocol for *data exploration*, the goal of which is to identify potential problems within the data before any in depth statistical modelling is undertaken. The approach outlined makes extensive use of the material discussed in[^1]. Datasets are sourced from the internet or researchers at Oxford Brookes University.
 
-The data exploration protocol outlined below is summarised as follows:
+## Data exploration protocol
 
-1. **Outliers** - observations that are relatively large or small when compared to the majority of observations, can significantly affect a statisical result.
+The data exploration protocol can be summarised as follows:
+
+1. **Outliers** - observations that are relatively large or small when compared to the majority of observations, can significantly affect a statisical result if an unsuitable technique is used.
 2. **Homogeneity of variance** - a number of statistical techniques assume homogeneity of variance of data. If this is violated the null hypothesis maybe falsely rejected or the power of the test maybe decrease.
 3. **Normality** - if data are not normally distributed, a number of statistical tests may not be valid, and alternative approaches will be required to test the distributon of data.
-4. **Zero-inflation** - when modelling species counts, a large proportion of the data maybe zeros. In such cases alternative statistical models should be used to avoid biased estimates.
-5. **Collinearity** - avoiding correlation between covariates is important otherwise statistical significance may not be correctly determined.
-6. **Associations** - in univariate analysis it maybe important to explore the indicative relationship between response variables and covariates in order to better understand which modelling techniques to adopt.
-
+4. **Zero-inflation** - when modelling species counts, a large proportion of survey data maybe zeros. In such cases alternative statistical models should be used to avoid biased estimates.
+5. **Collinearity** - avoiding correlation between independent variables (covariates) is important otherwise statistical significance may not be correctly determined.
+6. **Associations** - it maybe important to explore the indicative relationship between response variables and covariates in order to better understand which modelling techniques to adopt.
 
 # Are there outliers?
 
-Outliers are defined as one or more observations that has a relatively large or small value compared to the majority of observations. A more formal defintion is a point which falls more than 1.5 times the interquartile range above the third quartile or below the first quartile. In order to demonstrate this first data exploration step we will use data from species group sizes observed in the Naboisho Conservancy within Kenya. As part of a suvrey work into species abundance,  researchers recorded the size of species groups as they drove along a number of 2km transects.
+Outliers are loosely defined as one or more observations that have a relatively large or small value compared to the majority of observations. A more formal defintion is a point which falls more than 1.5 times the interquartile range above the third quartile or below the first quartile. In order to demonstrate an example of this we will use species group size data observed in the Naboisho Conservancy within Kenya. This data was collected as part of a suvrey work into species abundance within the conservancy, researchers recorded the size of species groups as they drove along a number of 2km transects.
 
 ```{r, load_naboisho_data, echo=F, warning=F, message=F}
 rm(list = ls())  
@@ -38,11 +39,11 @@ library(lubridate)
 
 The boxplot visualizes the median of the data and the spread of the data about it. In the chart below the:
 
-* Median is presented as a vertical line within the white box
+* median is presented as a vertical line within the white box
 * 25% and 75% percentiles form a box around the median that contains half of the observations
-* Ends of the thin line either side of the white box are the upper and lower whiskers
-* Upper whisker covers values no larger (or smaller) than the inter-quartile range (the distance between the first and third quartiles)
-* Data beyond the whiskers are the outliers, and are shown as red dots.
+* ends of the thin line either side of the white box are the upper and lower whiskers
+* upper whisker covers values no larger (or smaller) than the interquartile range (the distance between the first and third quartiles)
+* data beyond the whiskers are the *outliers*, and are shown as red dots.
 
 ```{r, naboisho_box_plot, warning=F, message=F, fig.align='center'}
 naboisho %>% 
@@ -63,26 +64,31 @@ Note the x axis has a scale of log base 10, in order to compare species with sma
 
 ## Cleveland dot plot
 
-The **Cleveland dotplot** is a chart in which the row number of an observation is plotted versus the observation variable, thereby providing a more detailed view of individual observations than a boxplot. Points that stick out on the right-hand side, or on the left-hand side, are observed values that are considerable larger, or smaller, than the majority of the observations. The chart below shows a dot plot for each species within the Naboisho dataset from 2016 to 2019.
+The *Cleveland dotplot* is a chart in which the row number of an observation is plotted versus the observation variable, thereby providing a more detailed view of individual observations than a boxplot. Points that stick out on the right-hand side, or on the left-hand side, are observed values that are considerably larger, or smaller, than the majority of the observations. The chart below shows a dot plot for each species within the Naboisho dataset from 2016 to 2019.
 
 ```{r cleveland_dot_all_species, echo=T, warning=F, message=F, fig.align="center", fig.width=10,fig.height= 20}
 naboisho %>%
-  filter(species != "None") %>% # Remove species with no name!
+  # Remove species with no name
+  filter(species != "None") %>% 
+  # Order data by observation position in the data set
   ggplot(aes(x=size, y=seq(1, length(size)))) +
+  # Make the chart points transparent 
   geom_point(alpha=0.3) +
   ggtitle("Cleveland dot plot of Naboisho species 2016 to 2019") +
   labs(x = "Observed group size of Species", 
        y = "Order of data") +
   theme_bw() +
+  # Plot for each species
   facet_wrap(~species, ncol = 3, scales = "free_x")
 ```
 
-
-We can clearly see that Giraffe has a single outlier; a group size of around 350 Giraffe. This is quite clearly a data entry error and not typical Giraffe herding behaviour. If we remove this outlier and replot the dot plot, we see the following for Giraffe:
+We can see that Giraffe has a single outlier; a group size of around 350 Giraffe. This is quite clearly a data entry error and not typical Giraffe herding behaviour. If we remove this outlier and replot the dot plot, we see the following for Giraffe:
 
 ```{r cleveland_dot_giraffe_clean, echo=T,warning=F, message=F, fig.align="center"}
 naboisho %>%
+  # Only plot Giraffe
   filter(species == "Giraffe") %>%
+  # Remove the outlier
   filter(size <= 300) %>%
   ggplot(aes(x=size, y=seq(1, length(size)))) +
   geom_point(alpha=0.3) +
@@ -92,9 +98,10 @@ naboisho %>%
   theme_bw()
 ```
 
-Note we also have a number of observations with a group size of zero. This is clearly not possible and is probably due to how the data is recorded by the observer. We can correct this accordingly:
+Nowe can see that Giraffe group sies are never more than 20 animals, which is what we might expect based on the literature. Note we also have a number of observations with a group size of zero. This is clearly not possible and is probably due to how the data is recorded by the observer. We can correct this accordingly:
 
 ```{r replace_size_with_zeros, message=FALSE, warning=FALSE}
+# Replaces zeros with ones
 naboisho <- naboisho %>%
   mutate_all(funs(replace(., size == 0, 1)))
 ```
@@ -105,7 +112,7 @@ Having determined that there are outliers in the observation data, we can take a
 
 * check the data to ensure that there has not been a data entry error
 * check the scientific literature to give an indication of what we might typically expect
-* generate a number of observations randomly from an appropriate distribution, and determine how the proportion of extreme points compares to the field data
+* generate a number of observations randomly from an appropriate distribution (known as boot-strapping), and determine how the proportion of extreme points compares to the field data
 
 If the outliers are deemed valid then it maybe necessary to only use statistical methods that can handle *over-dispersed* data. For example, Poisson or negative-binomial distributions for count data, or zero-inflated models.
 
@@ -115,9 +122,9 @@ Homogeneity of variance is an important assumption that must be checked prior to
 
 To apply ANOVA to these data to determine if mean Wildebeest group size varies by year, season or a combination of year and season, we must assume that variance:
 
-1. Within *years are similar
-2. Within *seasons* are similar
-3. Between seasons within years are similar.
+1. within *years* are similar
+2. within *seasons* are similar
+3. between seasons, within years are similar.
 
 ```{r widebeest_by_season, message=FALSE, warning=F, fig.align= 'center'}
 # Add a column to the data set to determine month of year
@@ -154,7 +161,7 @@ We can see that the variance between seasons within a year is significantly diff
 
 ## Levenne's homogenrity of variance test
 
-We can directly test for homogeneity of variances of non-parametric data by using *Levenne's test*:
+We can directly test for homogeneity of variance of non-parametric data by using *Levenne's test*:
 
 ```{r wildebeest_levenne, message=FALSE, warning=FALSE}
 library(car)
@@ -163,24 +170,25 @@ library(car)
 leveneTest(size ~ as.factor(season) * as.factor(year), data = wildebeest_seasons)
 ```
 
-From the output above we can see that the p-value is much less than the significance level of 0.05. This means that we can not assume equal variances betweens years and seasons. 
+From the output above we can see that the p-value is much less than the significance level of 0.05. This means that we should not assume equal variance for interaction between years and seasons. 
 
-We therefore need to use a test that does not assume equal variance, can work for three different groups and is non-parametric. The *Kruskal-Wallis* test is a non-parametric test, and is used when the variance assumptions of ANOVA cannot be met. The test can assess for significant differences in a continuous response variable (in our case, group size) by two or more categorical independent variable groups (in our case the three different seasons). With this test we can ask the question if the mean group size between long rains, short rains and dry seasons is statistically different:
+We therefore need to use a test that does not assume equal variance, can work for three different groups and is non-parametric. The *Kruskal-Wallis* test is a non-parametric test, and is used when the variance assumptions of ANOVA cannot be met. The test can assess for significant differences in a continuous response variable (in our case, group size) by two or more categorical independent variable groups (in our case the three different seasons). With this test we can ask the question if the mean group size between long rains, short rains and dry seasons is statistically different within a given year.
 
 ```{r kruskal.test, message=FALSE, warning=FALSE}
 # Select 2017 wildebeest observations only
 wildebeest_seasons %>% filter(year == 2017) %>% 
+  # Test for significance of means of size by season
   kruskal.test(.$size, .$season, data = .)
 ```
 
-As p << 0.05, we can therefore reject the null hypothesis that the difference in mean values are zero. So the mean group size does vary by season in 2017. But between which groups is the differnce most significant? To answer this we need a post-hoc test, and for this we use a pairwise wilcox test:
+As p << 0.05, we can therefore reject the null hypothesis that the difference in mean values are zero. So the mean group size does vary by season in 2017. But between which groups is the differnce most significant? To answer this we need a post-hoc test, and for this we use a pairwise wilcox test.
 
 ```{r pw.wilcos.test, message=FALSE, warning=FALSE}
 wildebeest_seasons %>% filter(year == 2017) %>% 
   pairwise.wilcox.test(.$size, .$season, data=.)
 ```
 
-The results show us that the least significant differnce in 2017 was between the dry and short rains seasons, as confirmed by the boxplots above. We can apply the Kruskal-Wallis test across the entire naboisho dataset. This time we'll test if year on year mean group size changes are significant:
+The results show us that the least significant differnce in 2017 was between the dry and short rains seasons, as confirmed by the boxplots above. We can apply the Kruskal-Wallis test across the entire naboisho dataset. This time we'll test if year-on-year mean group size changes are significant.
 
 ```{r test_all_species, message=FALSE, warning=FALSE}
 # Apply Kruskal-Wallis to each species to see if change in mean year on year is significant
@@ -217,7 +225,7 @@ Linear regression is an example of a well used modelling technique in ecology th
 
 # Normality
 
-A significant number of statistical modelling tools assuming data are normally distributed. For example, linear regression assumes the data are normally distributed. So what techniques are typically used to observe or test for normality in our data?
+A significant number of statistical modelling techniques assume that data are normally distributed. For example, linear regression. So what techniques are typically used to observe or test for normality in our data?
 
 ## Histogram
 
@@ -227,18 +235,20 @@ Here we use weight data for a set of 1,193 sparrows (see Zuur). We use the data 
 # Load sparrows data set
 sparrows <- read.delim("/Users/anthony/Documents/GitHub/ComputationalEcology/data_analysis_files/Sparrows.txt")
 
+# Use ggplot's histogram geom to plot
 ggplot(sparrows, aes(x = wt)) + 
+  # Set the histogram binwidth to 0.25g
   geom_histogram(color = "black", binwidth = 0.25) +
     theme_minimal() +
-    labs(x = "Weight (g)", 
-         y = "Frequency")
+  labs(x = "Weight (g)", y = "Frequency") +
+  ggtitle("Histogram of sparrow weights")
 ```
 
 We can see that the data are approximately a bell-shape or normal distribution. Histograms are a useful why to quickly check how the data are distributed.
 
 ## Density plot
 
-Whilst the histogram appears to have an approximate normal shape, we can look at a density plot in order to obtain a smoother plot of the data distribution.
+Whilst the histogram appears to have an approximate normal shape, we can look at a density plot in order to obtain a smoother plot of the data distribution, that has a normalised scale on the y-axis.
 
 ```{r density_plot, fig.align='center', message=FALSE, warning=FALSE}
 library(ggpubr)
@@ -249,36 +259,38 @@ ggdensity(data = sparrows$wt,
 
 ## Q-Q Plot
 
-The normal Q-Q plot is yet another alternative method of assessing normality. The plot below compares the data to a perfect normal distribution. The points should lie as close to the line as possible with no obvious pattern coming away from the line, for the data to be considered normally distributed.
+The Q-Q plot is yet another alternative method of assessing normality. The chart below plots the sparrow sample data against a theoretical normal distribution. The points should lie as close to the line as possible, with no obvious pattern away from the line, for the data to be considered normally distributed.
 
 ```{r qq_plot, fig.align='center', message=FALSE, warning=FALSE}
 ggqqplot(sparrows$wt)
 ```
 
-We can see that the Q-Q plot departs from the theoretical line at extremes. This maybe because the distribution has long tails; the degree of which is known as *kurtosis*. However, if we subset the data by month and plot a sparrow weight histograme for each month, we can see how the data varies considerably month-on-month throughout the year.
+We can see that the Q-Q plot departs from the theoretical line at extremes. This is because the distribution has long tails; the degree of which is known as *kurtosis*. However, if we subset the data by month and plot a sparrow weight histogram for each month, we can see how the data varies considerably month-on-month throughout the year.
 
 ```{r spp_weight_month, fig.align='center', message=FALSE, warning=FALSE}
+# Add a month column so that we can plot data by month
 sparrows %>%
   mutate(Month = lubridate::month(Month, abbr = T, label = T)) %>%
 ggplot(aes(x = wt)) + 
   geom_histogram(color = "black", binwidth = 0.25) +
-    theme_minimal() +
-    labs(x = "Weight (g)", 
-         y = "Frequency") +
-  facet_wrap(. ~ Month)
+  theme_minimal() +
+  labs(x = "Weight (g)", y = "Frequency") +
+  facet_wrap(. ~ Month) +
+  ggtitle("Sparrow weight histograms by month")
 ```
 
-This is most likely due to sampling bias; there are more sparrows caught and weighed during the height of summer, when food is more plentiful. If we plot a historgram of the month the observation was recorded, we do indeed see a skew towards summer months:
+This monthly variance is most likely due to sampling bias; there are more sparrows caught and weighed during the height of summer, when food is more plentiful. If we plot a historgram of the month the observation was recorded, we do indeed see a skew towards summer months:
 
 ```{r sparrow_months, fig.align='center', message=FALSE, warning=FALSE}
 sparrows %>%
   mutate(Month = lubridate::month(Month, abbr = T, label = T)) %>%
-  ggplot(aes(Month, fill=Month)) +
+  ggplot(aes(Month)) +
     geom_histogram(stat="count") +
-    theme_minimal()
+    theme_minimal() +
+    ggtitle("Sparrow sample count by month")
 ```
 
-So viewing the data annually gave an over simplistic view of what was occuring to the weight of sampled sparrows. Whilst their weights are normally distributed in the summer, they appear to follow a different type of distribution outside of the summer months, possibly due to a lack of observton data.
+So viewing the data annually gave an over simplistic picture of what was occuring to the weight of sampled sparrows. Whilst their weights are normally distributed in the summer, they appear to follow a different type of distribution outside of the summer months, possibly due to a lack of sample data.
 
 ## Implications
 
@@ -286,9 +298,9 @@ If tests suggest that the data are not normally distributed it may be possible t
 
 # Zero inflation
 
-When studying species populations ecologists will often record species count data, and then seek to study how species abundance varies as a function of covariates such as time, habitat type, temperature, weather etc. If species are not observed during a survey, this is recorded as an absence. This can lead to over-dispersion (long tails) of the count data.
+When surveying species populations ecologists will often record species count data, and then seek to study how species abundance varies as a function of covariates such as time, habitat type, temperature, weather etc. If species are not observed during a survey, this is recorded as an absence. This can lead to over-dispersion (long tails) of the count data.
 
-This being the case we should proceed with modelling techniques that are based on a *zero-inflated* probability distribution. Such distributions allow for more frequent zero-valued observations. One approach is to use a zero-inflated Poisson (ZIP) model, as well as the zero-inflated negative binomial (ZINB).
+This being the case we should proceed with modelling techniques that are based on a *zero-inflated* probability distribution. Such distributions allow for more frequent zero-valued observations (absences). One approach is to use a zero-inflated Poisson (ZIP) model, or a zero-inflated negative binomial (ZINB) model.
 
 In order to determine the number of zeros within a dataset, we can simply plot a histogram of occurence data. Often within survey data, species absense is implicit in that only a species presence is recorded. If this is the case then the first thing we should do is record the absence explicitly. In this way, we have a true record of the *sampling effort* undertaken during a survey. If we look at the species data for Giraffe from the Naboisho data set:
 
@@ -309,12 +321,12 @@ naboisho %>%
   filter(species == "Giraffe", size < 300) %>%
   ggplot(aes(x = size)) + 
   geom_histogram(color = "black", binwidth = 1) +
-    theme_minimal() +
-    labs(x = "Giraffe group size", 
-         y = "Frequency")
+  theme_minimal() +
+  labs(x = "Giraffe group size", y = "Frequency") +
+  ggtitle("Histogram of Giraffe group size")
 ```
 
-So we can see that there were 1099 transects undertaken, but only 361 of them had observtions where Giraffe were present; we have not explicitly recorded the fact that during 738 transects no Giraffe were observed. The histogram shows that the vast majority of observations were just for one Giraffe. So let's update the data to incorporate this:
+So we see that there were 1099 transects undertaken, but only 361 of them had observtions where Giraffe were present; we have not explicitly recorded the fact that during 738 transects no Giraffe were observed. The histogram shows that the vast majority of observations were just for one Giraffe. So let's update the data to incorporate this.
 
 ```{r giraffe_zero_inflated, fig.align='center', message=FALSE, warning=FALSE}
 # Number of transects where Giraffe were recorded
@@ -354,17 +366,17 @@ complete_transects %>%
   count()
 ```
 
-Now we see that by including the transects where Giraffe were not observed (zero-inflating the survey data) the histogram has changed significantly from what it was initially.
+Now we see that by including the transects where Giraffe were not observed (zero-inflating the survey data) the histogram has changed significantly from what it was initially., and we can proceed to employ an appropriate modelling technique (ZIP/ZINB)
 
 ## Implications
 
-often survey data only accounts for presence of a target species, not absecence. This often leads to survey data that is over-dispersed. To account for not recording absences, we may have to adjust the data. If we wish to fit a model, we may need to account for zero inflation using zero-inflation models.
+Often survey data only accounts for presence of a target species, not absence. This often leads to survey data that is over-dispersed. To account for not recording absences, we may have to adjust the data. If we wish to fit a model, we may need to account for zero inflation using zero-inflation models.
 
 # Collinearity
 
-Collinearity occurs when covariates (the independent variables of a data set) are significantly correlated.  This is a problem as collinearity may inflate the variance of modelled regression coefficients, and therefore it is important to detect and remove the redundancy introduced, by dropping one of the covariates where the collinearity is observed. Failure to do this will increase standard errors of regression parameters and therefore inflate p-values [1^] when incorporating such data into regression models. 
+Collinearity occurs when covariates (the independent variables of a data set) are significantly correlated.  This is a problem as collinearity may inflate the variance of modelled regression coefficients, and therefore it is important to detect and remove the redundancy introduced, by removing one of the covariates where the collinearity is observed. Failure to do this will increase standard errors of regression parameters and therefore inflate p-values [1^] when incorporating such data into regression models. 
 
-In order to demonstrate collinearity between independent variables, we can look at the `doubs` dataset[^2]. This is a dataset records fish species from a survey of the river *Doubs* in France, together with the spatial coordinates for the 30 survey sites and environmental covariates for each of the survey sites. We can examine collinearity between the environmental covarites from `doubs`, by using a correlation matrix. This shows scatterplots between covarite variables, together with Pearson correlation coefficients.
+In order to demonstrate collinearity between independent variables, we can look at the `doubs` dataset[^2]. This dataset records fish species from a survey of the river *Doubs* in France, together with the spatial coordinates for the 30 survey sites and environmental covariates for each of the survey sites. We can examine collinearity between the environmental covarites from `doubs`, by using a correlation matrix. This shows scatterplots between covarite variables, together with their Pearson correlation coefficients.
 
 ```{r env_correlation, fig.align='center', fig.width = 10, message=FALSE, warning=FALSE}
 library(PerformanceAnalytics) 
@@ -383,7 +395,7 @@ chart.Correlation(env,
                   title = "Correlation Matrix")
 ```
 
-We can easily see that there are a number of covariates with significant (c.90%) correlation between them. The ecological reasons for this correlation are:
+We can easily see that there are a number of covariates with significant (c.90%) absolute correlation between them. The ecological reasons for this correlation are:
 
 Topological environmental covariates:
 
@@ -393,15 +405,21 @@ Topological environmental covariates:
 
 Water-chemistry environmental covariates:
 
-* `pho` (phosphate concentrate) and `amm` (ammonium concentrate) - ammonium is an indicator of organic pollution and phosphorus is a common constituent of agricultural fertilizers, farm animal manure, and organic wastes[^3]. So it would appear that likely that their join presence is due to agricultural activities.
+* `pho` (phosphate concentrate) and `amm` (ammonium concentrate) - ammonium is an indicator of organic pollution and phosphorus is a common constituent of agricultural fertilizers, farm animal manure, and organic wastes[^3]. So it would appear likely that their join presence is due to agricultural activities.
 * `amm` (ammonium concentrate) and `bdo` (biological oxygen demand) - ammonium and biological oxygen demand are key indicators of organic pollution in water. Bdo shows how much dissolved oxygen is needed for the decomposition of organic matter present in water.
-* `pho` (phosphate concentrate) and `bdo` (biological oxygen demand) - high levels of phosphorous in water bodies lead to eutriphication, which is likely to be a direct result of phosphate inputs and ammonium organic waste from farming (see EEA report).
+* `pho` (phosphate concentrate) and `bdo` (biological oxygen demand) - high levels of phosphorous in water bodies lead to eutriphication, which is likely to be a direct result of phosphate inputs and ammonium organic waste from farming.
 
 For the covariates pairs outlined above, there is clearly a linear relationship between them. In order to avoid collinearity we need to select the smallest subset of covariates that explains as much of the overall variation in the response variable(s). We will be exploring indpendent variable selection, when fitting regression and machine learning models for species distribution modelling.
 
+## Implications
+
+When assembing covarite data for a regression model, it is important to ensure that covarites that are highly correlated are removed to imrpove the statistical validity of the resulting model. Correlation tests, such as *pearsons* test can be used to assess this.
+
 # Associations
 
-Visualising the relationship between the response variable(s) and covariates can help to provide an initial understanding that may aid model selection technique, as well as highlighting observations that do not comply with the general pattern between response and covariate variables. We can do this for the `doubs` data set. The plot below shows for each covariate (x axis), how the abundance for *each* species responds (y axis). A `loess` smooth has been drawn through the data points in order to more easily show the relationship between covariate and response variables.
+Visualising the relationship between the response variable(s) and covariates can help to provide an initial understanding that may aid in the selection of a suitable modelling technique, as well as highlighting observations that do not comply with the general pattern between response and independent variables. 
+
+We can show this by using the `doubs` data set. The plot below shows for each covariate (x axis), how the abundance for *each* species responds (y axis). A `loess` smooth has been drawn through the data points in order to more easily show the relationship between covariate and response variables.
 
 ```{r 3dscatterplot, message=FALSE, warning=FALSE, fig.width=10,fig.asp=2}
 library(reshape2)
@@ -451,8 +469,13 @@ full_join(df_melt_species,df_melt_environ,"site", keep = F) %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-We can see that although there is a lot of information here, there are some clear types of behaviour for abundance ~ covariate. For example, species abundance typically reduces as altitude increases, for all species types. If we look at `dfs` (distance from source), we can see that there are some species that have peak abundnace midstream (Cogo and Thth), where as most othere species have maximum abundance downstream, at the mouth of the river. Note that this general approach doesn't work for every pairwise association. For example, the `loess` fit for *amm* and *abundance* clearly isn't a good fit.
+## Implications
 
+We can see that although there is a lot of information here, there are some clear types of behaviour for abundance ~ covariate. For example, species abundance typically reduces as altitude increases, for all species types. If we look at `dfs` (distance from source), we can see that there are some species that have peak abundnace midstream (Cogo and Thth), where as most other species have maximum abundance downstream, at the mouth of the river. Note that this general approach doesn't work for every pairwise association. For example, the generalised approach of using a `loess` fit for *amm* and *abundance* clearly isn't very good.
+
+# Discussion
+
+Undertaking a number of steps to explore and understand the statistical properties of a data set prior to undertaking any detailed statiscally modelling work, could greatly improve the scientific results of a study. A standard protocol, where relevant, can be adopted as outlined in this vignette in order to do ths.
 
 # References
 [^1]: Zuur AF, Leno EN, Elphick CS (2010) A protocol for data exploration to avoid common statistical problems. *Methods in Ecology and Evolution*
