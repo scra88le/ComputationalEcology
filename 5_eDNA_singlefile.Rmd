@@ -4,11 +4,15 @@ title: "Environmental DNA analysis"
 
 # Introduction
 
-Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. [^1]
+For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. [^1]. Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. 
+
+We will aim to use a machine learning classifier to generate Operational Taxonomic Units (OTUs) from the amplicons within the raw fastq files. In this particular example,  OTUs are clusters of similar sequence variants of the 18S rDNA marker gene sequence. Each of these clusters is intended to represent a taxonomic unit of a eukaryote, that has been resolved to a species or genus. In order to achieve this we use a reference taxonomy database of Eukaryotic 18S rDNA.
 
 ```{r prelims}
 # Load libraries
 library(dada2)
+library(dplyr)
+library(ggplot2)
 packageVersion("dada2")
 ```
 
@@ -122,7 +126,6 @@ merger1 <- mergePairs(dadaF1, derepF1, dadaR1, derepR1, verbose=TRUE)
 head(merger1[[1]])
 ```
 
-
 # Sequence table
 
 We can now construct an amplicon sequence variant table (ASV) table, a higher-resolution version of the OTU table produced by traditional methods. The sequence table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants.
@@ -212,6 +215,10 @@ taxa_df[1:7] %>%
     ggtitle("Distribution of class taxa")
 
 ```
+
+# Discussion
+
+We have seen that it is possible to take raw amplicon data that has been sequenced using environmental DNA, and identify which species are present in the underlying field samples. Environmental DNA sequencing and  bioinformatic techniques are a highly productive species surveying tool, especially in environments where the taget taxa are not easily identifiable in the field or considerable taxanomic expertise is required by the scientist undertaking the survey.
 
 # References
 
