@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -237,6 +236,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -265,6 +265,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -372,7 +378,7 @@ div.tocify {
       <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
-      <a href="5_eDNA.html">Environmental DNA</a>
+      <a href="5_eDNA_singlefile.html">Environmental DNA</a>
     </li>
     <li>
       <a href="6_sam_naboisho.html">Geostatistics</a>
@@ -382,6 +388,9 @@ div.tocify {
     </li>
     <li>
       <a href="8_distance_sampling.html">Distance Sampling</a>
+    </li>
+    <li>
+      <a href="9_biodiversity.html">Spatial Biodiversity</a>
     </li>
   </ul>
 </li>
@@ -1365,7 +1374,7 @@ glm_fit</code></pre>
 ## Resampling results:
 ## 
 ##   RMSE      Rsquared   MAE     
-##   3.681873  0.6456929  2.608131</code></pre>
+##   13.17788  0.3289309  9.367155</code></pre>
 <pre class="r"><code># Show model fit details and covariate significance
 summary(glm_fit)</code></pre>
 <pre><code>## 
@@ -1374,27 +1383,27 @@ summary(glm_fit)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -1.5904  -1.2316  -0.5274   0.3897   3.0385  
+## -1.8964  -0.9906  -0.3652   0.5822   1.8604  
 ## 
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)   0.3383     0.2289   1.478  0.13941   
-## slo          -0.8599     0.3021  -2.846  0.00443 **
-## pH            0.1750     0.2365   0.740  0.45935   
-## har          -0.1095     0.2765  -0.396  0.69219   
-## pho          -1.0896     0.6063  -1.797  0.07229 . 
-## nit           0.6144     0.2497   2.461  0.01387 * 
-## bdo           0.5187     0.4356   1.191  0.23374   
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)   0.2666     0.2584   1.032   0.3023  
+## slo          -0.6504     0.3974  -1.637   0.1017  
+## pH           -0.1663     0.1730  -0.961   0.3366  
+## har           0.4562     0.4498   1.014   0.3105  
+## pho          -1.2922     0.6330  -2.041   0.0412 *
+## nit           0.7400     0.4080   1.814   0.0697 .
+## bdo           0.3841     0.5119   0.750   0.4531  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for poisson family taken to be 1)
 ## 
-##     Null deviance: 53.647  on 18  degrees of freedom
-## Residual deviance: 26.972  on 12  degrees of freedom
-## AIC: 74.349
+##     Null deviance: 48.643  on 18  degrees of freedom
+## Residual deviance: 22.987  on 12  degrees of freedom
+## AIC: 72.149
 ## 
-## Number of Fisher Scoring iterations: 7</code></pre>
+## Number of Fisher Scoring iterations: 6</code></pre>
 <pre class="r"><code># What are the important of the covariates in them model?
 varImp(glm_fit) %&gt;% plot()</code></pre>
 <p><img src="2_glm_files/figure-html/covar_fit-1.png" width="672" /></p>
@@ -1419,8 +1428,8 @@ data.frame(
   RMSE = RMSE(pred, testing$abun),
   MAE = MAE(pred, testing$abun)
 )</code></pre>
-<pre><code>##          R2     RMSE      MAE
-## 1 0.1943634 4.597369 3.144024</code></pre>
+<pre><code>##          R2     RMSE     MAE
+## 1 0.4195226 1.798009 1.36954</code></pre>
 </div>
 </div>
 <div id="discussion" class="section level1">
