@@ -5,6 +5,18 @@ output:
     number_sections: true
 ---
 
+# Introduction
+
+Species distribution modelling is a technique used by ecologists whereby survey data for a given species is used to predict presence and absence across a wider spatial area than the survyed data. An SDM achieves this by constructing a model that estimates the likelihood of presence at unsurveyed locations, based on similarity of conditions at locations of known occurrence (and perhaps of non-occurrence) for the species in question. A common application of this method is to predict species ranges with climate data as covariates.
+
+## Hornet mimic hoverfly
+
+We can use the *Global Biodiversity Information Facility* (GBIF) to gather presence records for the migratory hoverfly *Volucella zonaria*, also known as the hornet mimic hoverfly. In Great Britain it was only known from two specimens prior to 1940, so was regarded as rare. Since then, it has become increasingly widespread in many parts of the South and South East England, often in association with parks and gardens, where adults are usually seen visiting flowers. Elsewhere across England, only a few scattered records exist. Our research question within this vignette is to answer the question as to how V. zonaria is distributed across the UK, given the available observation data from the last twenty years.
+
+# Set-up data
+
+First we load the libraries necessary for our study.
+
 ```{r load_libraries, message=FALSE, warning=FALSE}
 # Load libraries
 library(tidyverse)
@@ -18,9 +30,9 @@ library(viridis)
 rm(list = ls())  
 ```
 
-We can use the Global Biodiversity Information Facility (GBIF) to gather presence records for the migratory hoverfly *Volucella zonaria*, also known as the hornet mimic hoverfly. In Great Britain, it was only known from two specimens prior to 1940, so was regarded as rare. Since then, it has become increasingly widespread in many parts of the South and South East England, often in association with parks and gardens, where adults are usually seen visiting flowers. Elsewhere across England, only a few scattered records exist.
+## Retrieve observation data
 
-The observation records were retrieved from the GBIF API, and the data cleanded as follows:
+The observation records were retrieved from GBIF using the r API, `rgbif`[^1], and the data cleanded and structured as follows.
 
 ```{r get_and_clean_data}
 
@@ -47,9 +59,9 @@ zonaria_clean <- gbif_response$data %>%
   dplyr::select(x, y, decade,scientificName) %>% arrange(decade)
 ```
 
-# Covariates
+## Covariates
 
-Now we need to grab some environmental data. For this vignette we will use the worldclim database as this is directly available via the `raster` package. We can download 19 bioclimatic variables at 10' resolution. They are coded as follows:
+Now we need to grab some environmental data that we can use as covariates to help model the distribution of zonaria. For this vignette we will use the worldclim database as this is directly available via the `raster` package. We can download 19 bioclimatic variables at 10' resolution. They are coded as follows:
 
 * BIO1 = Annual Mean Temperature
 * BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))
@@ -71,7 +83,7 @@ Now we need to grab some environmental data. For this vignette we will use the w
 * BIO18 = Precipitation of Warmest Quarter
 * BIO19 = Precipitation of Coldest Quarter
 
-Let's download data for the current bioclim a rasters:
+Let's download bioclim data for the current year:
 
 ```{r environmental_data, message=FALSE, warning=FALSE}
 # Load UK background mask
@@ -94,9 +106,47 @@ bio_curr <- resample(bio_curr, bg)
 bio_curr <- mask(bio_curr, bg)
 ```
 
-## Autocorrelation
+We can plot the current bioclim data - all 19 covariates:
 
-Using adjacent cells in building a model can cause problems with spatial autocorrelation. We can therefore, thin the observations using the package `spThin`, as shown below. We set a minimum spatial distance between observations of 10km. The plot below shows the retained spatially thinned *V. zonaria* observations.
+```{r plot_uk_bioclim, fig.asp=4, fig.align='center', message=FALSE, warning=FALSE}
+# Function to generate individual plots
+plot_bioclim <- function(df, name) {
+  ggplot(data = df, aes(x=x, y=y, fill = value)) + 
+  geom_tile() +
+  coord_equal() +
+  scale_fill_viridis(name = name) +
+  theme(
+    plot.margin = rep(unit(0,"null"),4),
+    panel.spacing = unit(0,"null"),
+    legend.key.width = unit(0.01,"null")
+    ) +
+  theme_bw()
+}
+
+# extract all bioclim values by xy
+nested_bioclim_plots <- data.frame(rasterToPoints(bio_curr)) %>%
+  # Create single gouping variable by which to facet chart
+  melt(id = c("x","y")) %>%
+  # Nest data by bioclim variable
+  nest(-variable) %>%
+  # Create individual ggplots
+  mutate(plots = map2(.x = data, 
+                      .y = variable, 
+                      .f = plot_bioclim))
+
+# Render plots
+library(gridExtra)
+margin = theme(plot.margin = rep(unit(0,"null"),4))
+gridExtra::grid.arrange(grobs = nested_bioclim_plots$plots,
+                        top="Current UK Bioclim variables ",
+                        ncol = 2,
+                        margin
+                        )
+```
+
+# Observation autocorrelation
+
+Using adjacent species observation locations in building a model can cause problems with spatial autocorrelation. We can therefore thin the observations using the package `spThin`, as shown below. We set a minimum spatial distance between observations of 10km. The plot below shows the retained spatially thinned *V. zonaria* observations.
 
 ```{r thin_obs, message=FALSE, warning=FALSE}
 # Load library
@@ -138,48 +188,11 @@ rbind(thinned_zonaria, zonaria_clean[1:2] %>% mutate(obs= "full")) %>%
   geom_point(aes(x=x, y=y, colour = obs), 
              size = 0.5) +
   theme_bw() +
-  facet_wrap(~obs)
+  facet_wrap(~obs) +
+  ggtitle("Species observations before and after spatial thinning")
 ```
 
-## Bioclim data
-
-We can plot the current bioclim data - all 19 covariates:
-
-```{r plot_uk_bioclim, fig.asp=4, fig.align='center', message=FALSE, warning=FALSE}
-# Function to generate individual plots
-plot_bioclim <- function(df, name) {
-  ggplot(data = df, aes(x=x, y=y, fill = value)) + 
-  geom_tile() +
-  coord_equal() +
-  scale_fill_viridis(name = name) +
-  theme(
-    plot.margin = rep(unit(0,"null"),4),
-    panel.spacing = unit(0,"null"),
-    legend.key.width = unit(0.01,"null")
-    ) +
-  theme_bw()
-}
-
-# extract all bioclim values by xy
-nested_bioclim_plots <- data.frame(rasterToPoints(bio_curr)) %>%
-  # Create single gouping variable by which to facet chart
-  melt(id = c("x","y")) %>%
-  # Nest data by bioclim variable
-  nest(-variable) %>%
-  # Create individual ggplots
-  mutate(plots = map2(.x = data, 
-                      .y = variable, 
-                      .f = plot_bioclim))
-
-# Render plots
-library(gridExtra)
-margin = theme(plot.margin = rep(unit(0,"null"),4))
-gridExtra::grid.arrange(grobs = nested_bioclim_plots$plots,
-                        top="Current UK Bioclim variables ",
-                        ncol = 2,
-                        margin
-                        )
-```
+# Model dataset
 
 For each bioclim variable, we want to extract its value for the location of each V. zonaria observation. We also need to create pesudo-absence data - this represents locations where no observations were made. The covariates then need to be joined to the location of each observation to give an overall dataset from which we can build our species distribution model for V. zonaria.
 
@@ -217,7 +230,7 @@ df_zonaria <- rbind(df_presence, df_absence)
 
 # Variable selection
 
-In order to avoid collinearity we should remove covariates with absolute correlation of 0.8 or higher. We can achieve this by calculating a correlation matrix.
+In order to avoid collinearity we should remove covariates with absolute correlation of 0.8 or higher. We can achieve this by calculating a correlation matrix, and then removing highly correlated covariates.
 
 ```{r corr_mat}
 # Generate correlation matrix with covariates as correlates
@@ -259,9 +272,9 @@ training <- df_modelling[inTrain,]
 testing  <- df_modelling[-inTrain,]
 ```
 
-# Random Forest
+# A Random Forest
 
-Now we have removed the most highly correalted variables, we have nine `bio_clim` variables to as covarites to build a model fit. We'll fit the model using a random forest. A Random Forest is a machine larning classifier that builds a number *decision trees*. The idea is to build a forest of uncorrelated decision, conditioned on our covariates. The resulting forest has an decision structure that can accurately classify our decision model; in this case presence or absence at a location, given a set of `bio_clim` covariates. 
+Now we have removed the most highly correalted variables, we have nine `bio_clim` variables as covarites to fit a model. We'll fit the model using a random forest. A Random Forest is a machine larning classifier that builds a number of *decision trees*. The idea is to build a forest of uncorrelated decisions, conditioned on our covariates. The resulting forest has a decision structure that can accurately classify the response data; in this case presence or absence at a location, given a set of `bio_clim` covariates. 
 
 ```{r model_fit, message=FALSE, warning=FALSE, fig.align='centre'}
 library(randomForest)
@@ -302,9 +315,10 @@ model_fit <- train(
 print(model_fit)
 plot(model_fit)
 ```
+
 # Confusion matrix
 
-We can assess how good model predictions by generating a confusion matrix. This matrix shows a cross-tabulation of the observed and predicted classes, as well as a number of metrics that provide an inisght into how good the model predictions were compared to a reference data set. The referece dataset in our case was the reserved *training* data.
+We can assess how good model predictions by generating a confusion matrix. This matrix shows a cross-tabulation of the observed and predicted classes, as well as a number of metrics that provide an inisght into how good the model predictions were compared to a reference data set. The reference dataset in our case was the reserved *testing* data.
 
 ```{r conf_matrix}
 # Make prediction
@@ -326,13 +340,13 @@ Some definitions:
 * Sensitivity - true positive rate of the *positive* class. How well did the model detect presence?
 * Specificity - true negative rate. How well did the model detect absence?
 * Positive Predictive Value - probability that V. Zonaria is present when the model returns a presence
-* Negative Predictive Value - probability that V. Zonaria is absent when the model returns an absence
+* Negative Predictive Value - probability that V. Zonaria is absent when the model returns an absence.
 
-We can see the accuracy is around 91%. So the model is looking good.
+We can see the accuracy is around 90%. So the model is looking good.
 
-# Plot prediction
+# Predict species distribution
 
-Now we can now make a prediction for the current species distribution range for V. zonaria, using the bioclim covariates.
+Now we can now make a prediction for the current species distribution range for V. zonaria, using the selected bioclim covariate dat.
 
 ```{r predict_and_plot, message=FALSE, warning=FALSE, fig.align='centre', fig.width=10, fig.asp=0.8}
 # Generate distribution data from raster to run model on
@@ -379,5 +393,8 @@ We see the range fo V.zonaira is largely confined to a line south of Liverpool a
 * BIO8 - the mean temperature of the wettest quarter
 * BIO9 - the mean temperature of the driest quarter
 
-As all of these covariates are related to temperature, it possibly explains the limt of the UK range of V. zonaria. V. zonaria migrates annually from the mediterranean.
+As all of these covariates are related to temperature, it possibly explains the limt of the UK range of V. zonaria. V. zonaria migrates annually from the mediterranean; that is from south to north
 
+# References
+
+[^1]: Chamberlain S, Barve V, Mcglinn D, Oldoni D, Desmet P, Geffert L, Ram K (2020). rgbif: Interface to the Global Biodiversity Information Facility API. R package version 2.2.0, https://CRAN.R-project.org/package=rgbif.
