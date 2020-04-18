@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -237,6 +236,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -265,6 +265,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -372,7 +378,7 @@ div.tocify {
       <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
-      <a href="5_eDNA.html">Environmental DNA</a>
+      <a href="5_eDNA_singlefile.html">Environmental DNA</a>
     </li>
     <li>
       <a href="6_sam_naboisho.html">Geostatistics</a>
@@ -382,6 +388,9 @@ div.tocify {
     </li>
     <li>
       <a href="8_distance_sampling.html">Distance Sampling</a>
+    </li>
+    <li>
+      <a href="9_biodiversity.html">Spatial Biodiversity</a>
     </li>
   </ul>
 </li>
@@ -404,8 +413,9 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Geostatistics is a class of statistics used to analyze and predict the values associated with spatial or spatiotemporal phenomena. It incorporates the spatial (and in some cases temporal) coordinates of the data within the analyses. Geostatistics attempts to fit a stochastic model to the known location of a phenomenon and associated covariates, inorder to</p>
-<p>Here we use a dataset of species observation locations within the Naboisho conservancy in Kenya. In this example we will model the distribution of Zebra abudaance using geostatistical techniques.</p>
+<p>Geostatistics is the area of statistics used to analyze and predict the values associated with spatial or spatiotemporal processes. It incorporates the spatial (and in some cases temporal) coordinates of data within the analyses. Geostatistics attempts to fit a stochastic process to the known locations of a phenomenon and associated covariates, inorder to produce a model that can be used for making wider predictions across space and time.</p>
+<p>Here we use a dataset of species observation locations within the Naboisho conservancy in Kenya. In this example we want to ask the question how is Zebra abudaance distributed across the conservancy for a given date range, and we will use geostatistical techniques to determine this.</p>
+<p>We start by loading the relevant libraries and data.</p>
 <pre class="r"><code># Load libraries
 library(tidyr)
 library(dplyr)
@@ -423,6 +433,7 @@ survey &lt;- readRDS(&quot;data_analysis_files/naboisho/clean_survey.RData&quot;
 </div>
 <div id="visualising-the-data" class="section level1">
 <h1><span class="header-section-number">2</span> Visualising the data</h1>
+<p>We can visualise all the data that has been collected within the Naboisho conservancy data set. The chart below shows the observer location, for each given species that was recorded. A compass and laser was used for each observation, to determine the observed species location relative to the observer.</p>
 <pre class="r"><code># Add sf POINTs to dataframe for coords
 survey &lt;- survey %&gt;% 
   # Remove observations with no long, lat data
@@ -435,11 +446,12 @@ survey %&gt;%
   ggplot() +
     geom_point(aes(x=long, y=lat)) +
     facet_wrap(~transect, scale = &quot;free&quot;) +
-    theme_bw()</code></pre>
+    theme_bw() +
+  ggtitle(&quot;Nabosiho transect observer locations&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/data_wrangling-1.png" width="672" /></p>
 <div id="generating-species-locations" class="section level2">
 <h2><span class="header-section-number">2.1</span> Generating species locations</h2>
-<p>Now we need to generate the coordinates of all species, given the observer location (long, lat), distance between species and observer and bearing</p>
+<p>Now we need to generate the coordinates of all species, given the observer location (long, lat), distance between species and observer and compass bearing.</p>
 <pre class="r"><code>species_locations &lt;- geosphere::destPoint(
   # drop sf geometry and select vector of observer locations
   p = survey %&gt;% st_drop_geometry() %&gt;% dplyr::select(long,lat),
@@ -470,9 +482,10 @@ species_locations &lt;- species_locations %&gt;%
 species_locations %&gt;%
   ggplot() +
     geom_point(aes(x=lon, y=lat)) +
-    theme_bw()</code></pre>
+    theme_bw() +
+    ggtitle(&quot;Species locations across all Naboisho data&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/generate_target_locations-1.png" width="672" /></p>
-<p>Looks like we have a few outliers, so let’s remove them.</p>
+<p>Looks like we have a few outliers, so let’s remove them. And now we can plot locations of species across all dates.</p>
 <pre class="r"><code># Remove the outlier
 species_locations &lt;- species_locations %&gt;% 
   filter(lat &lt; -1.325) %&gt;%
@@ -484,7 +497,8 @@ species_locations %&gt;%
     ggplot() +
     geom_point(aes(x=lon, y=lat)) +
     theme_bw() +
-    facet_wrap(~species)</code></pre>
+    facet_wrap(~species) +
+    ggtitle(&quot;Species locations across all Naboisho data, all years&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/remove_outliers-1.png" width="672" /></p>
 <pre class="r"><code># Generate bounding box for Naboisho in WGS84
 naboisho_bbox &lt;- st_bbox(species_locations$geometry)</code></pre>
@@ -492,7 +506,7 @@ naboisho_bbox &lt;- st_bbox(species_locations$geometry)</code></pre>
 </div>
 <div id="spatial-zebra-observations-in-time" class="section level1">
 <h1><span class="header-section-number">3</span> Spatial Zebra observations in time</h1>
-<p>We want to select Zebra to generate a spatial abundance estimation. Our spatial model assumes that the random process within it is a <em>stationary process</em>. That is, the statistical properties within it are applicable across the entire spatial domain. Therefore we should select Zebra observations from a particular point in time. Below we choose observations from July 2018 only.</p>
+<p>We want to select Zebra to generate a spatial abundance estimation. Our spatial model assumes that the random process within it is a <em>stationary process</em>. That is, the statistical properties within it are applicable across the entire spatial domain acroos the given timescale for which the observations were made. Therefore we should select Zebra observations from a particular point in time. Below we choose observations from July 2018 only.</p>
 <pre class="r"><code># Create target dataset
 zebra &lt;- species_locations %&gt;% 
   filter(species == &quot;Zebra&quot;) %&gt;%
@@ -505,20 +519,21 @@ zebra &lt;- species_locations %&gt;%
 zebra %&gt;%
   ggplot() +
   geom_point(aes(x=easting, y=northing, size=size)) +
-  theme_bw()</code></pre>
+  theme_bw() +
+  ggtitle(&quot;Zebra group sizes observed in Naboisho, in July 2018&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/filter_species-1.png" width="672" /></p>
-<p>the plot above shows Zebra locations from a survey within the Naboisho conservancy as of July 2018. Note the size of the dot shows the size of the Zebra heard observed.</p>
+<p>The plot above shows Zebra locations from a survey within the Naboisho conservancy as of July 2018. Note the size of the dot shows the size of the Zebra heard observed.</p>
 </div>
 <div id="adding-ndvi-as-a-model-covariate" class="section level1">
 <h1><span class="header-section-number">4</span> Adding NDVI as a model covariate</h1>
 <p>Before we generate our spatial model, we can generate a Normalised Difference Vegetation Index (NDVI) for the Naboisho conservancy. NDVI quantifies the degree of vegetation spatially by measuring the difference between reflected near-infrared (which vegetation reflects) and red light (which vegetation absorbs). We can use this spatial information as a covariate and can therefore explore the association of Zebra abundance with the degree of vegetation.</p>
-<p>To generate an NDVI index we use a Landsat satellite raster from July 2018. For each 30m x 30m cell within the raster image, we process the NIR and Red light values to generate an NDVI value. The results in a set of coordinates in space, each of which with a value between -1 and 1. A value of +1 represents represents dense green vegetation and values around 0 or less represent urbanised developments.</p>
+<p>To generate an NDVI index we use a Landsat satellite raster from July 2018. For each 30m x 30m cell within the raster image, we process the NIR and Red light values to generate an NDVI value. The results is a set of coordinates in space, each of which with a value between -1 and 1. A value of +1 represents represents dense green vegetation and values around 0 or less represent urbanised developments.</p>
 <pre class="r"><code># Load NDVI of naboisho for July 2019
 ndvi_r &lt;- raster(&quot;data_analysis_files/naboisho/naboisho_ndvi_cropped&quot;) %&gt;%
   # Downsample raster to 120m x 120m cells
   aggregate(fact=8, fun=mean)
 # Plot NDVI of Naboisho study region
-plot(ndvi_r)</code></pre>
+plot(ndvi_r, main=&quot;Naboisho NDVI, July 2018&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/ndvi_join-1.png" width="672" /></p>
 <pre class="r"><code># Extract NDVI for each observation and bind to observation data
 zebra &lt;- ndvi_r %&gt;%
@@ -528,8 +543,7 @@ zebra &lt;- ndvi_r %&gt;%
 </div>
 <div id="fitting-a-variogram" class="section level1">
 <h1><span class="header-section-number">5</span> Fitting a variogram</h1>
-<p>A variogram captures the spatial continuity of a dataset. In our Zebra example, a variogram will give a measure of how two different observations vary in abundance as a function of distance between them. To calculate it, a function selects pairs of points (at a different distances, known as laghs) from a dataset and measures the variability between them.</p>
-<p>We can use the r package <code>gstat</code> to fit and plot an empirical variogram.</p>
+<p>A variogram is a fundamental building block of geostatistics. Its purpose is to capture the spatial continuity and structure within a dataset. In our Zebra example, a variogram will give a measure of how two different observations vary in abundance as a function of distance between them. To calculate it, a function selects pairs of points (at a different distances, known as <em>lag</em>) from a dataset, and measures the variability between them. We can use the r package <code>gstat</code> to fit and plot an empirical variogram.</p>
 <pre class="r"><code>library(gstat)
 coordinates(zebra) &lt;- ~ easting + northing
 
@@ -544,24 +558,51 @@ species_fit</code></pre>
 ## 1   Nug 183.8316   0.0000
 ## 2   Sph 162.2805 709.7361</code></pre>
 <pre class="r"><code># Plot the model fit
-plot(species_vgm, species_fit)</code></pre>
+plot(species_vgm, species_fit, main = &quot;Variogram for Zebra&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/variogram_fit-1.png" width="672" /></p>
 <p>There are three key parameters that describe the variogram:</p>
 <ul>
 <li><em>nugget</em> : the point at which the variograme hits the y axis.</li>
-<li><em>sill</em> : the limit of the variogram tending to infinity lag distances</li>
+<li><em>sill</em> : the limit of the variogram tending to infinite lag distances</li>
 <li><em>range</em> : the distance in which the difference of the variogram from the sill becomes negligible</li>
 </ul>
 <p>The range is the key parameter that helps fit our geospatial model.</p>
 </div>
 <div id="a-spatial-abundance-model" class="section level1">
 <h1><span class="header-section-number">6</span> A spatial abundance model</h1>
-<p>In order to generate a spatial abundance model from the Naboisho Zebra data, we use the r package <code>PrevMap</code> <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. PreMap is used to analyse spatially referenced prevalance data, and uses classical maximum likelihod estimation as we as Bayesian inference to estate parameters of spatial models. In order to model species abundance counts in space, we use a geostatisical <em>poission</em> model that has its parameters estimated by using a Monte Carlo maximum likelihood estimator. We take the output of the variogram model to initiate parameterisation of the estimator.</p>
+<p>In order to generate a spatial abundance model from the Naboisho Zebra data, we use the r package <code>PrevMap</code> <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. PreMap is used to analyse spatially referenced prevalance data, and uses classical maximum likelihod estimation as well as Bayesian inference, in order to estate parameters of spatial models. To model species abundance counts in space, we use a <em>poission</em> model that has its parameters estimated by using a Monte Carlo maximum likelihood estimator. We take the output of the variogram model to initiate parameterisation of the estimator, as follows.</p>
+<pre class="r"><code>fit.LA &lt;- glgm.LA(size ~ ndvi,
+                  coords = ~ I(easting) + I(northing),
+                  kappa=0.5,
+                  start.cov.pars = species_fit$range[2],
+                  fixed.rel.nugget = 0.0,
+                  data=zebra,
+                  family=&quot;Poisson&quot;)
+
+# Specify control parameters for Monte Carlo Maximum Likelihood simulation
+par0 &lt;- coef(fit.LA)
+c.mcmc &lt;- control.mcmc.MCML(n.sim=10000,
+                            burnin=2000,
+                            thin=8)
+
+# Run the MCML
+fit.MCML &lt;- poisson.log.MCML(size ~ ndvi,
+                             # Specify control parameters
+                             control.mcmc = c.mcmc,
+                             par0=par0,
+                             # Specify coordinates
+                             coords=~I(easting)+I(northing),
+                             kappa=0.5,
+                             start.cov.pars = species_fit$range[2],
+                             fixed.rel.nugget = 0,
+                             data=zebra,
+                             method=&quot;nlminb&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/fit_LA-1.png" width="672" /></p>
+<pre class="r"><code>summary(fit.MCML)</code></pre>
 </div>
 <div id="model-prediction" class="section level1">
 <h1><span class="header-section-number">7</span> Model prediction</h1>
-<p>Now we have estimated the parameters for our model, we can make a spatial abundance prediction. Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate data that we generated earlier.</p>
+<p>Now we have estimated the parameters for our model, we can make a spatial abundance prediction. Inorder to make a prediction, we need to make a prediction grid that includes the NDVI covariate data that we generated earlier. This will drive the prediction of the response variable (Zebra abundance) within each cell of the prediction grid.</p>
 <pre class="r"><code>pred_grid &lt;- ndvi_r %&gt;%
   # Convert raster to vector of points
   rasterToPoints() %&gt;%
@@ -580,14 +621,13 @@ pred.MCML &lt;- spatial.pred.poisson.MCML(fit.MCML,
                                        plot.correlogram = T)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/make_prediction-1.png" width="864" /></p>
 <p>We can plot the spatial distribution of the mean exponential abundance together with the variance.</p>
-<pre class="r"><code>predictions &lt;- cbind(exp_pred = 
-                       # Select predictions
-                       pred.MCML$exponential$predictions,
-                     std_err =
-                       # Select standard errors
-                       pred.MCML$exponential$standard.errors,
-                       # Against coordinate grid
-                       pred_grid %&gt;% dplyr::select(easting,northing))
+<pre class="r"><code>predictions &lt;- cbind(
+  # Select predictions
+  exp_pred = pred.MCML$exponential$predictions,
+  # Select standard errors
+  std_err = pred.MCML$exponential$standard.errors,
+  # Specifiy the prediction grid
+  pred_grid %&gt;% dplyr::select(easting,northing))
 
 # Now plot predictions
 predictions %&gt;%
@@ -595,13 +635,14 @@ predictions %&gt;%
   geom_tile(aes(fill=exp_pred)) + 
   coord_equal() +
   scale_fill_viridis_c() +
-  theme_bw()</code></pre>
+  theme_bw() +
+  ggtitle(&quot;Predicted Zebra abundance, Naboisho, July 2018&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/make_plot-1.png" width="672" /></p>
 <p>Calculate the overall population density per km2</p>
 <pre class="r"><code># Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count</code></pre>
-<pre><code>## [1] 4410.131</code></pre>
+<pre><code>## [1] 4402.342</code></pre>
 <pre class="r"><code># Calculate survey area in km2
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area</code></pre>
@@ -609,15 +650,20 @@ survey_area</code></pre>
 <pre class="r"><code># Calculate average density per km2
 density = total_count / survey_area
 density</code></pre>
-<pre><code>## [1] 31.94192</code></pre>
+<pre><code>## [1] 31.8855</code></pre>
+</div>
+<div id="discussion" class="section level1">
+<h1><span class="header-section-number">8</span> Discussion</h1>
+<p>In conservation ecology it is important to understand how the abundance of given species responds to covariates such as habitat or vegetation, in time and space. Geostastics is a technique is a tool that can help the ecologist understand this question. The technique was first developed to improve understanding of how ore grades varied across open cast mines in South Africa<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. But the underlying theory of spatial estimation is particularly relevant to landscape conservation ecologists.</p>
 </div>
 <div id="references" class="section level1">
-<h1><span class="header-section-number">8</span> References</h1>
+<h1><span class="header-section-number">9</span> References</h1>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>Giorgi, E., Diggle, P. J. (2016). PrevMap: an R package for prevalence mapping. Journal of Statistical Software. In press<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><a href="https://en.wikipedia.org/wiki/Geostatistics" class="uri">https://en.wikipedia.org/wiki/Geostatistics</a><a href="#fnref2">↩</a></p></li>
 </ol>
 </div>
 
