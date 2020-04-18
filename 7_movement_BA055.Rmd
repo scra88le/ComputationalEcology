@@ -7,7 +7,7 @@ output:
 
 # Introduction
 
-Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (<2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope *Phalaropus lobatus*. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here[^1]. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km. 
+Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (<2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope *Phalaropus lobatus*. The use of data was kindly given by Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here[^1]. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km. 
 
 This vignette makes extensive use of the code within the manual *Light-Level Geolocator Analyses: A user’s guide* [^2].
 
@@ -152,7 +152,7 @@ twl <- twilightEdit(twilights = twl,
 
 Geolocators sample light levels at regular intervals and calibration is needed to establish the relationship between the observed and the expected light levels for each device. This relationship is depicted by the calibration parameters (slopes), calculated using the data recorded in known (calibration) geographic positions, e.g. where the animal was tagged, recaptured or observed. 
 
-Below we show the recorded light levels upto a yellow vertical dashed line - we use this timeframe for calibrating the geolocator. These are observations after the bird has been tagged but before it has left the tagging location on its annual migration. In theory the bird returned to a similar location for breeding, but the data re not well formed, so we are unable to use this for a second calibration. This will also mean that the a return flight path cannot be fully calculated. This can be clearly seen on the right hand side of the plot below.
+Below we show the recorded light levels upto a yellow vertical dashed line - we use this timeframe for calibrating the geolocator. These are observations after the bird has been tagged but before it has left the tagging location on its annual migration. In theory the bird returned to a similar location for breeding, but the data are not well formed, so we are unable to use this as a second calibration period. This will also mean that the a return flight path cannot be fully calculated. This can be clearly seen on the right hand side of the plot below.
 
 ```{r determine_zenith, message=FALSE, warning=FALSE}
 # Subset the twilight data with calibration periods
@@ -175,28 +175,13 @@ tsimagePoints(twl$Twilight, offset = offset, pch = 16, cex = 0.5,
 
 # Plot the calibration period between vertical oragne lines
 abline(v = tm.calib, lwd = 2, lty = 2, col = "orange")
-
-# Generate the calibration model from the filtered twilight data
-#calib <- thresholdCalibration(
-  # Twilight times during calibration period
-  #d.calib$Twilight, 
-  # Sunset or sunrise
-  #d.calib$Rise, 
-  # BA055 departure location
-  #lon.calib, lat.calib, 
-  #method = "gamma")
-
-# Generate parameters of the error distribution
-#zenith  <- calib[1]
-#zenith0 <- calib[2]
-#alpha <- calib[3:4]
 ```
 
 The *threshold* calibration method is mainly used to derive positions by defining sunrise and sunset times from the light intensity pattern for each recorded day. This method requires calibration: a predefined sun elevation angle for estimating latitude by fitting the recorded day⁄night lengths to theoretical values across latitudes. Therewith, almost constant shading can be corrected for by finding the appropriate sun elevation angle.
 
 ## Hills-Ekstrom calibration
 
-There is an alternative approach to calibration using the Hill-Ekstrom[^4] theory to estimate the sun zenith. This approach proposes that the zenith angle should lead to the lowest variance in latitude estimates (i.e. flattest) during stationary periods. The Hill-Ekstrom calibration bases on an increasing error range in latitudes with an increasing mismatch between light level threshold and the used sun angle. This error is strongly amplified with proximity to the equinox times due to decreasing slope of day length variation with latitude.
+There is an alternative approach to calibration using the Hill-Ekstrom[^4] theory to estimate the sun zenith. This approach proposes that the zenith angle should lead to the lowest variance in latitude estimates (i.e. flattest) during stationary periods. The Hill-Ekstrom calibration is based on an increasing error range in latitudes with an increasing mismatch between light level threshold and the used sun angle. This error is strongly amplified with proximity to the equinox times due to decreasing slope of day length variation with latitude.
 
 ```{r HE_zenith_calib}
 # Set dates for calibration to be where the sd is minimised
@@ -210,10 +195,6 @@ zenith_he <- findHEZenith(twl, tol=0.01, range=c(start,end))
 
 ```
 The top panel shows the entire migration path (latitude at each date) using different zenith angles with the black line indicating the latitude estimates with the smallest variation within the specified calibration range (in between the two blue dashed lines). We can see that the standard deviation of the estimate for zenith is minimised at around 94.5 (lower panel). 
-
-```{r z0}
-#zenith0 <- 94.75
-```
 
 # Movement model
 
@@ -295,7 +276,7 @@ tags.data <- get.tags.data("~/Documents/GitHub/ComputationalEcology/tags_clean.c
 
 ## Calibration
 
-We can use the `FlightR` package to to calibrate via a technique known as *template fit*[^3]. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estiate the suns angle, which in turn gives a geospatial location.
+We can use the `FlightR` package to calibrate via a technique known as *template fit*[^3]. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estimate the angle of the sun, which in turn gives a geospatial location.
 
 ```{r flightr_calib, eval=FALSE, message=FALSE, warning=FALSE}
 # Set-up calibration period
@@ -363,7 +344,7 @@ saveRDS(all.in, "BA055_FlightRCalib.RData")
 ```
 
 
-```{r load pre_run, include=FALSE}
+```{r load_pre_run, include=FALSE}
 # Load model result
 # This chunk will not display
 all.in <- readRDS("BA055_FlightRCalib.RData")
@@ -402,15 +383,15 @@ saveRDS(Result, file="Result.BA055.RData")
 Result <- readRDS("Result.BA055.RData")
 ```
 
-## Results
+# Discussion
 
-Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea[^5], where the warm tropical water provides significant foraging grounds fo the over wintering birds.
+Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea[^5], where the warm tropical water provides significant foraging grounds for the over wintering birds.
 
 ```{r flight_path, message=FALSE, warning=FALSE}
 plot_lon_lat(Result)
 ```
 
-Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represents the most probably latitude and logitude at each twilight. Not, the coloured doughnut is a key for the month of the year.
+Finally, we can plot a picture of the overall flight path using the Google Maps API. This track presents a cleaner view with less noise as the particle filter algorithm was able to remove the random noise associated with the geologging. Each point represents the most probable latitude and logitude at each twilight. Note, the coloured doughnut is a key for the month of the year.
 
 ```{r ggmap_plot, eval=FALSE, message=FALSE, warning=FALSE}
 map.FLightR.ggmap(Result = Result, 

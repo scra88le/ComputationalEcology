@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -237,6 +236,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -265,6 +265,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -372,7 +378,7 @@ div.tocify {
       <a href="4_sdm.html">Distribution Modelling</a>
     </li>
     <li>
-      <a href="5_eDNA.html">Environmental DNA</a>
+      <a href="5_eDNA_singlefile.html">Environmental DNA</a>
     </li>
     <li>
       <a href="6_sam_naboisho.html">Geostatistics</a>
@@ -382,6 +388,9 @@ div.tocify {
     </li>
     <li>
       <a href="8_distance_sampling.html">Distance Sampling</a>
+    </li>
+    <li>
+      <a href="9_biodiversity.html">Spatial Biodiversity</a>
     </li>
   </ul>
 </li>
@@ -404,7 +413,7 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (&lt;2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope <em>Phalaropus lobatus</em>. The use of data was kindly givenby Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km.</p>
+<p>Geolocation by light allows for tracking animal movements, based on measurements of light intensity over time by a data-logging device; a geolocator. Recent developments of ultra-light devices (&lt;2 g) have broadened the range of target species and boosted the number of studies using geolocators. In this vignette we look at calculating and plotting the migration path of the Red-neck Phallarope <em>Phalaropus lobatus</em>. The use of data was kindly given by Tong Mu from the Department of Ecology and Evolutionary Biology, Princeton University, USA. The original paper defining the tracking method and results can be found here<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The migration track of Phalarope BA055 starts from the breeding grounds of Chukotka in around the Bering Sea, to the over wintering grounds in the East Indies; a round trip of some 20,000km.</p>
 <p>This vignette makes extensive use of the code within the manual <em>Light-Level Geolocator Analyses: A user’s guide</em> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>.</p>
 <pre class="r"><code># Clear all
 rm(list = ls())  
@@ -536,7 +545,7 @@ tsimagePoints(twl$Twilight,
 <div id="calibration" class="section level1">
 <h1><span class="header-section-number">3</span> Calibration</h1>
 <p>Geolocators sample light levels at regular intervals and calibration is needed to establish the relationship between the observed and the expected light levels for each device. This relationship is depicted by the calibration parameters (slopes), calculated using the data recorded in known (calibration) geographic positions, e.g. where the animal was tagged, recaptured or observed.</p>
-<p>Below we show the recorded light levels upto a yellow vertical dashed line - we use this timeframe for calibrating the geolocator. These are observations after the bird has been tagged but before it has left the tagging location on its annual migration. In theory the bird returned to a similar location for breeding, but the data re not well formed, so we are unable to use this for a second calibration. This will also mean that the a return flight path cannot be fully calculated. This can be clearly seen on the right hand side of the plot below.</p>
+<p>Below we show the recorded light levels upto a yellow vertical dashed line - we use this timeframe for calibrating the geolocator. These are observations after the bird has been tagged but before it has left the tagging location on its annual migration. In theory the bird returned to a similar location for breeding, but the data are not well formed, so we are unable to use this as a second calibration period. This will also mean that the a return flight path cannot be fully calculated. This can be clearly seen on the right hand side of the plot below.</p>
 <pre class="r"><code># Subset the twilight data with calibration periods
 d.calib &lt;- twl %&gt;%
   # Claibrate using dates before migration
@@ -558,24 +567,10 @@ tsimagePoints(twl$Twilight, offset = offset, pch = 16, cex = 0.5,
 # Plot the calibration period between vertical oragne lines
 abline(v = tm.calib, lwd = 2, lty = 2, col = &quot;orange&quot;)</code></pre>
 <p><img src="7_movement_BA055_files/figure-html/determine_zenith-1.png" width="672" /></p>
-<pre class="r"><code># Generate the calibration model from the filtered twilight data
-#calib &lt;- thresholdCalibration(
-  # Twilight times during calibration period
-  #d.calib$Twilight, 
-  # Sunset or sunrise
-  #d.calib$Rise, 
-  # BA055 departure location
-  #lon.calib, lat.calib, 
-  #method = &quot;gamma&quot;)
-
-# Generate parameters of the error distribution
-#zenith  &lt;- calib[1]
-#zenith0 &lt;- calib[2]
-#alpha &lt;- calib[3:4]</code></pre>
 <p>The <em>threshold</em> calibration method is mainly used to derive positions by defining sunrise and sunset times from the light intensity pattern for each recorded day. This method requires calibration: a predefined sun elevation angle for estimating latitude by fitting the recorded day⁄night lengths to theoretical values across latitudes. Therewith, almost constant shading can be corrected for by finding the appropriate sun elevation angle.</p>
 <div id="hills-ekstrom-calibration" class="section level2">
 <h2><span class="header-section-number">3.1</span> Hills-Ekstrom calibration</h2>
-<p>There is an alternative approach to calibration using the Hill-Ekstrom<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> theory to estimate the sun zenith. This approach proposes that the zenith angle should lead to the lowest variance in latitude estimates (i.e. flattest) during stationary periods. The Hill-Ekstrom calibration bases on an increasing error range in latitudes with an increasing mismatch between light level threshold and the used sun angle. This error is strongly amplified with proximity to the equinox times due to decreasing slope of day length variation with latitude.</p>
+<p>There is an alternative approach to calibration using the Hill-Ekstrom<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> theory to estimate the sun zenith. This approach proposes that the zenith angle should lead to the lowest variance in latitude estimates (i.e. flattest) during stationary periods. The Hill-Ekstrom calibration is based on an increasing error range in latitudes with an increasing mismatch between light level threshold and the used sun angle. This error is strongly amplified with proximity to the equinox times due to decreasing slope of day length variation with latitude.</p>
 <pre class="r"><code># Set dates for calibration to be where the sd is minimised
 startDate &lt;- &quot;2016-09-30&quot; #tm.track[1]
 endDate   &lt;- &quot;2016-11-30&quot; #tm.track[2]
@@ -585,7 +580,6 @@ end = max(which(as.Date(twl$Twilight) == endDate))
 
 zenith_he &lt;- findHEZenith(twl, tol=0.01, range=c(start,end))</code></pre>
 <p><img src="7_movement_BA055_files/figure-html/HE_zenith_calib-1.png" width="672" /> The top panel shows the entire migration path (latitude at each date) using different zenith angles with the black line indicating the latitude estimates with the smallest variation within the specified calibration range (in between the two blue dashed lines). We can see that the standard deviation of the estimate for zenith is minimised at around 94.5 (lower panel).</p>
-<pre class="r"><code>#zenith0 &lt;- 94.75</code></pre>
 </div>
 </div>
 <div id="movement-model" class="section level1">
@@ -654,7 +648,7 @@ tags_csv &lt;- tags_csv %&gt;% na.omit()
 #write_csv(tags_csv,&quot;tags_clean.csv&quot;)</code></pre>
 <div id="calibration-1" class="section level2">
 <h2><span class="header-section-number">6.1</span> Calibration</h2>
-<p>We can use the <code>FlightR</code> package to to calibrate via a technique known as <em>template fit</em><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estiate the suns angle, which in turn gives a geospatial location.</p>
+<p>We can use the <code>FlightR</code> package to calibrate via a technique known as <em>template fit</em><a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. Here the linear relationship (on a log-log scale) between the recorded light levels of a known location and the theoretical light level of that location are used to estimate the angle of the sun, which in turn gives a geospatial location.</p>
 <pre class="r"><code># Set-up calibration period
 Calibration.periods&lt;-data.frame(
         calibration.start=as.POSIXct(&quot;2016-07-04&quot;),
@@ -737,19 +731,19 @@ Result&lt;-run.particle.filter(
 # Save the results of the model run
 saveRDS(Result, file=&quot;Result.BA055.RData&quot;)</code></pre>
 </div>
-<div id="results" class="section level2">
-<h2><span class="header-section-number">6.5</span> Results</h2>
-<p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>, where the warm tropical water provides significant foraging grounds fo the over wintering birds.</p>
+</div>
+<div id="discussion" class="section level1">
+<h1><span class="header-section-number">7</span> Discussion</h1>
+<p>Now we can look at how the longitude and latitude of BA055 flight path changes over time. As the Red Phallarope is known to be a pelagic bird, we can see that BA055 spends the majority of its time over wintering around the equatorial waters east of Indonesia. It has also been recorded as regular visitor within the seas west of New Guinea<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>, where the warm tropical water provides significant foraging grounds for the over wintering birds.</p>
 <pre class="r"><code>plot_lon_lat(Result)</code></pre>
 <p><img src="7_movement_BA055_files/figure-html/flight_path-1.png" width="672" /></p>
-<p>Finally, we can plot a picture of the overall flight path using Google Maps API. This track presents a cleaner view with less noise as the particle filter agorithm was able to remove the random noise associated with the geologging. Each point represents the most probably latitude and logitude at each twilight. Not, the coloured doughnut is a key for the month of the year.</p>
+<p>Finally, we can plot a picture of the overall flight path using the Google Maps API. This track presents a cleaner view with less noise as the particle filter algorithm was able to remove the random noise associated with the geologging. Each point represents the most probable latitude and logitude at each twilight. Note, the coloured doughnut is a key for the month of the year.</p>
 <pre class="r"><code>map.FLightR.ggmap(Result = Result, 
                   seasonal.donut.location = &quot;bottomright&quot;)</code></pre>
 <p><img src="BA055_path_ggmap" width="100%" /></p>
 </div>
-</div>
 <div id="references" class="section level1">
-<h1><span class="header-section-number">7</span> References</h1>
+<h1><span class="header-section-number">8</span> References</h1>
 </div>
 <div class="footnotes">
 <hr />
