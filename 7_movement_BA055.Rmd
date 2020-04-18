@@ -15,7 +15,7 @@ This vignette makes extensive use of the code within the manual *Light-Level Geo
 # Clear all
 rm(list = ls())  
 
-# Load librarieis
+# Load libraries
 library(GeoLocTools)
 library(GeoLight)
 library(TwGeos)
