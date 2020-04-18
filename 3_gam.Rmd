@@ -7,18 +7,25 @@ output:
 
 # Introduction
 
-The GLM relates the mean of the response variable to a linear combination of covariates. The response variable is assumed to be conditionally distributed according to a distribution within the exponential family (bionomial, poisson, gamma etc). The Generalised Additive Model (GAM) a popular ecology modelling approach, that relaxes the need for the response variable to be characterised by a particular distribution, and instead allows the the relationship between response variable and covariats to be described by the linear combination of smooth curves. GAMs are of the form:
+The GLM relates the mean of the response variable to a linear combination of covariates. The response variable is assumed to be conditionally distributed according to a distribution within the exponential family (bionomial, poisson, gamma etc). The Generalised Additive Model (GAM) is a popular ecology modelling approach, that relaxes the need for the response variable to be characterised by a particular distribution, and instead allows the the relationship between response variable and covariats to be described by the linear combination of smooth curves. GAMs are of the form:
 
 $$\mathop{\mathbb{E}}(Y) = g^{-1} \left( \beta_0 + \sum^J_{j=1}f_j(x_j) \right) $$
-, where $\mathop{\mathbb{E}}$ is the expected value of the response variable, $Y$, $g$ is the link function and distribution. $f_j$ is the smooth function of covariate $x_j$ and $\beta_0$ is the intercept. The smooth functions are the workhorse of the GAM, and are typically *spline* functions, but there are many other forms, dependeing on the application.
+where:
+
+* $\mathop{\mathbb{E}}$ is the expected value of the response variable, $Y$, 
+* $g$ is the link function
+* $f_j$ is the smooth function of covariate $x_j$ 
+* $\beta_0$ is the intercept. 
+
+The smooth functions are the workhorse of the GAM, and are typically *spline* functions. There are many other forms, depending on the form of the covariate.
 
 ## The Northern Gannet *Morus bassanus*
 
-This vignette makes use of data collected by Camphuysen (2011) [^1], who undertook a survey of the feeding range of gannets nesting on Bass Rock, a colony found in the Firth of Forth, from onboard fishery research vessels in June and July from 1991 to 2004. Gannet counts were undertaken when the survey ship was fishing. A total of 9,972 km$^2$ were surveyed, travelling a distance of 33,601 km, and 44,818 Gannets were observed during these surveys. A correction factor for detectability was not applied, with the assumption
+This vignette makes use of data collected by Camphuysen (2011) [^1], who undertook a survey of the feeding range of Gannet nesting on Bass Rock, a seabird colony in the Firth of Forth. Data were recorded from onboard fishery research vessels in June and July, from 1991 to 2004. Gannet counts were undertaken when the survey ship was fishing. A total of 9,972 km$^2$ were surveyed, travelling a distance of 33,601 km, and 44,818 Gannets were observed during these surveys. A correction factor for detectability was not applied, with the assumption
 that all individual Gannets, either swimming or in flight, were detected within a 300m wide strip transect (counts were
 discontinued in rough conditions, e.g. above wind force 6 on the Beaufort scale). 
 
-The underlying question is to determine when and where gannet feed in the vicinity of the Bass Rock colony. We will use a GAM in an attempt to answer this question, and the approach adopted makes extensive reference to Zuur (2012) [^2].
+The research question was to determine when and where gannet feed in the vicinity of the Bass Rock colony. We will use a GAM in an attempt to answer this question, and the approach adopted makes extensive reference to Zuur (2012) [^2].
 
 ```{r set-up, message=FALSE, warning=FALSE}
 # Clear all
@@ -26,9 +33,13 @@ rm(list = ls())
 
 # Load relevant libraries
 library(tidyverse)
+# Data analysis library
 library(skimr)
+# GAM modelling
 library(mgcv)
+# Spatial features library
 library(sf)
+# Date time manipulation
 library(lubridate)
 # colourblind-friendly colourschemes
 library(viridis)
@@ -43,7 +54,7 @@ gannets <- read.table("data_analysis_files/Gannets2.txt", sep = "\t", header = T
 skim(gannets)
 ```
 
-We can see that there are no missing data, and that `Gannets_in_transect` looks like the response variable. Each records represents the number of gannets observed in a transect, and with `Area_survyedkm2` we know the number of gannet per km2. If each strip transect is 300m wide, we can establish the transect length if needed.
+We can see that there are no missing data, and that `Gannets_in_transect` looks like the response variable. Each record represents the number of gannets observed in a transect, and with `Area_survyedkm2` we know the number of gannet per km2. If each strip transect is 300m wide, we can establish the transect length if needed.
 
 # Data analysis
 
@@ -57,28 +68,33 @@ In order to see if the area sampled by year is the same, we can plot the transec
 gannets %>%
   # Create an sf geometry for each record
   st_as_sf(coords = c("Latitude","Longitude"), remove = F) %>% 
-  # Transform the cooridante reference to 27700 (UK)
+  # Transform the cooridante reference scheme to planar coordinates 27700 (UK)
   st_set_crs(27700) %>%
+  # Plot data
   ggplot() +
   geom_sf(stat="sf", colour= "red", alpha = 0.6, size = 1) +
+  # Repeat for each year
   facet_wrap(~Year, ncol = 3) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Transects by year")
 
 ```
 
-Looks as if surveys effort is fairly consistent, year on year, but on inspecting the data it looks like the size of individual transects is different.
+Looks as if survey effort is fairly consistent, year on year, but on inspecting the data it looks like the area of individual transects are differen, due to differing transect lengths.
 
 ```{r transect_length, message=FALSE, warning=FALSE, fig.align='center'}
+# Plot histogra of transect lengths
 gannets %>%
   ggplot(aes(x = Area_surveyedkm2)) +
   # Plot histogram of Area_surveyedkm2
   geom_histogram(fill="blue", stat = "count") +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Histogram of transect area")
 ```
 
 We can see that the transect effort, represented by `Area-surveyedkm2` is highly variable. This means that we have a variable sampling effort between transects. To account for this variable effect we can use `Area-surveyedkm2` as an *offset* variable. Efecctively this means that if the sampling effort doubles, the number of gannets also doubles.  
 
-Also we have some transects where `Area-surveyedkm2` is equal to zero. We will remove these, as the boat was not moving and so a transect was not traveresed.
+Also we have some transects where `Area-surveyedkm2` is equal to zero. We will remove these, as the boat was not moving and so a transect was not traveresed. We can also add date and time information, and convert coordinates to km (from meters).
 
 ```{r sampling_effort}
 # Add extra data items in preparation for modelling
@@ -103,7 +119,7 @@ gannets <- gannets %>%
 
 # Gannet density in space and time
 
-We can now undertake some further data exploration and look at how surveyed gannet density varies in space and time. The first plot below shows how observed gannet density varies by year:
+We can now undertake some further data exploration and look at how surveyed Gannet density varies in space and time. The first plot below shows how observed gannet density varies by year - the bigger the red dot, the larger the density of Gannet recorded.
 
 ```{r density_by_year,fig.asp=1.8, fig.align='center'}
 # First calculate gannet density per transect
@@ -120,13 +136,14 @@ gannets %>%
     colour = "red",
     alpha = 0.6
     ) +
-  # Project coordinates
+  # Project coordinates to plananr
   coord_sf(crs = 27700) +
   facet_wrap(~Year, ncol = 3) +
   # Add a scale for the size of each dot
   scale_size(range = c(0, 10)) +
   labs( x = "Latitude", y = "Longitude") +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Spatial Gannet density by year")
 ```
 
 This clearly shows us that gannet density changes in space year on year, indicating that a three dimenstional GAM smooth of the form $f(Year_i, lat_i, long_i)$ is required to capture this effect.
@@ -138,7 +155,8 @@ gannets %>%
   ggplot(aes(x = gannet_density)) +
   # Plot histogram of Area_surveyedkm2
   geom_histogram(fill="blue", bins = 30) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Histogram of observed Gannet density")
 ```
 
 We can see that the data is clearly zero-inflated. The vast majority of observations are zero. But the data are highly dispersed too, as there are density observations of 600.
@@ -158,14 +176,15 @@ gannets %>%
     ) +
   facet_wrap(~Year, ncol = 3) +
   labs( x = "Hour of day", y = "Day in Year") +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Gannet density by day of year and hour of day, for each year")
 ```
 
-We can see that in 2003 surveying started earleir in the year. It seems that there is a time of day effect that changes as the breeding season progresses.
+We can see that in 2003 surveying started earlier in the year.
 
-# A GAM for Gannet abundance
+# Gannet abundance GAM
 
-We would like to build a model to predict gannet abundance in time and space. Our initial data exploration has shown that gannet abundance varies in a non-linear fashion across days, months and years. Below we will iteratively build up a model and each step attempt to evaluate the overall model fit.
+We would like to build a model to predict gannet abundance across time and space. Our initial data exploration has shown that gannet abundance varies in a non-linear fashion across days, months and years. Below we will iteratively build up a model and each step attempt to evaluate the overall model fit.
 
 ## A year effect and offset variable
 
@@ -183,13 +202,13 @@ m1 <- gam(
 summary(m1)
 ```
 
-The results show that the smooth of year is significant in the model, and that the smooth uses 8.9 effective degrees of freedom. We can plot the effect of the smooth by year as follows:
+The results show that the smooth of year is significant in the model, and that the smooth has 8.9 effective degrees of freedom. We can plot the effect of the smooth by year as follows:
 
 ```{r m1_plot, fig.align='center'}
 plot(m1)
 ```
 
-We can see that the effect of the `Year` variable increases to 1997, drops significantly in 1998 and then increases again in 2003. Given the fact that  To calulcate the degree of overdispersion we look at the residual errors as follows:
+We can see that the effect of the `Year` variable increases to 1997, drops significantly in 1998 and then increases again in 2003. This is consistent with the chart above. To calulcate the degree of overdispersion we look at the residual errors as follows:
 
 ```{r m1_dispersion}
 # Overdispersion is calculated as the sum of squared Pearson residuals divided by 
@@ -205,7 +224,9 @@ overdispersion(m1)
 
 There is considerable overdisperson in this first model. The summary for `m1` shows that the $R^2$ is very low too. 
 
-We can now add the effect of the geographical location of the surveying via a two-dimensional smooth. As the locational covariates are at a very different scale and units to the other covariates (all time based) we use the `te` or *tensor product* smoother. From our data exploration work, we noted that a three dimensional function of the form $f(Year_i, lat_i, long_i)$ might be significant. We also include the sea state as categorical variable, and the second combinatory effect of time of day coupled with day of the year.
+## Additional covariates
+
+From our initial data exploration we noted a number of apparent effects from the data. We can now add the effect of the geographical location of the surveying via a two-dimensional smooth. As the locational covariates are at a very different scale and units to the other covariates (all time based) we use the `te` or *tensor product* smoother. From our data exploration work, we also noted that a three dimensional function of the form $f(Year_i, lat_i, long_i)$ might be significant. Finally we can also include the sea state as a categorical variable, and the second combinatory effect of time of day coupled with day of the year (which we model as a tensor product).
 
 ```{r m2}
 # Create first gam for gannet abundance
@@ -233,7 +254,9 @@ overdispersion(m2)
 
 This makes a significant difference to the overdispersion which has now been reduced to 12. This is still significant, and the lastest term introduced requires 124 degrees of freedom so is computationally expensive. Also the $R^2$ has improved slightly (though not significantly).
 
-One final thing is to try a negative-binomial GAM. In such a model, the variance is quadratic and as such might better capture the overdispersion we are seeing.
+## Negative-binomial GAM
+
+One final thing is to try a negative-binomial distribution in place of the poisson distribution we have used so far. A ngeative binomial can be used to represent non-negative count data. In such a model, the variance can vary independent of the distribution mean and as such might better capture the overdispersion we are seeing.
 
 ```{r m3}
 # Create first gam for gannet abundance
@@ -267,7 +290,7 @@ This appeared to work well. Our overdispersion measure started at 37 with model 
 anova(m3)
 ```
 
-We can visiualise the two smooths in the model that are deemed significant by the anova test:
+The results show that the tensor product multivariate smooths are the most significant in the model. We can visiualise there effect using the `vis.gam` function:
 
 ```{r viz, message=FALSE, warning=FALSE, fig.align='center', fig.width=10}
 # Plot X,Y smooth
@@ -301,11 +324,11 @@ vis.gam(m3,
         main = "te(TimeH, DayInYear)")
 ```
 
-It seems that for the `te(X,Y)` smooth the response is concentrated towards the south-west of the area. The `te(TimeH, DayInYear)` smooth is perhaps more difficult to interpret. It appears that the effect on the response variable is more significant at the start of the year, than at the end.
+It seems that for the `te(X,Y)` smooth the response is concentrated towards the south-west of the area. Presumably this is where Gannets spend most of their time foraging. The `te(TimeH, DayInYear)` smooth is perhaps more difficult to interpret. It appears that the effect on the response variable is more significant at the start of the year, than at the end.
 
-# Make a prediction and plot it in space and time
+# Plot a prediction
 
-To map fitted values, we first create a `data.frame` of covariates required by the model. Then we use the `predict` function to generate a set of values. In the example below we will fit a model to give abundance of gannets within 1km squares. First we need to create the data to use when predicting the overall response.
+To map fitted values, we first create a `data.frame` of covariates required by the model. Then we use the `predict` function to generate a set of values. In the example below we will fit a model to give abundance of gannets within 1km squares. First we need to create the data to use when predicting the overall response. We will make a prediction for middle of the day, half way through 2002.
 
 ```{r m3_predict, fig.align='center', fig.asp=1.1}
 # Create dataframe containing all data
@@ -338,16 +361,19 @@ m3_data %>%
   coord_equal() +
   labs(fill="Density") +
   scale_fill_distiller(palette = "Spectral") +
-  theme_bw()
+  theme_bw() +
+  ggtitle("Gannet density estimate, Year=2002, Day=180, TimeH=12")
 ```
 
-We can see that there is a slight increase in observed gannet density in the south west corner of the map. If we sum every cell in the grid we should get the total gannet abundance at the time specified above (middle of 2002):
+We can see that there is a slight increase in observed gannet density in the south west corner of the map. If we sum every cell in the grid we should get the total Gannet abundance at the time specified above (middle of 2002):
 
 ```{r total_abundance}
 sum(m3_data$Nhat)
 ```
 
-As of 2015, the colony size is thought to be around 150,000 birds on Bass Rock[^3]. So the final abundance estimate for 2002, seems consitent with this. Note we did not accoutn for detectability in the above. It was assumed that everything present was observed within the 300m wide transect.
+# Discussion
+
+GAMs are a powerful technique for fitting enivironmental data that do not fit well with simple linear models. In the example above we took survey data and created a predictive model that enabled us to make an estimate of total Gannet abundance across the entire survey area. As of 2015, the colony size is thought to be around 150,000 birds on Bass Rock[^3]. So the final abundance estimate for 2002, seems consitent with this. Note we did not account for detectability in the above. It was assumed that everything present was observed within the 300m wide transect.
 
 # References
 
