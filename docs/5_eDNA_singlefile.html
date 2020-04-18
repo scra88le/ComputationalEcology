@@ -416,8 +416,9 @@ div.tocify {
 <p>For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms.</p>
 <p>We will aim to use a machine learning classifier to generate Operational Taxonomic Units (OTUs) from the amplicons within the raw fastq files. In this particular example, OTUs are clusters of similar sequence variants of the 18S rDNA marker gene sequence. Each of these clusters is intended to represent a taxonomic unit of a eukaryote, that has been resolved to a species or genus. In order to achieve this we use a reference taxonomy database of Eukaryotic 18S rDNA.</p>
 <pre class="r"><code># Load libraries
-library(dada2)
-library(dplyr)
+library(dada2)</code></pre>
+<pre><code>## Loading required package: Rcpp</code></pre>
+<pre class="r"><code>library(dplyr)
 library(ggplot2)
 packageVersion(&quot;dada2&quot;)</code></pre>
 <pre><code>## [1] &#39;1.14.0&#39;</code></pre>
@@ -467,11 +468,11 @@ plotQualityProfile(fnR1)</code></pre>
 <p>The next thing we want to do is “dereplicate” the filtered fastq files. During dereplication, we condense the data by collapsing together all reads that encode the same sequence, which significantly reduces later computation times.</p>
 <pre class="r"><code># Derep forward reads
 derepF1 &lt;- derepFastq(filtF1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpGMrKp0/file13ff517a51b71.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpkZUWXU/file15e10660d4f5f.fastq.gz</code></pre>
 <pre><code>## Encountered 15108 unique sequences from 28738 total sequences read.</code></pre>
 <pre class="r"><code># Derep reverse reads
 derepR1 &lt;- derepFastq(filtR1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpGMrKp0/file13ff558aca3d7.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpkZUWXU/file15e1073d61a50.fastq.gz</code></pre>
 <pre><code>## Encountered 17850 unique sequences from 28738 total sequences read.</code></pre>
 </div>
 <div id="learn-the-error-rates" class="section level1">
@@ -534,10 +535,10 @@ dim(seqtab)</code></pre>
 <pre class="r"><code># Inspect distribution of sequence lengths
 table(nchar(getSequences(seqtab)))</code></pre>
 <pre><code>## 
-## 311 329 339 340 346 350 352 353 356 357 362 363 365 366 367 368 369 370 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 389 391 392 395 397 399 410 
-##   1   1   2   2   1   1   1   1   1   1   1   5   3   3   1   4   6   9   4   1   5  12   5   1   5   5  31  14  15  27  11   8  10   1   2   1   4   1   1   1   1   1   1 
-## 429 
-##   1</code></pre>
+## 311 329 339 340 346 350 352 353 356 357 362 363 365 366 367 368 369 370 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 
+##   1   1   2   2   1   1   1   1   1   1   1   5   3   3   1   4   6   9   4   1   5  12   5   1   5   5  31  14  15  27  11   8  10   1   2 
+## 388 389 391 392 395 397 399 410 429 
+##   1   4   1   1   1   1   1   1   1</code></pre>
 <p>The table contains 213 ASVs from processing the two initial fastq amplicon files.</p>
 </div>
 <div id="remove-chimeras" class="section level1">
@@ -588,8 +589,7 @@ head(taxa_df)</code></pre>
 ## 4 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
 ## 5 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
 ## 6 Eukaryota            SAR  Stramenopiles  Ochrophyta   Chrysophyceae    uncultured uncultured_freshwater_eukaryote AB622299.1.1685</code></pre>
-<pre class="r"><code># Plot</code></pre>
-<p>As the reference database was for <em>Eurkarytes</em> all of our assign results are eukaryota. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.</p>
+<p>As the reference database was for <em>Eurkaryotes</em> all of our assigned results are eukaryotes. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.</p>
 <p>We can plot a chart to show the distribution of taxa at the <em>Class</em> order. Stramenopiles are clearly the must prevelant class that was resolved. This class are algae, ranging from multicellular kelp to unicellular diatoms, which are a primary component of plankton.</p>
 <pre class="r"><code>taxa_df[1:7] %&gt;% 
   na.omit() %&gt;%
