@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -237,6 +236,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -265,6 +265,12 @@ $(document).ready(function () {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -407,9 +413,12 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms. For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>For this particular study, demultiplexed reads from from a MiSeq DNA sequencing run were generated from a scientific study of seston DNA (environmental DNA or “eDNA” represented in suspended particulate matter) sampled from an urban watershed of size 42,9994ha in southwestern Ohio, USA. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Illumina MiSeq fastq files were downloaded from the NCBI Sequence Read Archive (SRA). The The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms.</p>
+<p>We will aim to use a machine learning classifier to generate Operational Taxonomic Units (OTUs) from the amplicons within the raw fastq files. In this particular example, OTUs are clusters of similar sequence variants of the 18S rDNA marker gene sequence. Each of these clusters is intended to represent a taxonomic unit of a eukaryote, that has been resolved to a species or genus. In order to achieve this we use a reference taxonomy database of Eukaryotic 18S rDNA.</p>
 <pre class="r"><code># Load libraries
 library(dada2)
+library(dplyr)
+library(ggplot2)
 packageVersion(&quot;dada2&quot;)</code></pre>
 <pre><code>## [1] &#39;1.14.0&#39;</code></pre>
 </div>
@@ -458,11 +467,11 @@ plotQualityProfile(fnR1)</code></pre>
 <p>The next thing we want to do is “dereplicate” the filtered fastq files. During dereplication, we condense the data by collapsing together all reads that encode the same sequence, which significantly reduces later computation times.</p>
 <pre class="r"><code># Derep forward reads
 derepF1 &lt;- derepFastq(filtF1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file573646710fa.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpGMrKp0/file13ff517a51b71.fastq.gz</code></pre>
 <pre><code>## Encountered 15108 unique sequences from 28738 total sequences read.</code></pre>
 <pre class="r"><code># Derep reverse reads
 derepR1 &lt;- derepFastq(filtR1, verbose=TRUE)</code></pre>
-<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//Rtmp2FLQGp/file5732a8bc095.fastq.gz</code></pre>
+<pre><code>## Dereplicating sequence entries in Fastq file: /var/folders/pg/1mb4zlkx4xq3fzp3nq_mzrhh0000gn/T//RtmpGMrKp0/file13ff558aca3d7.fastq.gz</code></pre>
 <pre><code>## Encountered 17850 unique sequences from 28738 total sequences read.</code></pre>
 </div>
 <div id="learn-the-error-rates" class="section level1">
@@ -525,12 +534,10 @@ dim(seqtab)</code></pre>
 <pre class="r"><code># Inspect distribution of sequence lengths
 table(nchar(getSequences(seqtab)))</code></pre>
 <pre><code>## 
-## 311 329 339 340 346 350 352 353 356 357 362 363 365 366 367 368 369 370 
-##   1   1   2   2   1   1   1   1   1   1   1   5   3   3   1   4   6   9 
-## 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 
-##   4   1   5  12   5   1   5   5  31  14  15  27  11   8  10   1   2   1 
-## 389 391 392 395 397 399 410 429 
-##   4   1   1   1   1   1   1   1</code></pre>
+## 311 329 339 340 346 350 352 353 356 357 362 363 365 366 367 368 369 370 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 389 391 392 395 397 399 410 
+##   1   1   2   2   1   1   1   1   1   1   1   5   3   3   1   4   6   9   4   1   5  12   5   1   5   5  31  14  15  27  11   8  10   1   2   1   4   1   1   1   1   1   1 
+## 429 
+##   1</code></pre>
 <p>The table contains 213 ASVs from processing the two initial fastq amplicon files.</p>
 </div>
 <div id="remove-chimeras" class="section level1">
@@ -574,20 +581,13 @@ taxa_df &lt;- unname(taxa) %&gt;% as.data.frame()
 names(taxa_df) &lt;- c(&#39;Kingdom&#39;,&#39;Phylum&#39;,&#39;Class&#39;,&#39;Order&#39;,&#39;Family&#39;,&#39;Genus&#39;,&#39;Species&#39;)
 # First few rows of results
 head(taxa_df)</code></pre>
-<pre><code>##     Kingdom         Phylum          Class       Order          Family
-## 1 Eukaryota Archaeplastida Chloroplastida Chlorophyta Chlorodendrales
-## 2 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
-## 3 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
-## 4 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
-## 5 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae
-## 6 Eukaryota            SAR  Stramenopiles  Ochrophyta   Chrysophyceae
-##           Genus                         Species              NA
-## 1   Tetraselmis                            &lt;NA&gt;            &lt;NA&gt;
-## 2    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
-## 3 Thalassiosira                            &lt;NA&gt;            &lt;NA&gt;
-## 4    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
-## 5    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
-## 6    uncultured uncultured_freshwater_eukaryote AB622299.1.1685</code></pre>
+<pre><code>##     Kingdom         Phylum          Class       Order          Family         Genus                         Species              NA
+## 1 Eukaryota Archaeplastida Chloroplastida Chlorophyta Chlorodendrales   Tetraselmis                            &lt;NA&gt;            &lt;NA&gt;
+## 2 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 3 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae Thalassiosira                            &lt;NA&gt;            &lt;NA&gt;
+## 4 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 5 Eukaryota            SAR  Stramenopiles  Ochrophyta    Mediophyceae    Cyclotella                            &lt;NA&gt;            &lt;NA&gt;
+## 6 Eukaryota            SAR  Stramenopiles  Ochrophyta   Chrysophyceae    uncultured uncultured_freshwater_eukaryote AB622299.1.1685</code></pre>
 <pre class="r"><code># Plot</code></pre>
 <p>As the reference database was for <em>Eurkarytes</em> all of our assign results are eukaryota. We can see that a number of Phyla have resolved to the SAR supergorup; this is a clade of eukaryotes that includes the classes stramenopiles, alveolates and Rhizaria (hence SAR). Most taxa assignments only resolve ultimately to family or genus.</p>
 <p>We can plot a chart to show the distribution of taxa at the <em>Class</em> order. Stramenopiles are clearly the must prevelant class that was resolved. This class are algae, ranging from multicellular kelp to unicellular diatoms, which are a primary component of plankton.</p>
@@ -596,8 +596,13 @@ head(taxa_df)</code></pre>
   ggplot(aes(Class)) +
     geom_bar() +
     coord_flip() +
-    theme_bw()</code></pre>
+    theme_bw() +
+    ggtitle(&quot;Distribution of class taxa&quot;)</code></pre>
 <p><img src="5_eDNA_singlefile_files/figure-html/plot_taxa-1.png" width="672" /></p>
+</div>
+<div id="discussion" class="section level1">
+<h1>Discussion</h1>
+<p>We have seen that it is possible to take raw amplicon data that has been sequenced using environmental DNA, and identify which species are present in the underlying field samples. Environmental DNA sequencing and bioinformatic techniques are a highly productive species surveying tool, especially in environments where the taget taxa are not easily identifiable in the field or considerable taxanomic expertise is required by the scientist undertaking the survey.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
