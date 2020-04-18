@@ -262,6 +262,9 @@ predictions %>%
   scale_fill_viridis_c() +
   theme_bw() +
   ggtitle("Predicted Zebra abundance, Naboisho, July 2018")
+
+# Show details of model fit summary
+summary(fit.MCML)
 ```
 
 Calculate the overall population density per km2

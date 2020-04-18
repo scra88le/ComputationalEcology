@@ -638,11 +638,37 @@ predictions %&gt;%
   theme_bw() +
   ggtitle(&quot;Predicted Zebra abundance, Naboisho, July 2018&quot;)</code></pre>
 <p><img src="6_sam_naboisho_files/figure-html/make_plot-1.png" width="672" /></p>
+<pre class="r"><code># Show details of model fit summary
+summary(fit.MCML)</code></pre>
+<pre><code>## Geostatistical Poisson model 
+## Call: 
+## poisson.log.MCML(formula = size ~ ndvi, coords = ~I(easting) + 
+##     I(northing), data = zebra, par0 = par0, control.mcmc = c.mcmc, 
+##     kappa = 0.5, fixed.rel.nugget = 0, start.cov.pars = species_fit$range[2], 
+##     method = &quot;nlminb&quot;)
+## 
+##             Estimate  StdErr z.value   p.value    
+## (Intercept)  -1.5184  0.8429 -1.8014   0.07164 .  
+## ndvi         12.4003  3.1621  3.9216 8.797e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Objective function: 0.00401485
+##  
+## Covariance parameters Matern function 
+## (fixed relative variance tau^2/sigma^2= 0) 
+##              Estimate     StdErr
+## log(sigma^2) -0.66092 2.4220e-01
+## log(phi)      0.39341 1.0861e+05
+## 
+## Legend: 
+## sigma^2 = variance of the Gaussian process 
+## phi = scale of the spatial correlation</code></pre>
 <p>Calculate the overall population density per km2</p>
 <pre class="r"><code># Calculate total number
 total_count = sum(log(pred.MCML$exponential$predictions))
 total_count</code></pre>
-<pre><code>## [1] 4402.342</code></pre>
+<pre><code>## [1] 4418.931</code></pre>
 <pre class="r"><code># Calculate survey area in km2
 survey_area = nrow(ndvi_r) * ncol(ndvi_r) * xres(ndvi_r)/1000 * yres(ndvi_r)/1000
 survey_area</code></pre>
@@ -650,7 +676,7 @@ survey_area</code></pre>
 <pre class="r"><code># Calculate average density per km2
 density = total_count / survey_area
 density</code></pre>
-<pre><code>## [1] 31.8855</code></pre>
+<pre><code>## [1] 32.00565</code></pre>
 </div>
 <div id="discussion" class="section level1">
 <h1><span class="header-section-number">8</span> Discussion</h1>
