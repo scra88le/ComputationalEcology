@@ -1,5 +1,0 @@
----
-title: "Computational Ecology"
----
-
-This website shows updates for an indepdendent study module that covers various computational ecology techniques.
