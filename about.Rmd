@@ -1,5 +1,0 @@
----
-title: "About This Website"
----
-
-Move along. Nothing to see here!
